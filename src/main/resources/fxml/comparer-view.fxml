@@ -12,6 +12,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Region?>
 
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.ListView?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="pl.magzik._new.controller.ComparerController"
@@ -28,16 +31,23 @@
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Button text="%main.button.back" onAction="#backToMenu"/>
+                <Button text="%main.button.back"
+                        focusTraversable="false"
+                        onAction="#backToMenu"/>
             </HBox>
 
             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="comparer-path-panel">
 
                 <TextField promptText="%comparer.textfield.path"
+                           editable="false"
+                           mouseTransparent="true"
+                           focusTraversable="false"
                            HBox.hgrow="ALWAYS"
                            styleClass="comparer-path"
-                           fx:id="pathTextField" />
+                           fx:id="pathTextField"/>
+
                 <Button text="%comparer.button.open"
+                        focusTraversable="false"
                         onAction="#handleChoosePath" />
 
             </HBox>
@@ -47,10 +57,20 @@
 
     <right>
         <VBox spacing="10">
-            <Button text="%comparer.button.load" prefWidth="200" />
-            <Button text="%comparer.button.move" prefWidth="200" />
-            <Button text="%comparer.button.remove" prefWidth="200" />
-            <Button text="%comparer.button.reset" prefWidth="200" />
+
+            <Button text="%comparer.button.load"
+                    prefWidth="200"
+                    focusTraversable="false"/>
+            <Button text="%comparer.button.move"
+                    prefWidth="200"
+                    focusTraversable="false"/>
+            <Button text="%comparer.button.remove"
+                    prefWidth="200"
+                    focusTraversable="false"/>
+            <Button text="%comparer.button.reset"
+                    prefWidth="200"
+                    focusTraversable="false"/>
+
         </VBox>
     </right>
 
@@ -61,12 +81,67 @@
 
             <Region HBox.hgrow="ALWAYS" />
 
-            <ProgressBar prefWidth="200" prefHeight="30" styleClass="progress-bar" progress="0.5" />
+            <ProgressBar prefWidth="200"
+                         prefHeight="30"
+                         styleClass="progress-bar"
+                         progress="0.5"/>
         </HBox>
     </bottom>
 
     <center>
-        <Text text="TODO" />
+        <VBox>
+
+            <HBox spacing="10" styleClass="tray">
+
+                <VBox HBox.hgrow="ALWAYS"
+                      alignment="CENTER"
+                      styleClass="tray-item">
+
+                    <Text text="Total:"
+                          styleClass="text-element"/>
+
+                    <TextField text="0"
+                               editable="false"
+                               mouseTransparent="true"
+                               focusTraversable="false"
+                               VBox.vgrow="ALWAYS"
+                               styleClass="tray-textfield"/>
+
+                </VBox>
+
+                <VBox HBox.hgrow="ALWAYS"
+                      alignment="CENTER"
+                      styleClass="tray-item">
+
+                    <Text text="Duplicates:"
+                          styleClass="text-element"/>
+
+                    <TextField text="0"
+                               editable="false"
+                               mouseTransparent="true"
+                               focusTraversable="false"
+                               VBox.vgrow="ALWAYS"
+                               styleClass="tray-textfield"/>
+
+                </VBox>
+
+            </HBox>
+
+            <TabPane styleClass="comparer-output-panel">
+
+                <Tab text="%comparer.tab.title.original" closable="false">
+                    <ListView fx:id="originalListView"/>
+                </Tab>
+
+                <Tab text="%comparer.tab.title.duplicates" closable="false">
+                    <ListView fx:id="duplicateListView"/>
+                </Tab>
+
+            </TabPane>
+
+        </VBox>
+
+
     </center>
 
 </BorderPane>

@@ -80,7 +80,7 @@
 }
 
 .comparer-state-panel {
-
+    -fx-padding: 0 0 0 5px;
 }
 
 .comparer-state-panel .text-element {
@@ -102,5 +102,106 @@
 }
 
 .comparer-state-panel .progress-bar .track {
+    -fx-background-color: transparent;
+}
+
+.tray {
+    -fx-padding: 5px;
+}
+
+.tray .tray-item {
+    -fx-padding: 5px;
+
+    -fx-background-color: -fx-secondary-color;
+    -fx-background-radius: 10px;
+}
+
+.tray .tray-item .text-element {
+    -fx-fill: -fx-font-color;
+
+    -fx-font-size: 1.2em;
+}
+
+.tray .tray-item .tray-textfield {
+    -fx-alignment: center;
+
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-font-color;
+
+    -fx-font-size: 2em;
+    -fx-font-weight: bold;
+}
+
+.comparer-output-panel .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.comparer-output-panel .tab {
+    -fx-padding: 5px;
+
+    -fx-background-color: -fx-secondary-color;
+
+    -fx-background-radius: 10px 10px 0 0;
+}
+
+.comparer-output-panel .tab:hover {
+    -fx-background-color: -fx-additional-color;
+
+    -fx-cursor: hand;
+}
+
+.comparer-output-panel .tab:selected {
+    -fx-background-color: -fx-additional-color;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.comparer-output-panel .tab .tab-label {
+    -fx-text-fill: -fx-font-color;
+}
+
+.comparer-output-panel .tab:selected .tab-label {
+    -fx-font-weight: bold;
+}
+
+.comparer-output-panel .tab-content-area {
+    -fx-background-color: transparent;
+}
+
+.list-view {
+    -fx-padding: 0px 5px 0px;
+
+    -fx-background-color: transparent;
+}
+
+.list-view .list-cell {
+    -fx-padding: 5px;
+
+    -fx-background-color: -fx-secondary-color;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: -fx-base-color;
+
+    -fx-text-fill: -fx-font-color;
+}
+
+.list-view .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.list-view .thumb {
+    -fx-background-color: -fx-secondary-color;
+}
+
+.list-view .scroll-bar .increment-button,
+.list-view .scroll-bar .decrement-button {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-text-fill: transparent;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
     -fx-background-color: transparent;
 }
