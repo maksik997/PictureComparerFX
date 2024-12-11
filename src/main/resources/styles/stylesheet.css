@@ -1,0 +1,106 @@
+.root {
+    -fx-base-color: #3a0ca3;
+    -fx-secondary-color: #7209b7;
+    -fx-aspect-color: #4361ee;
+    -fx-secondary-aspect-color: #4cc9f0;
+    -fx-additional-color: #f72585;
+    -fx-font-color: #ddd;
+
+    -fx-background-color: -fx-base-color;
+}
+
+.menu {
+    -fx-padding: 20px;
+    -fx-alignment: center;
+}
+
+.title {
+    -fx-padding: 0 100px 10px;
+
+    -fx-fill: -fx-font-color;
+
+    -fx-font-size: 2.5em;
+    -fx-font-weight: bold;
+    -fx-underline: true;
+}
+
+.subtitle {
+    -fx-fill: -fx-font-color;
+
+    -fx-font-size: 1em;
+}
+
+.button {
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 15px;
+
+    -fx-background-color: -fx-aspect-color;
+    -fx-text-fill: -fx-font-color;
+
+    -fx-font-size: 1.2em;
+
+}
+
+.button:hover {
+    -fx-background-color: -fx-secondary-aspect-color;
+
+    -fx-cursor: hand;
+}
+
+.menu-button {
+    -fx-pref-width: 200px;
+    -fx-padding: 10px 20px;
+
+    -fx-font-weight: bold;
+}
+
+/* PANELS */
+
+.panel-header {
+    -fx-padding: 10px 5px;
+}
+
+.panel-header .title {
+    -fx-font-size: 1.5em;
+    -fx-underline: false;
+}
+
+/* COMPARER PANEL */
+
+.comparer-path-panel {
+    -fx-padding: 10px 5px;
+}
+
+.comparer-path-panel .comparer-path {
+    -fx-background-color: -fx-secondary-color;
+    -fx-text-fill: -fx-font-color;
+
+    -fx-font-size: 1.2em;
+    -fx-font-weight: bold;
+}
+
+.comparer-state-panel {
+
+}
+
+.comparer-state-panel .text-element {
+    -fx-fill: -fx-font-color;
+
+    -fx-font-size: 1.2em;
+    -fx-font-weight:bold;
+}
+
+.comparer-state-panel .value {
+    -fx-fill: -fx-font-color;
+
+    -fx-font-size: 1.2em;
+}
+
+.comparer-state-panel .progress-bar {
+    -fx-background-color: -fx-secondary-color;
+    -fx-background-radius: 5px;
+}
+
+.comparer-state-panel .progress-bar .track {
+    -fx-background-color: transparent;
+}

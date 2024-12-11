@@ -9,19 +9,43 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="pl.magzik._new.controller.MainController"
-      prefHeight="400.0" prefWidth="600.0">
+      prefWidth="800.0" prefHeight="600.0"
+      stylesheets="@/styles/stylesheet.css"
+      spacing="10"
+      styleClass="menu">
 
-    <ImageView>
-        <Image url="@/images/thumbnail.png" />
+    <ImageView fitWidth="200"
+               fitHeight="200">
+        <Image url="@/images/thumbnail.png"/>
     </ImageView>
 
-    <Text text="%general.title" />
-    <Text text="%general.version" />
+    <VBox alignment="CENTER">
+        <Text text="%general.title" styleClass="title" />
+        <Text text="%general.version" styleClass="subtitle" />
+    </VBox>
 
-    <Button text="%main.button.comparer" />
-    <Button text="%main.button.gallery" />
-    <Button text="%main.button.settings" />
-    <Button text="%main.button.credits" />
-    <Button text="%main.button.exit" onAction="#exitApp"/>
+    <VBox spacing="10" alignment="CENTER">
+        <Button text="%main.button.comparer"
+                focusTraversable="false"
+                onAction="#openComparer"
+                styleClass="menu-button"/>
+        <Button text="%main.button.gallery"
+                focusTraversable="false"
+                onAction="#openGallery"
+                styleClass="menu-button"/>
+        <Button text="%main.button.settings"
+                focusTraversable="false"
+                onAction="#openSettings"
+                styleClass="menu-button"/>
+        <Button text="%main.button.credits"
+                focusTraversable="false"
+                onAction="#openCredits"
+                styleClass="menu-button"/>
+        <Button text="%main.button.exit"
+                focusTraversable="false"
+                onAction="#exitApp"
+                styleClass="menu-button"/>
+    </VBox>
+
 
 </VBox>
