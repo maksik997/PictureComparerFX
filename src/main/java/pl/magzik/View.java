@@ -79,7 +79,7 @@ public class View extends JFrame {
      * </p>
      */
     private void addListeners() {
-        ActionListener backButtonListener = _ -> sceneManager.switchScene(SceneManager.Scene.MENU);
+        ActionListener backButtonListener = l -> sceneManager.switchScene(SceneManager.Scene.MENU);
 
         sceneManager.getScenes().stream()
                 .filter(p -> p instanceof AbstractView)

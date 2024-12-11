@@ -69,7 +69,7 @@ public class PathSettingsEntry extends SettingsEntry<JPanel, String> {
         );
         fileChooser.getFileChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        openButton.addActionListener(_ -> fileChooser.perform());
+        openButton.addActionListener(l -> fileChooser.perform());
     }
 
     /**

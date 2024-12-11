@@ -86,10 +86,10 @@ public class ComparerController {
      * </ul>
      */
     private void addListeners() {
-        cView.getPathButton().addActionListener(_ -> handlePathButtonClick());
-        cView.getLoadButton().addActionListener(_ -> handleLoadButtonClick());
-        cView.getMoveButton().addActionListener(_ -> handleMoveButtonClick());
-        cView.getResetButton().addActionListener(_ -> handleResetButtonClick());
+        cView.getPathButton().addActionListener(l -> handlePathButtonClick());
+        cView.getLoadButton().addActionListener(l -> handleLoadButtonClick());
+        cView.getMoveButton().addActionListener(l -> handleMoveButtonClick());
+        cView.getResetButton().addActionListener(l -> handleResetButtonClick());
 
         cc.addPropertyChangeListener(cView);
     }
@@ -193,7 +193,7 @@ public class ComparerController {
             cc::handleCompare,
             () -> updateUiAfter("comparer.state.update", "Duplicates", cc.getOutput())
         ).exceptionally(this::handleException)
-        .whenComplete((_, _) -> handleLoadTaskCompletion());
+        .whenComplete((l, t) -> handleLoadTaskCompletion());
     }
 
     /**
@@ -204,12 +204,12 @@ public class ComparerController {
         cc.execute(
             () -> prepareUiBefore("comparer.state.move"),
             cc::handleMoveFiles
-        ).thenComposeAsync(_ -> restartComparerQuestion())
+        ).thenComposeAsync(l -> restartComparerQuestion())
         .exceptionally(ex -> {
             handleException(ex);
             return null;
         })
-        .whenComplete((res, _) -> handleComparerReset(res));
+        .whenComplete((res, l) -> handleComparerReset(res));
     }
 
     // UI-related methods.

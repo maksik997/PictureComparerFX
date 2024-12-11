@@ -93,15 +93,15 @@ public class GalleryController {
      * </p>
      */
     private void addListeners() {
-        gView.getNameFilterTextField().getDocument().addDocumentListener((UnifiedDocumentListener)_ -> handleNameFilterUpdate());
-        gView.getAddImageButton().addActionListener(_ -> addImagesTask());
-        gView.getRemoveImageButton().addActionListener(_ -> handleRemoveImagesButton());
-        gView.getDeleteImageButton().addActionListener(_ -> handleDeleteImagesButton());
-        gView.getDistinctButton().addActionListener(_ -> handleDistinctButton());
-        gView.getUnifyNamesButton().addActionListener(_ -> unifyNamesTask());
-        gView.getOpenButton().addActionListener(_ -> handleOpenButton());
-        gView.getAddTagButton().addActionListener(_ -> handleAddTagButton());
-        gView.getRemoveTagButton().addActionListener(_ -> handleRemoveTagButton());
+        gView.getNameFilterTextField().getDocument().addDocumentListener((UnifiedDocumentListener)l -> handleNameFilterUpdate());
+        gView.getAddImageButton().addActionListener(l -> addImagesTask());
+        gView.getRemoveImageButton().addActionListener(l -> handleRemoveImagesButton());
+        gView.getDeleteImageButton().addActionListener(l -> handleDeleteImagesButton());
+        gView.getDistinctButton().addActionListener(l -> handleDistinctButton());
+        gView.getUnifyNamesButton().addActionListener(l -> unifyNamesTask());
+        gView.getOpenButton().addActionListener(l -> handleOpenButton());
+        gView.getAddTagButton().addActionListener(l -> handleAddTagButton());
+        gView.getRemoveTagButton().addActionListener(l -> handleRemoveTagButton());
 
         cc.addPropertyChangeListener(gView);
     }

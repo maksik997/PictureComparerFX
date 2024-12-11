@@ -101,7 +101,7 @@ public class SettingsController {
         updateExternalSettings();
 
         // Set up the save button: attach an action listener and disable it initially.
-        sView.getSaveButton().addActionListener(_ -> updateSettings());
+        sView.getSaveButton().addActionListener(l -> updateSettings());
         sView.getSaveButton().setEnabled(false);
 
         // Add property change listeners to update the save button state.

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="pl.magzik._new.controller.MainController"
+      prefHeight="400.0" prefWidth="600.0">
+
+    <ImageView>
+        <Image url="@/images/thumbnail.png" />
+    </ImageView>
+
+    <Text text="%general.title" />
+    <Text text="%general.version" />
+
+    <Button text="%main.button.comparer" />
+    <Button text="%main.button.gallery" />
+    <Button text="%main.button.settings" />
+    <Button text="%main.button.credits" />
+    <Button text="%main.button.exit" onAction="#exitApp"/>
+
+</VBox>

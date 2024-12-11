@@ -40,10 +40,10 @@ public class MenuController {
      * </p>
      */
     private void addActionListeners() {
-        mView.getComparerButton().addActionListener(_ -> sceneManager.switchScene(SceneManager.Scene.COMPARER));
-        mView.getGalleryButton().addActionListener(_ -> sceneManager.switchScene(SceneManager.Scene.GALLERY));
-        mView.getSettingsButton().addActionListener(_ -> sceneManager.switchScene(SceneManager.Scene.SETTINGS));
-        mView.getCreditsButton().addActionListener(_ -> sceneManager.switchScene(SceneManager.Scene.CREDITS));
-        mView.getExitButton().addActionListener(_ -> System.exit(0));
+        mView.getComparerButton().addActionListener(l -> sceneManager.switchScene(SceneManager.Scene.COMPARER));
+        mView.getGalleryButton().addActionListener(l -> sceneManager.switchScene(SceneManager.Scene.GALLERY));
+        mView.getSettingsButton().addActionListener(l -> sceneManager.switchScene(SceneManager.Scene.SETTINGS));
+        mView.getCreditsButton().addActionListener(l -> sceneManager.switchScene(SceneManager.Scene.CREDITS));
+        mView.getExitButton().addActionListener(l -> System.exit(0));
     }
 }
