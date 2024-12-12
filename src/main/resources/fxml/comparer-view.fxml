@@ -32,6 +32,7 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Button text="%main.button.back"
+                        fx:id="backButton"
                         focusTraversable="false"
                         onAction="#backToMenu"/>
             </HBox>
@@ -48,6 +49,7 @@
 
                 <Button text="%comparer.button.open"
                         focusTraversable="false"
+                        fx:id="pathButton"
                         onAction="#handleChoosePath" />
 
             </HBox>
@@ -59,15 +61,20 @@
         <VBox spacing="10">
 
             <Button text="%comparer.button.load"
+                    fx:id="loadButton"
                     prefWidth="200"
-                    focusTraversable="false"/>
+                    focusTraversable="false"
+                    onAction="#handleLoading"/>
             <Button text="%comparer.button.move"
+                    fx:id="moveButton"
                     prefWidth="200"
                     focusTraversable="false"/>
             <Button text="%comparer.button.remove"
+                    fx:id="removeButton"
                     prefWidth="200"
                     focusTraversable="false"/>
             <Button text="%comparer.button.reset"
+                    fx:id="resetButton"
                     prefWidth="200"
                     focusTraversable="false"/>
 

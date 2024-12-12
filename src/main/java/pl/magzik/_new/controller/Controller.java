@@ -4,12 +4,29 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import pl.magzik.Model;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller {
+
+    private static Model model;
+
+    public static Model getModel() {
+        if (Controller.model == null)
+            throw new NullPointerException("Model is null.");
+
+        return Controller.model;
+    }
+
+    public static void setModel(Model model) {
+        if (Controller.model != null)
+            throw new IllegalStateException("Model reference already assigned.");
+
+        Controller.model = model;
+    }
 
     private ResourceBundle bundle;
 

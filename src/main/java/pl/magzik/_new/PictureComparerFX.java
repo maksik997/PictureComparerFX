@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import pl.magzik.Model;
 import pl.magzik._new.controller.Controller;
 
 import java.net.URL;
@@ -15,8 +16,16 @@ public class PictureComparerFX extends Application {
 
     private static final String MAIN_VIEW_FXML_PATH = "/fxml/main-view.fxml";
 
+    private final Model model;
+
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public PictureComparerFX() {
+        this.model = new Model();
+
+        Controller.setModel(model);
     }
 
     @Override
