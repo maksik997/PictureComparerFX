@@ -5,8 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pl.magzik.Model;
-import pl.magzik._new.controller.Controller;
+import pl.magzik._new.controller.base.Controller;
+import pl.magzik._new.model.Model;
 
 import java.net.URL;
 import java.util.Locale;
@@ -24,7 +24,6 @@ public class PictureComparerFX extends Application {
 
     public PictureComparerFX() {
         this.model = new Model();
-
         Controller.setModel(model);
     }
 

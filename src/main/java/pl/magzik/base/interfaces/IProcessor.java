@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
  * I/O and execution errors during the processing.
  * </p>
  */
-public interface Processor {
+public interface IProcessor {
 
     /**
      * Executes the processing task.

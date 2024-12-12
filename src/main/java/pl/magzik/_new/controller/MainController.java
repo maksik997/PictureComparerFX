@@ -1,6 +1,7 @@
 package pl.magzik._new.controller;
 
 import javafx.fxml.FXML;
+import pl.magzik._new.controller.base.Controller;
 
 public class MainController extends Controller {
 

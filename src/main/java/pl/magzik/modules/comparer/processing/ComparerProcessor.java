@@ -1,12 +1,12 @@
 package pl.magzik.modules.comparer.processing;
 
+import pl.magzik.Processor;
 import pl.magzik.algorithms.Algorithm;
 import pl.magzik.algorithms.PerceptualHash;
 import pl.magzik.algorithms.PixelByPixel;
-import pl.magzik.structures.ImageRecord;
-import pl.magzik.structures.Record;
-import pl.magzik.*;
-import pl.magzik.base.interfaces.Processor;
+import pl.magzik.grouping.CRC32Grouper;
+import pl.magzik.grouping.Grouper;
+import pl.magzik.base.interfaces.IProcessor;
 
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
@@ -33,7 +33,7 @@ import java.util.function.Function;
  * to prevent concurrent access issues.
  * </p>
  */
-public interface ComparerProcessor extends Processor, ComparerPropertyAccess {
+public interface ComparerProcessor extends IProcessor, ComparerPropertyAccess {
 
     /**
      * Notifies listeners that the resource is now locked and should not be accessed.
@@ -110,7 +110,7 @@ public interface ComparerProcessor extends Processor, ComparerPropertyAccess {
      * @param input The list of image files to compare.
      * @return A list of files that are considered duplicates based on the comparison.
      */
-    private List<File> compare(List<File> input) {
+    private List<File> compare(List<File> input) throws IOException {
         return extract(processWithStrategy(input));
     }
 
@@ -124,17 +124,21 @@ public interface ComparerProcessor extends Processor, ComparerPropertyAccess {
      * @param input The list of image files to process.
      * @return A map where the key represents the comparison result, and the value is a list of records.
      */
-    @SuppressWarnings("unchecked")
-    private Map<?, List<Record<BufferedImage>>> processWithStrategy(List<File> input) {
+    /* TODO JAVADOC REFACTOR */
+    private Map<File, Set<File>> processWithStrategy(List<File> input) throws IOException {
         Objects.requireNonNull(input);
 
-        RecordProcessor rp = new RecordProcessor();
+        Grouper grouper = new CRC32Grouper();
 
-        List<Algorithm<?, ImageRecord>> algorithms = new ArrayList<>();
+        List<Algorithm<?>> algorithms = new ArrayList<>();
         if (isPerceptualHash()) algorithms.add(new PerceptualHash());
         if (isPixelByPixel()) algorithms.add(new PixelByPixel());
 
-        return rp.process(input, ImageRecord::create, algorithms.toArray(new Algorithm[0]));
+        System.out.println(isPerceptualHash() + " " + isPixelByPixel());
+
+        Processor processor = new Processor(grouper, algorithms);
+
+        return processor.process(input);
     }
 
     /**
@@ -146,8 +150,15 @@ public interface ComparerProcessor extends Processor, ComparerPropertyAccess {
      * @param map The map of records to extract files from.
      * @return A list of files that are considered duplicates.
      */
-    private List<File> extract(Map<?, List<Record<BufferedImage>>> map) {
-        Set<File> org = new HashSet<>();
+    /* TODO JAVADOC REFACTOR */
+    private List<File> extract(Map<File, Set<File>> map) {
+        map.forEach((key, value) -> value.remove(key));
+
+        System.out.println(map);
+
+        return map.values().stream().flatMap(Set::stream).toList();
+
+        /*Set<File> org = new HashSet<>();
         List<File> output = new ArrayList<>();
 
         map.entrySet().stream()
@@ -161,7 +172,7 @@ public interface ComparerProcessor extends Processor, ComparerPropertyAccess {
             output.addAll(list.stream().filter(f -> !org.contains(f)).toList());
         });
 
-        return output.stream().distinct().toList();
+        return output.stream().distinct().toList();*/
     }
 
     /**

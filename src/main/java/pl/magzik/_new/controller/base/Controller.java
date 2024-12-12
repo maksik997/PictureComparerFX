@@ -1,13 +1,16 @@
-package pl.magzik._new.controller;
+package pl.magzik._new.controller.base;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import pl.magzik.Model;
+import pl.magzik._new.model.Model;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Controller {
@@ -59,5 +62,32 @@ public class Controller {
         } catch (IOException e) {
             throw new RuntimeException(e); // TODO SWITCH TO LOGGING
         }
+    }
+
+    public String translate(String s) {
+        if (bundle.containsKey(s))
+            return bundle.getString(s);
+
+        return s;
+    }
+
+    public String findKey(String v) {
+        return bundle.keySet().stream()
+            .filter(k -> bundle.getString(k).equals(v))
+            .findAny()
+            .orElse(v);
+    }
+
+    public boolean showConfirmationDialog(String headerText) {
+        Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
+        dialog.setTitle(translate("dialog.title.confirmation"));
+        dialog.setHeaderText(translate(headerText));
+        dialog.setContentText(translate("dialog.context.confirmation"));
+
+        dialog.initOwner(stage);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+
+        return result.isPresent() && result.get() == ButtonType.OK;
     }
 }

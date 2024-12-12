@@ -1,11 +1,11 @@
-package pl.magzik._new.controller;
+package pl.magzik._new.controller.base;
 
 import javafx.fxml.FXML;
 
 public class PanelController extends Controller {
 
     @FXML
-    private void backToMenu() {
+    protected void backToMenu() {
         switchScene("/fxml/main-view.fxml");
     }
 }

@@ -64,19 +64,25 @@
                     fx:id="loadButton"
                     prefWidth="200"
                     focusTraversable="false"
-                    onAction="#handleLoading"/>
+                    onAction="#handleLoadingFiles"/>
+
             <Button text="%comparer.button.move"
                     fx:id="moveButton"
                     prefWidth="200"
-                    focusTraversable="false"/>
+                    focusTraversable="false"
+                    onAction="#handleMovingFiles"/>
+
             <Button text="%comparer.button.remove"
                     fx:id="removeButton"
                     prefWidth="200"
-                    focusTraversable="false"/>
+                    focusTraversable="false"
+                    onAction="#handleRemovingFiles"/>
+
             <Button text="%comparer.button.reset"
                     fx:id="resetButton"
                     prefWidth="200"
-                    focusTraversable="false"/>
+                    focusTraversable="false"
+                    onAction="#handleReset"/>
 
         </VBox>
     </right>
@@ -84,14 +90,14 @@
     <bottom>
         <HBox spacing="10" alignment="CENTER_LEFT" styleClass="comparer-state-panel">
             <Text text="%comparer.label.state" styleClass="text-element"/>
-            <Text text="STATE_VAL" styleClass="value"/>
+            <Text text="%comparer.state.ready" styleClass="value" fx:id="stateText"/>
 
             <Region HBox.hgrow="ALWAYS" />
 
             <ProgressBar prefWidth="200"
                          prefHeight="30"
-                         styleClass="progress-bar"
-                         progress="0.5"/>
+                         fx:id="taskProgressBar"
+                         styleClass="progress-bar"/>
         </HBox>
     </bottom>
 
@@ -109,6 +115,7 @@
 
                     <TextField text="0"
                                editable="false"
+                               fx:id="originalTrayTextField"
                                mouseTransparent="true"
                                focusTraversable="false"
                                VBox.vgrow="ALWAYS"
@@ -125,6 +132,7 @@
 
                     <TextField text="0"
                                editable="false"
+                               fx:id="duplicateTrayTextField"
                                mouseTransparent="true"
                                focusTraversable="false"
                                VBox.vgrow="ALWAYS"
