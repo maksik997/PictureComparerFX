@@ -4,21 +4,30 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
+import org.intellij.lang.annotations.MagicConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.magzik._new.controller.base.Controller;
 import pl.magzik._new.controller.base.PanelController;
 import pl.magzik._new.model.ComparerService;
+import pl.magzik.base.interfaces.Command;
 
 import java.io.File;
 import java.util.List;
-import java.util.Objects;
 
 public class ComparerController extends PanelController {
 
-    private static final String LIST_VIEW_ORIGINAL = "LOADED",
-                                LIST_VIEW_DUPLICATE = "DUPLICATES";
+    private static final Logger log = LoggerFactory.getLogger(ComparerController.class);
+
+    /**
+     * Flags used {@link ComparerController#updateUserInterface(String, short, List)} method.
+     * */
+    private static final short LIST_VIEW_ORIGINAL = 0,
+                                LIST_VIEW_DUPLICATE = 1;
 
     private static final String STATE_READY = "comparer.state.ready",
                                 STATE_PREPARE = "comparer.state.prepare",
@@ -37,7 +46,7 @@ public class ComparerController extends PanelController {
     private boolean edited; ///< If true, then user will be prompted before closing the panel.
 
     public ComparerController() {
-        this.comparerService = Controller.getModel().getComparerModel();
+        this.comparerService = Controller.getModel().getComparerService();
         this.originalFileList = FXCollections.observableArrayList();
         this.duplicateFileList = FXCollections.observableArrayList();
 
@@ -84,10 +93,8 @@ public class ComparerController extends PanelController {
     private ProgressBar taskProgressBar;
 
     public void initialize() {
-        lockButtons();
-        backButton.setDisable(false);
-        pathButton.setDisable(false);
-        loadButton.setDisable(false);
+        setButtonsState(true, moveButton, removeButton, resetButton);
+        setButtonsState(false, backButton, pathButton, loadButton);
 
         originalListView.setItems(originalFileList);
         duplicateListView.setItems(duplicateFileList);
@@ -98,10 +105,14 @@ public class ComparerController extends PanelController {
     @FXML
     private void handleChoosePath() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
+        // TODO: Attaching stylesheet to this^...
         File selectedDirectory = directoryChooser.showDialog(getStage());
 
         if (selectedDirectory != null) {
             pathTextField.setText(selectedDirectory.getAbsolutePath());
+            log.info("Selected directory: {}", selectedDirectory.getAbsolutePath());
+        } else {
+            log.info("No directory selected.");
         }
     }
 
@@ -109,16 +120,19 @@ public class ComparerController extends PanelController {
     private void handleLoadingFiles() {
         String path = pathTextField.getText();
 
-        Objects.requireNonNull(path, "Path is null.");
-        if (path.isEmpty()) throw new IllegalArgumentException("Path is empty"); // TODO TEMPORARY
+        if (path == null || path.isBlank()) {
+            log.warn("Path is blank or null.");
+            showErrorDialog("dialog.context.error.path-empty");
+            return;
+        }
+
+        log.info("Loading files from path: {}", path);
 
         // Preparing.
-        comparerService.setInput(List.of(new File(path)));
+        comparerService.setInput(new File(path));
 
         edited = true;
-        lockButtons();
-        taskProgressBar.setProgress(-1);
-        stateText.setText(translate(STATE_PREPARE));
+        handleTaskStart(STATE_PREPARE);
 
         // Processing
         comparerService.execute(
@@ -127,9 +141,9 @@ public class ComparerController extends PanelController {
             comparerService::handleCompareFiles,
             () -> updateUserInterface(STATE_UPDATE, LIST_VIEW_DUPLICATE, comparerService.getOutput())
         ).exceptionally(e -> {
-            System.out.println("EXCEPTION: " + e.getMessage());
-            throw new RuntimeException(e);
-        }) // TODO TEMPORARY, SWITCH TO LOGGING
+            handleTaskError("Error occurred while loading the files:", "dialog.context.error.comparer.loading", e);
+            return null;
+        })
         .whenComplete((v, e) -> handleLoadingTaskCompletion());
     }
 
@@ -137,52 +151,35 @@ public class ComparerController extends PanelController {
     private void handleMovingFiles() {
         if (!showConfirmationDialog("dialog.header.comparer-move")) return;
 
-        lockButtons();
-        taskProgressBar.setProgress(-1);
-        stateText.setText(translate(STATE_MOVE));
-
-        comparerService.execute(comparerService::handleMoveFiles)
-            .exceptionally(e -> {
-                System.out.println("EXCEPTION: " + e.getMessage());
-                throw new RuntimeException(e);
-            }) // TODO TEMPORARY, SWITCH TO LOGGING
-            .whenComplete((v, t) -> handleFileTransferTaskCompletion());
+        log.info("Moving duplicated images...");
+        handleTaskStart(STATE_MOVE);
+        handleFileTransfer(comparerService::handleMoveFiles);
     }
 
     @FXML
     private void handleRemovingFiles() {
         if (!showConfirmationDialog("dialog.header.comparer-remove")) return;
 
-        lockButtons();
-        taskProgressBar.setProgress(-1);
-        stateText.setText(translate(STATE_REMOVE));
-
-        comparerService.execute(comparerService::handleRemoveFiles)
-            .exceptionally(e -> {
-                System.out.println("EXCEPTION: " + e.getMessage());
-                throw new RuntimeException(e);
-            }) // TODO TEMPORARY, SWITCH TO LOGGING
-            .whenComplete((v, t) -> handleFileTransferTaskCompletion());
+        log.info("Removing duplicated images...");
+        handleTaskStart(STATE_REMOVE);
+        handleFileTransfer(comparerService::handleRemoveFiles);
     }
 
     @FXML
     private void handleReset() {
         if (!showConfirmationDialog("dialog.header.comparer-reset")) return;
 
+        log.info("Resetting the comparer's state...");
         comparerService.handleReset();
-
         edited = false;
 
-        lockButtons();
-        backButton.setDisable(false);
-        pathButton.setDisable(false);
-        loadButton.setDisable(false);
+        setButtonsState(true, moveButton, removeButton, resetButton);
+        setButtonsState(false, backButton, pathButton, loadButton);
 
         originalFileList.clear();
         duplicateFileList.clear();
 
         taskProgressBar.setProgress(1);
-
         stateText.setText(translate(STATE_READY));
 
         originalTrayTextField.setText("0");
@@ -198,16 +195,7 @@ public class ComparerController extends PanelController {
         super.backToMenu();
     }
 
-    private void lockButtons() {
-        backButton.setDisable(true);
-        pathButton.setDisable(true);
-        loadButton.setDisable(true);
-        moveButton.setDisable(true);
-        removeButton.setDisable(true);
-        resetButton.setDisable(true);
-    }
-
-    private void updateUserInterface(String state, String listViewName, List<File> fileList) {
+    private void updateUserInterface(String state, @MagicConstant(flags={LIST_VIEW_ORIGINAL, LIST_VIEW_DUPLICATE}) short listViewName, List<File> fileList) {
         int totalCount = comparerService.getInput().size();
         int duplicateCount = comparerService.getOutput().size();
 
@@ -222,17 +210,14 @@ public class ComparerController extends PanelController {
             stateText.setText(translate(state));
             originalTrayTextField.setText(String.valueOf(totalCount));
             duplicateTrayTextField.setText(String.valueOf(duplicateCount));
+
+            log.info("UI updated: {} files processed, {} duplicates found", totalCount, duplicateCount);
         });
     }
 
     private void handleLoadingTaskCompletion() {
         Platform.runLater(() -> {
-            backButton.setDisable(false);
-            resetButton.setDisable(false);
-
-            stateText.setText(translate(STATE_DONE));
-
-            taskProgressBar.setProgress(1);
+            handleTaskDone();
 
             if (!duplicateFileList.isEmpty()) {
                 moveButton.setDisable(false);
@@ -241,14 +226,35 @@ public class ComparerController extends PanelController {
         });
     }
 
-    private void handleFileTransferTaskCompletion() {
-        Platform.runLater(() -> {
-            backButton.setDisable(false);
-            resetButton.setDisable(false);
+    private void handleFileTransfer(Command command) {
+        comparerService.execute(command)
+            .exceptionally(e -> {
+                handleTaskError("Error occurred while transferring the files:", "dialog.context.error.comparer.file-transfer", e);
+                return null;
+            })
+            .whenComplete((v, t) -> Platform.runLater(this::handleTaskDone));
+    }
 
-            stateText.setText(translate(STATE_DONE));
+    private void handleTaskStart(String state) {
+        setButtonsState(true, backButton, pathButton, loadButton, moveButton, removeButton, resetButton);
+        taskProgressBar.setProgress(-1);
+        stateText.setText(translate(state));
+        getStage().getScene().setCursor(Cursor.WAIT);
+    }
 
-            taskProgressBar.setProgress(1);
-        });
+    private void handleTaskDone() {
+        backButton.setDisable(false);
+        resetButton.setDisable(false);
+        stateText.setText(translate(STATE_DONE));
+        taskProgressBar.setProgress(1);
+        getStage().getScene().setCursor(Cursor.DEFAULT);
+
+        log.info("Task completed successfully, UI reset.");
+    }
+
+    private void handleTaskError(String logMsg, String headerText, Throwable e) {
+        log.error("{}{}", logMsg, e.getMessage(), e);
+        showErrorDialog(headerText);
+
     }
 }

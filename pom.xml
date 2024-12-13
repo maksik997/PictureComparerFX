@@ -27,16 +27,22 @@
     </repositories>
 
     <dependencies>
+        <!-- LOGIC -->
+
         <dependency>
             <groupId>com.github.maksik997</groupId>
             <artifactId>PictureComparer</artifactId>
             <version>0.7.0</version>
         </dependency>
+
+        <!-- DEPRECATED -->
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
             <version>3.5</version>
         </dependency>
+
+        <!-- NATIVE LIBS ACCESS -->
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
@@ -44,6 +50,7 @@
         </dependency>
 
         <!-- JavaFX -->
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -53,6 +60,27 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- LOGGING -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.6</version>
+        </dependency>
+
+        <!-- HELPERS -->
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>26.0.1</version>
         </dependency>
     </dependencies>
 

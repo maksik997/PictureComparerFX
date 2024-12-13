@@ -8,7 +8,7 @@ public class Model {
         comparerService = new ComparerService();
     }
 
-    public ComparerService getComparerModel() {
+    public ComparerService getComparerService() {
         return comparerService;
     }
 }

@@ -9,6 +9,21 @@
     -fx-background-color: -fx-base-color;
 }
 
+/* ALERTS */
+
+.dialog-pane .label {
+    -fx-text-fill: -fx-font-color;
+}
+
+.dialog-pane .header-panel,
+.dialog-pane .graphic-container,
+.dialog-pane .content,
+.dialog-pane .button-bar {
+    -fx-background-color: transparent;
+}
+
+/* GENERAL */
+
 .menu {
     -fx-padding: 20px;
     -fx-alignment: center;

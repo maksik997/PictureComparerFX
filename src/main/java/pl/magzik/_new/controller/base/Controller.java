@@ -4,12 +4,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.stage.Stage;
 import pl.magzik._new.model.Model;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -78,16 +81,47 @@ public class Controller {
             .orElse(v);
     }
 
+    private Alert createAlert(Alert.AlertType alertType, String title, String headerText, String contextText) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(translate(title));
+        alert.setHeaderText(translate(headerText));
+        alert.setContentText(translate(contextText));
+        alert.initOwner(stage);
+
+        String cssForm = Controller.class.getResource("/styles/stylesheet.css").toExternalForm();
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(cssForm);
+
+        return alert;
+    }
+
     public boolean showConfirmationDialog(String headerText) {
-        Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
-        dialog.setTitle(translate("dialog.title.confirmation"));
-        dialog.setHeaderText(translate(headerText));
-        dialog.setContentText(translate("dialog.context.confirmation"));
+        Alert alert = createAlert(
+            Alert.AlertType.CONFIRMATION,
+            "dialog.title.confirmation",
+            headerText,
+            "dialog.context.confirmation"
+        );;
 
-        dialog.initOwner(stage);
-
-        Optional<ButtonType> result = dialog.showAndWait();
+        Optional<ButtonType> result = alert.showAndWait();
 
         return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    public void showErrorDialog(String contextText) {
+        Alert alert = createAlert(
+            Alert.AlertType.ERROR,
+            "dialog.title.error",
+            "dialog.header.error",
+            contextText
+        );
+
+        alert.showAndWait();
+    }
+
+    public void setButtonsState(boolean disable, Button... buttons) {
+        for (Button button : buttons)
+            button.setDisable(disable);
     }
 }

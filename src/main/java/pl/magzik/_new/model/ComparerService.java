@@ -12,10 +12,7 @@ import pl.magzik.predicates.ImageFilePredicate;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletionException;
 
 public class ComparerService implements AsyncTaskFactory {
@@ -57,6 +54,10 @@ public class ComparerService implements AsyncTaskFactory {
 
     public void setInput(List<File> input) {
         this.input = new ArrayList<>(input);
+    }
+
+    public void setInput(File... input) {
+        setInput(Arrays.asList(input));
     }
 
     public List<File> getOutput() {
