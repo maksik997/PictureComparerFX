@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
@@ -26,7 +27,7 @@ public class ComparerController extends PanelController {
     /**
      * Flags used {@link ComparerController#updateUserInterface(String, short, List)} method.
      * */
-    private static final short LIST_VIEW_ORIGINAL = 0,
+    private static final short LIST_VIEW_ORIGINAL = 0, // TODO CHANGE THOSE FOR ENUM
                                 LIST_VIEW_DUPLICATE = 1;
 
     private static final String STATE_READY = "comparer.state.ready",
@@ -43,6 +44,10 @@ public class ComparerController extends PanelController {
 
     private final ObservableList<File> duplicateFileList;
 
+    private final PieChart.Data originalSlice;
+
+    private final PieChart.Data duplicateSlice;
+
     private boolean edited; ///< If true, then user will be prompted before closing the panel.
 
     public ComparerController() {
@@ -51,6 +56,9 @@ public class ComparerController extends PanelController {
         this.duplicateFileList = FXCollections.observableArrayList();
 
         this.edited = false;
+
+        this.originalSlice = new PieChart.Data("Originals", 50); // TODO CHANGE FOR TRANSLATED LABEL
+        this.duplicateSlice = new PieChart.Data("Duplicates", 50);
     }
 
     @FXML
@@ -87,6 +95,9 @@ public class ComparerController extends PanelController {
     private TextField duplicateTrayTextField;
 
     @FXML
+    private PieChart duplicateRatioPieChart;
+
+    @FXML
     private Text stateText;
 
     @FXML
@@ -100,6 +111,8 @@ public class ComparerController extends PanelController {
         duplicateListView.setItems(duplicateFileList);
 
         taskProgressBar.setProgress(1);
+
+        duplicateRatioPieChart.getData().addAll(originalSlice, duplicateSlice);
     }
 
     @FXML
@@ -185,6 +198,9 @@ public class ComparerController extends PanelController {
         originalTrayTextField.setText("0");
         duplicateTrayTextField.setText("0");
 
+        originalSlice.setPieValue(0);
+        duplicateSlice.setPieValue(0);
+
         pathTextField.setText("");
     }
 
@@ -223,6 +239,13 @@ public class ComparerController extends PanelController {
                 moveButton.setDisable(false);
                 removeButton.setDisable(false);
             }
+
+            int duplicateCount = duplicateFileList.size();
+            int originalCount = originalFileList.size() - duplicateCount;
+            log.debug("Calculated: duplicates: {}, originals: {}", duplicateCount, originalCount);
+
+            originalSlice.setPieValue(originalCount);
+            duplicateSlice.setPieValue(duplicateCount);
         });
     }
 
@@ -255,6 +278,5 @@ public class ComparerController extends PanelController {
     private void handleTaskError(String logMsg, String headerText, Throwable e) {
         log.error("{}{}", logMsg, e.getMessage(), e);
         showErrorDialog(headerText);
-
     }
 }

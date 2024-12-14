@@ -8,7 +8,6 @@ import pl.magzik.grouping.CRC32Grouper;
 import pl.magzik.grouping.Grouper;
 import pl.magzik.base.interfaces.IProcessor;
 
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;

@@ -64,7 +64,7 @@ public class SettingsModule implements Module {
      */
     private void defaultSettings() throws IOException {
         ResourceModule.getInstance().copyReference(
-            "default.cfg",
+                "default.cfg",
             "config.cfg",
             l -> l.contains("coutput") ? l.replace("_", ResourceModule.EXTERNAL_RESOURCES_DIR.toString()) : l
         );

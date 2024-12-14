@@ -136,8 +136,8 @@ public class ResourceModule implements Module {
 
         if (!CONFIG_PATH.toFile().exists()) {
             try (
-                InputStream inputStream = getClass().getClassLoader().getResourceAsStream("default.cfg");
-                OutputStream outputStream = new FileOutputStream(String.valueOf(CONFIG_PATH))
+                    InputStream inputStream = getClass().getClassLoader().getResourceAsStream("default.cfg");
+                    OutputStream outputStream = new FileOutputStream(String.valueOf(CONFIG_PATH))
             ) {
 
                 if (inputStream == null) {

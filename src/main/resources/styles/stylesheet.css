@@ -1,10 +1,18 @@
 .root {
-    -fx-base-color: #3a0ca3;
-    -fx-secondary-color: #7209b7;
-    -fx-aspect-color: #4361ee;
-    -fx-secondary-aspect-color: #4cc9f0;
-    -fx-additional-color: #f72585;
-    -fx-font-color: #ddd;
+/*    -fx-base-color: #3a0ca3;*/
+/*    -fx-secondary-color: #7209b7;*/
+/*    -fx-aspect-color: #4361ee;*/
+/*    -fx-secondary-aspect-color: #4cc9f0;*/
+/*    -fx-additional-color: #f72585;*/
+/*    -fx-font-color: #ddd;*/
+
+    -fx-base-color: #e6e8e6;
+    -fx-secondary-color: #ced0ce;
+    -fx-aspect-color: #4189e8;
+    -fx-secondary-aspect-color: #4797ff;
+    -fx-additional-color: #bbbcbb;
+    -fx-font-color: #191919;
+    -fx-light-font-color: #ddd;
 
     -fx-background-color: -fx-base-color;
 }
@@ -50,7 +58,8 @@
     -fx-border-radius: 15px;
 
     -fx-background-color: -fx-aspect-color;
-    -fx-text-fill: -fx-font-color;
+    -fx-text-fill: -fx-light-font-color;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 6, 0.5, 2, 2);
 
     -fx-font-size: 1.2em;
 
@@ -114,6 +123,7 @@
 .comparer-state-panel .progress-bar {
     -fx-background-color: -fx-secondary-color;
     -fx-background-radius: 5px;
+    -fx-accent: -fx-aspect-color;
 }
 
 .comparer-state-panel .progress-bar .track {
@@ -147,6 +157,22 @@
     -fx-font-weight: bold;
 }
 
+.default-color0.chart-pie {
+    -fx-pie-color: #a5d6a7;
+}
+
+.default-color1.chart-pie {
+    -fx-pie-color: #ffcc80;
+}
+
+.comparer-output-panel {
+    -fx-padding: 5px;
+}
+
+.comparer-output-panel .tab-header-area {
+    -fx-padding: 0px;
+}
+
 .comparer-output-panel .tab-header-area .tab-header-background {
     -fx-background-color: transparent;
 }
@@ -157,19 +183,24 @@
     -fx-background-color: -fx-secondary-color;
 
     -fx-background-radius: 10px 10px 0 0;
+
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-style: solid;
+    -fx-border-color: -fx-secondary-color;
 }
 
-.comparer-output-panel .tab:hover {
-    -fx-background-color: -fx-additional-color;
-
-    -fx-cursor: hand;
-}
-
+.comparer-output-panel .tab:hover,
 .comparer-output-panel .tab:selected {
     -fx-background-color: -fx-additional-color;
 
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+
+    -fx-cursor: hand;
+}
+
+.comparer-output-panel .tab:selected {
+    -fx-border-color: -fx-aspect-color;
 }
 
 .comparer-output-panel .tab .tab-label {
@@ -181,12 +212,10 @@
 }
 
 .comparer-output-panel .tab-content-area {
-    -fx-background-color: transparent;
+    -fx-background-color: -fx-secondary-color;
 }
 
 .list-view {
-    -fx-padding: 0px 5px 0px;
-
     -fx-background-color: transparent;
 }
 
@@ -206,7 +235,7 @@
 }
 
 .list-view .thumb {
-    -fx-background-color: -fx-secondary-color;
+    -fx-background-color: -fx-additional-color;
 }
 
 .list-view .scroll-bar .increment-button,

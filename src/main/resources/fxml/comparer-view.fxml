@@ -15,6 +15,8 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.chart.PieChart?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="pl.magzik._new.controller.ComparerController"
@@ -106,6 +108,10 @@
 
             <HBox spacing="10" styleClass="tray">
 
+                <PieChart fx:id="duplicateRatioPieChart"/>
+
+                <!-- TODO: CHANGE THOSE BELOW FOR SOME BETTER SOLUTION -->
+
                 <VBox HBox.hgrow="ALWAYS"
                       alignment="CENTER"
                       styleClass="tray-item">
@@ -145,11 +151,19 @@
             <TabPane styleClass="comparer-output-panel">
 
                 <Tab text="%comparer.tab.title.original" closable="false">
-                    <ListView fx:id="originalListView"/>
+                    <ListView fx:id="originalListView">
+                        <placeholder>
+                            <Label text="%comparer.list.placeholder"/>
+                        </placeholder>
+                    </ListView>
                 </Tab>
 
                 <Tab text="%comparer.tab.title.duplicates" closable="false">
-                    <ListView fx:id="duplicateListView"/>
+                    <ListView fx:id="duplicateListView">
+                        <placeholder>
+                            <Label text="%comparer.list.placeholder"/>
+                        </placeholder>
+                    </ListView>
                 </Tab>
 
             </TabPane>
