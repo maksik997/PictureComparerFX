@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="pl.magzik._new.controller.MainController"
@@ -28,23 +29,48 @@
         <Button text="%main.button.comparer"
                 focusTraversable="false"
                 onAction="#openComparer"
-                styleClass="menu-button"/>
+                styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-image"/>
+            </graphic>
+        </Button>
+
         <Button text="%main.button.gallery"
                 focusTraversable="false"
                 onAction="#openGallery"
-                styleClass="menu-button"/>
+                styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-folder-open"/>
+            </graphic>
+        </Button>
+
         <Button text="%main.button.settings"
                 focusTraversable="false"
                 onAction="#openSettings"
-                styleClass="menu-button"/>
+                styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-tools"/>
+            </graphic>
+        </Button>
+
         <Button text="%main.button.credits"
                 focusTraversable="false"
                 onAction="#openCredits"
-                styleClass="menu-button"/>
+                styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-info-circle"/>
+            </graphic>
+        </Button>
+
         <Button text="%main.button.exit"
                 focusTraversable="false"
                 onAction="#exitApp"
-                styleClass="menu-button"/>
+                styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-door-open"/>
+            </graphic>
+        </Button>
+
     </VBox>
 
 

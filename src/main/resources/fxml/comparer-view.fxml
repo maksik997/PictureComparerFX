@@ -17,6 +17,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.chart.PieChart?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="pl.magzik._new.controller.ComparerController"
@@ -52,7 +53,11 @@
                 <Button text="%comparer.button.open"
                         focusTraversable="false"
                         fx:id="pathButton"
-                        onAction="#handleChoosePath" />
+                        onAction="#handleChoosePath">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-file-upload"/>
+                    </graphic>
+                </Button>
 
             </HBox>
         </VBox>
@@ -66,25 +71,41 @@
                     fx:id="loadButton"
                     prefWidth="200"
                     focusTraversable="false"
-                    onAction="#handleLoadingFiles"/>
+                    onAction="#handleLoadingFiles">
+                <graphic>
+                    <FontIcon iconLiteral="fas-boxes"/>
+                </graphic>
+            </Button>
 
             <Button text="%comparer.button.move"
                     fx:id="moveButton"
                     prefWidth="200"
                     focusTraversable="false"
-                    onAction="#handleMovingFiles"/>
+                    onAction="#handleMovingFiles">
+                <graphic>
+                    <FontIcon iconLiteral="fas-file-import"/>
+                </graphic>
+            </Button>
 
             <Button text="%comparer.button.remove"
                     fx:id="removeButton"
                     prefWidth="200"
                     focusTraversable="false"
-                    onAction="#handleRemovingFiles"/>
+                    onAction="#handleRemovingFiles">
+                <graphic>
+                    <FontIcon iconLiteral="fas-trash-alt"/>
+                </graphic>
+            </Button>
 
             <Button text="%comparer.button.reset"
                     fx:id="resetButton"
                     prefWidth="200"
                     focusTraversable="false"
-                    onAction="#handleReset"/>
+                    onAction="#handleReset">
+                <graphic>
+                    <FontIcon iconLiteral="fas-redo"/>
+                </graphic>
+            </Button>
 
         </VBox>
     </right>

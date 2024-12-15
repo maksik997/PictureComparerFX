@@ -62,13 +62,18 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 6, 0.5, 2, 2);
 
     -fx-font-size: 1.2em;
-
 }
 
 .button:hover {
     -fx-background-color: -fx-secondary-aspect-color;
 
     -fx-cursor: hand;
+}
+
+.button .ikonli-font-icon {
+    -fx-icon-color: -fx-light-font-color;
+
+    -fx-font-size: 1.4em;
 }
 
 .menu-button {
@@ -100,7 +105,6 @@
     -fx-text-fill: -fx-font-color;
 
     -fx-font-size: 1.2em;
-    -fx-font-weight: bold;
 }
 
 .comparer-state-panel {
@@ -170,7 +174,9 @@
 }
 
 .comparer-output-panel .tab-header-area {
-    -fx-padding: 0px;
+    -fx-border-width: 0 0 3px 0;
+    -fx-border-style: solid;
+    -fx-border-color: -fx-secondary-color;
 }
 
 .comparer-output-panel .tab-header-area .tab-header-background {
@@ -180,23 +186,24 @@
 .comparer-output-panel .tab {
     -fx-padding: 5px;
 
-    -fx-background-color: -fx-secondary-color;
+    -fx-background-color: transparent;
 
-    -fx-background-radius: 10px 10px 0 0;
-
-    -fx-border-width: 0 0 2px 0;
+    -fx-border-width: 0 0 3px 0;
     -fx-border-style: solid;
-    -fx-border-color: -fx-secondary-color;
+    -fx-border-color: transparent;
 }
 
-.comparer-output-panel .tab:hover,
-.comparer-output-panel .tab:selected {
-    -fx-background-color: -fx-additional-color;
+.comparer-output-panel .tab:hover {
+    -fx-background-color: -fx-secondary-color;
 
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
+    -fx-border-color: -fx-secondary-color;
 
     -fx-cursor: hand;
+}
+
+.comparer-output-panel .tab:selected {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .comparer-output-panel .tab:selected {
@@ -212,7 +219,7 @@
 }
 
 .comparer-output-panel .tab-content-area {
-    -fx-background-color: -fx-secondary-color;
+    -fx-background-color: -fx-base-color;
 }
 
 .list-view {
@@ -220,12 +227,13 @@
 }
 
 .list-view .list-cell {
-    -fx-padding: 5px;
+    -fx-padding: 10px;
 
-    -fx-background-color: -fx-secondary-color;
-    -fx-border-width: 1px;
+    -fx-background-color: -fx-base-color;
+
+    -fx-border-width: 2px 0;
     -fx-border-style: solid;
-    -fx-border-color: -fx-base-color;
+    -fx-border-color: -fx-secondary-color;
 
     -fx-text-fill: -fx-font-color;
 }
