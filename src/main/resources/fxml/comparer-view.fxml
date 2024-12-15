@@ -130,9 +130,7 @@
             <HBox spacing="10" styleClass="tray">
 
                 <PieChart fx:id="duplicateRatioPieChart"/>
-
-                <!-- TODO: CHANGE THOSE BELOW FOR SOME BETTER SOLUTION -->
-
+                
                 <VBox HBox.hgrow="ALWAYS"
                       alignment="CENTER"
                       styleClass="tray-item">

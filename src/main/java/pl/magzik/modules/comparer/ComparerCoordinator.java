@@ -1,6 +1,6 @@
 package pl.magzik.modules.comparer;
 
-import pl.magzik.base.async.AsyncTaskFactory;
+import pl.magzik.base.async.AsyncTaskSupport;
 import pl.magzik.base.interfaces.FileHandler;
 import pl.magzik.modules.base.Package;
 import pl.magzik.modules.comparer.list.ComparerListModule;
@@ -48,7 +48,7 @@ import java.util.concurrent.ExecutionException;
  * @see ComparerFileModule
  * @see ComparerListModule
  */
-public class ComparerCoordinator implements AsyncTaskFactory {
+public class ComparerCoordinator implements AsyncTaskSupport {
 
     private final ListModelHandler<String> lmh;
     private final FileHandler fh;

@@ -1,6 +1,6 @@
 package pl.magzik.modules.gallery;
 
-import pl.magzik.base.async.AsyncTaskFactory;
+import pl.magzik.base.async.AsyncTaskSupport;
 import pl.magzik.base.interfaces.FileHandler;
 import pl.magzik.base.interfaces.FileUtils;
 import pl.magzik.modules.base.Package;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * between various modules including file handling, management, and operations.
  * This class implements the {@code AsyncTaskFactory} interface.
  */
-public class GalleryCoordinator implements AsyncTaskFactory {
+public class GalleryCoordinator implements AsyncTaskSupport {
 
     private final GalleryManagement gm;
     private final FileHandler fh;

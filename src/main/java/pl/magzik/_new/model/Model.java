@@ -2,13 +2,13 @@ package pl.magzik._new.model;
 
 public class Model {
 
-    private final ComparerService comparerService;
+    private final ComparerModel comparerModel;
 
     public Model() {
-        comparerService = new ComparerService();
+        this.comparerModel = new ComparerModel();
     }
 
-    public ComparerService getComparerService() {
-        return comparerService;
+    public ComparerModel getComparerModel() {
+        return comparerModel;
     }
 }

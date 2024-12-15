@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
  * <p>
  * The commands are executed in the order they are provided, each asynchronously after the previous one completes.
  */
-public interface AsyncTaskFactory {
+public interface AsyncTaskSupport {
 
     /**
      * The {@link ExecutorService} used to execute commands asynchronously.

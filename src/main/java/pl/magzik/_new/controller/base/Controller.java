@@ -8,6 +8,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.magzik._new.model.Model;
 
 import java.io.IOException;
@@ -16,6 +18,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Controller {
+
+    private static final Logger log = LoggerFactory.getLogger(Controller.class);
 
     private static Model model;
 
@@ -62,7 +66,8 @@ public class Controller {
 
             stage.setScene(new Scene(root));
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO SWITCH TO LOGGING
+            log.error("Couldn't switch scene, due to error: {}", e.getMessage(), e);
+            showErrorDialog("dialog.context.error.scene-switch");
         }
     }
 

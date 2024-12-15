@@ -56,7 +56,6 @@ public class PictureComparerFX extends Application {
         Parent root = loader.load();
         log.debug("FXML loaded successfully from: {}", MAIN_VIEW_FXML_PATH);
 
-
         Controller controller = loader.getController();
         controller.setStage(stage);
         controller.setBundle(bundle);

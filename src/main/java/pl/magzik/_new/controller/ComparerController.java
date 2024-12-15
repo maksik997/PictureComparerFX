@@ -1,34 +1,26 @@
 package pl.magzik._new.controller;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
-import org.intellij.lang.annotations.MagicConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.magzik._new.controller.base.Controller;
 import pl.magzik._new.controller.base.PanelController;
-import pl.magzik._new.model.ComparerService;
+import pl.magzik._new.model.ComparerModel;
+import pl.magzik._new.service.ComparerService;
 import pl.magzik.base.interfaces.Command;
 
 import java.io.File;
-import java.util.List;
+import java.util.ResourceBundle;
 
 public class ComparerController extends PanelController {
 
     private static final Logger log = LoggerFactory.getLogger(ComparerController.class);
-
-    /**
-     * Flags used {@link ComparerController#updateUserInterface(String, short, List)} method.
-     * */
-    private static final short LIST_VIEW_ORIGINAL = 0, // TODO CHANGE THOSE FOR ENUM
-                                LIST_VIEW_DUPLICATE = 1;
 
     private static final String STATE_READY = "comparer.state.ready",
                                 STATE_PREPARE = "comparer.state.prepare",
@@ -38,11 +30,9 @@ public class ComparerController extends PanelController {
                                 STATE_REMOVE = "comparer.state.remove",
                                 STATE_DONE = "comparer.state.done";
 
-    private final ComparerService comparerService;
+    private final ComparerModel model;
 
-    private final ObservableList<File> originalFileList;
-
-    private final ObservableList<File> duplicateFileList;
+    private final ComparerService service;
 
     private final PieChart.Data originalSlice;
 
@@ -51,14 +41,13 @@ public class ComparerController extends PanelController {
     private boolean edited; ///< If true, then user will be prompted before closing the panel.
 
     public ComparerController() {
-        this.comparerService = Controller.getModel().getComparerService();
-        this.originalFileList = FXCollections.observableArrayList();
-        this.duplicateFileList = FXCollections.observableArrayList();
+        this.model = Controller.getModel().getComparerModel();
+        this.service = new ComparerService(model);
 
         this.edited = false;
 
-        this.originalSlice = new PieChart.Data("Originals", 50); // TODO CHANGE FOR TRANSLATED LABEL
-        this.duplicateSlice = new PieChart.Data("Duplicates", 50);
+        this.originalSlice = new PieChart.Data("O", 50);
+        this.duplicateSlice = new PieChart.Data("D", 50);
     }
 
     @FXML
@@ -107,8 +96,8 @@ public class ComparerController extends PanelController {
         setButtonsState(true, moveButton, removeButton, resetButton);
         setButtonsState(false, backButton, pathButton, loadButton);
 
-        originalListView.setItems(originalFileList);
-        duplicateListView.setItems(duplicateFileList);
+        originalListView.setItems(model.getLoadedFiles());
+        duplicateListView.setItems(model.getDuplicateFiles());
 
         taskProgressBar.setProgress(1);
 
@@ -118,7 +107,6 @@ public class ComparerController extends PanelController {
     @FXML
     private void handleChoosePath() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        // TODO: Attaching stylesheet to this^...
         File selectedDirectory = directoryChooser.showDialog(getStage());
 
         if (selectedDirectory != null) {
@@ -141,18 +129,15 @@ public class ComparerController extends PanelController {
 
         log.info("Loading files from path: {}", path);
 
-        // Preparing.
-        comparerService.setInput(new File(path));
-
         edited = true;
         handleTaskStart(STATE_PREPARE);
 
         // Processing
-        comparerService.execute(
-            comparerService::handleLoadFiles,
-            () -> updateUserInterface(STATE_MAP, LIST_VIEW_ORIGINAL, comparerService.getInput()),
-            comparerService::handleCompareFiles,
-            () -> updateUserInterface(STATE_UPDATE, LIST_VIEW_DUPLICATE, comparerService.getOutput())
+        service.execute(
+            () -> service.loadFiles(new File(path)),
+            () -> updateUserInterface(STATE_MAP),
+            service::compareFiles,
+            () -> updateUserInterface(STATE_UPDATE)
         ).exceptionally(e -> {
             handleTaskError("Error occurred while loading the files:", "dialog.context.error.comparer.loading", e);
             return null;
@@ -166,7 +151,7 @@ public class ComparerController extends PanelController {
 
         log.info("Moving duplicated images...");
         handleTaskStart(STATE_MOVE);
-        handleFileTransfer(comparerService::handleMoveFiles);
+        handleFileTransfer(service::moveDuplicates);
     }
 
     @FXML
@@ -175,7 +160,7 @@ public class ComparerController extends PanelController {
 
         log.info("Removing duplicated images...");
         handleTaskStart(STATE_REMOVE);
-        handleFileTransfer(comparerService::handleRemoveFiles);
+        handleFileTransfer(service::removeDuplicates);
     }
 
     @FXML
@@ -183,14 +168,13 @@ public class ComparerController extends PanelController {
         if (!showConfirmationDialog("dialog.header.comparer-reset")) return;
 
         log.info("Resetting the comparer's state...");
-        comparerService.handleReset();
+
+        model.clearLists();
+
         edited = false;
 
         setButtonsState(true, moveButton, removeButton, resetButton);
         setButtonsState(false, backButton, pathButton, loadButton);
-
-        originalFileList.clear();
-        duplicateFileList.clear();
 
         taskProgressBar.setProgress(1);
         stateText.setText(translate(STATE_READY));
@@ -211,18 +195,18 @@ public class ComparerController extends PanelController {
         super.backToMenu();
     }
 
-    private void updateUserInterface(String state, @MagicConstant(flags={LIST_VIEW_ORIGINAL, LIST_VIEW_DUPLICATE}) short listViewName, List<File> fileList) {
-        int totalCount = comparerService.getInput().size();
-        int duplicateCount = comparerService.getOutput().size();
+    @Override
+    public void setBundle(ResourceBundle bundle) {
+        super.setBundle(bundle);
+        originalSlice.setName(translate("comparer.chart.label.originals"));
+        duplicateSlice.setName(translate("comparer.chart.label.duplicates"));
+    }
 
-        ObservableList<File> list = switch (listViewName) {
-            case LIST_VIEW_ORIGINAL -> originalFileList;
-            case LIST_VIEW_DUPLICATE -> duplicateFileList;
-            default -> throw new IllegalArgumentException("Given listViewName is invalid.");
-        };
+    private void updateUserInterface(String state) {
+        int totalCount = model.getLoadedFiles().size();
+        int duplicateCount = model.getDuplicateFiles().size();
 
         Platform.runLater(() -> {
-            list.addAll(fileList);
             stateText.setText(translate(state));
             originalTrayTextField.setText(String.valueOf(totalCount));
             duplicateTrayTextField.setText(String.valueOf(duplicateCount));
@@ -235,13 +219,14 @@ public class ComparerController extends PanelController {
         Platform.runLater(() -> {
             handleTaskDone();
 
-            if (!duplicateFileList.isEmpty()) {
+            if (!model.getDuplicateFiles().isEmpty()) {
                 moveButton.setDisable(false);
                 removeButton.setDisable(false);
             }
 
-            int duplicateCount = duplicateFileList.size();
-            int originalCount = originalFileList.size() - duplicateCount;
+            int duplicateCount = model.getDuplicateFiles().size();
+            int originalCount = model.getLoadedFiles().size() - duplicateCount;
+
             log.debug("Calculated: duplicates: {}, originals: {}", duplicateCount, originalCount);
 
             originalSlice.setPieValue(originalCount);
@@ -250,7 +235,7 @@ public class ComparerController extends PanelController {
     }
 
     private void handleFileTransfer(Command command) {
-        comparerService.execute(command)
+        service.execute(command)
             .exceptionally(e -> {
                 handleTaskError("Error occurred while transferring the files:", "dialog.context.error.comparer.file-transfer", e);
                 return null;
