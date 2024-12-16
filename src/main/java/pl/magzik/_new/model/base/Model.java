@@ -5,20 +5,25 @@ import pl.magzik._new.model.SettingsModel;
 
 public class Model {
 
-    private final ComparerModel comparerModel;
-
     private final SettingsModel settingsModel;
 
-    public Model() {
-        this.comparerModel = new ComparerModel();
-        this.settingsModel = new SettingsModel();
-    }
+    private final ComparerModel comparerModel;
 
-    public ComparerModel getComparerModel() {
-        return comparerModel;
+    public Model() {
+        this.settingsModel = new SettingsModel();
+        this.comparerModel = new ComparerModel(
+            settingsModel.pixelByPixelProperty(),
+            settingsModel.perceptualHashProperty(),
+            settingsModel.recursiveModeProperty(),
+            settingsModel.moveDestinationProperty()
+        );
     }
 
     public SettingsModel getSettingsModel() {
         return settingsModel;
+    }
+
+    public ComparerModel getComparerModel() {
+        return comparerModel;
     }
 }

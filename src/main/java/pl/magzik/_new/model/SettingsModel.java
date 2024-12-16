@@ -9,8 +9,8 @@ import java.util.Set;
 
 public class SettingsModel {
 
-    private static final Set<String> languages = Set.of("en-US", "pl-PL"); // TODO CHANGE FOR ENUM, OR A PROPERTY
-    private static final Set<String> themes = Set.of("light", "dark"); // TODO CHANGE FOR ENUM, OR PROPERTY
+    private static final Set<String> languages = Set.of("en-US", "pl-PL");
+    private static final Set<String> themes = Set.of("light", "dark");
 
     public static Set<String> getLanguages() {
         return languages;
@@ -114,7 +114,6 @@ public class SettingsModel {
     }
 
     public BooleanProperty lowercaseExtensionProperty() {
-
         return lowercaseExtension;
     }
 }

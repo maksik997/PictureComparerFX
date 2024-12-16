@@ -1,6 +1,7 @@
 package pl.magzik._new.service;
 
 import javafx.collections.ObservableList;
+import org.jetbrains.annotations.NotNull;
 import pl.magzik.Processor;
 import pl.magzik._new.model.ComparerModel;
 import pl.magzik.algorithms.Algorithm;
@@ -25,26 +26,26 @@ public class ComparerService implements AsyncTaskSupport {
 
     private final ComparerModel model;
 
-    private final File moveDestination; // TODO CONNECT SOMEHOW WITH SETTINGS
+    private final File moveDestination;
 
-    public ComparerService(ComparerModel model) {
+    public ComparerService(@NotNull ComparerModel model) {
         Grouper grouper = new CRC32Grouper();
 
-        List<Algorithm<?>> algorithms = new ArrayList<>(List.of(
-                new PerceptualHash(), // TODO HANDLE SETTINGS ETC...
-                new PixelByPixel() // TODO HANDLE SETTINGS ETC...
-        ));
+        List<Algorithm<?>> algorithms = new ArrayList<>();
+
+        if (model.isPerceptualHash()) algorithms.add(new PerceptualHash());
+        if (model.isPixelByPixel()) algorithms.add(new PixelByPixel());
 
         this.processor = new Processor(grouper, algorithms);
 
         this.fileOperator = new FileOperator(
-                new ImageFilePredicate(), // TODO HANDLE SETTINGS ETC...
-                Integer.MAX_VALUE // TODO HANDLE SETTINGS ETC...
+            new ImageFilePredicate(),
+            model.isRecursiveMode() ? Integer.MAX_VALUE : 1
         );
 
         this.model = model;
 
-        this.moveDestination = new File("/dev/null"); // TODO HANDLE SETTINGS ETC...
+        this.moveDestination = new File(model.getMoveDestination());
     }
 
     public void loadFiles(Collection<File> inputFiles) {

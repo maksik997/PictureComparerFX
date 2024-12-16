@@ -16,14 +16,14 @@ public class SettingsService {
 
     private static final Logger log = LoggerFactory.getLogger(SettingsService.class);
 
-    private static final String CONFIG_FILE = "config.cfg";
+    private static final String CONFIG_FILE_NAME = "config.cfg";
 
     private final File configFile;
 
     private final SettingsModel model;
 
     public SettingsService(SettingsModel model) throws IOException {
-        this.configFile = new File(PathResolver.getInstance().getConfigDirectory(), CONFIG_FILE);
+        this.configFile = new File(PathResolver.getInstance().getConfigDirectory(), CONFIG_FILE_NAME);
         this.model = model;
 
         if (!configFile.exists())
@@ -79,7 +79,6 @@ public class SettingsService {
             @NotNull String namePrefix,
             boolean lowercaseExtension
     ) {
-        // TODO: ADD MORE VALIDATION FOR STRING BASED SETTINGS
         if (!language.matches("^[a-z]{2}-[A-Z]{2}$")) {
             log.warn("Invalid language format. Using default 'en-US'.");
             language = "en-US";
