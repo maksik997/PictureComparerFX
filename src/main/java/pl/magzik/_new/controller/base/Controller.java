@@ -1,5 +1,6 @@
 package pl.magzik._new.controller.base;
 
+import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -41,6 +42,16 @@ public class Controller {
 
     private Stage stage;
 
+    private HostServices hostServices;
+
+    public HostServices getHostServices() {
+        return hostServices;
+    }
+
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
+    }
+
     public void setBundle(ResourceBundle bundle) {
         this.bundle = bundle;
     }
@@ -63,6 +74,7 @@ public class Controller {
             Controller controller = loader.getController();
             controller.setStage(stage);
             controller.setBundle(bundle);
+            controller.setHostServices(hostServices);
 
             stage.setScene(new Scene(root));
         } catch (IOException e) {

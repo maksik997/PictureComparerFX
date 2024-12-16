@@ -373,3 +373,21 @@
 .settings-tabs .label {
     -fx-font-size: 1.2em;
 }
+
+/* CREDITS PANEL */
+
+.credits-center * {
+    -fx-font-size: 1.2em;
+}
+
+.italic-label {
+    -fx-font-style: italic;
+    -fx-text-fill: -fx-font-color;
+}
+
+.hyperlink {
+    -fx-padding: 0;
+    -fx-text-fill: -fx-aspect-color;
+    -fx-underline: true;
+    -fx-border-width: 0;
+}

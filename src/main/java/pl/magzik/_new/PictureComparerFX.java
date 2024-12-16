@@ -66,6 +66,7 @@ public class PictureComparerFX extends Application {
         Controller controller = loader.getController();
         controller.setStage(stage);
         controller.setBundle(bundle);
+        controller.setHostServices(getHostServices());
 
         stage.setTitle("Picture Comparer FX");
         stage.setScene(new Scene(root));
