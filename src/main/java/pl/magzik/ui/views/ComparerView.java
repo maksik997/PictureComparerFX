@@ -22,6 +22,7 @@ import java.util.function.Consumer;
  * The view is initialized thenLoad several types of settings entries, including combo boxes,
  * text fields, and checkboxes.</p>
  */
+@Deprecated
 public class ComparerView extends AbstractView implements PropertyChangeListener {
 
     private final JTextField pathTextField;

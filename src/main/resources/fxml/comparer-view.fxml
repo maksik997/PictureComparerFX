@@ -47,7 +47,6 @@
                            mouseTransparent="true"
                            focusTraversable="false"
                            HBox.hgrow="ALWAYS"
-                           styleClass="comparer-path"
                            fx:id="pathTextField"/>
 
                 <Button text="%comparer.button.open"
@@ -55,7 +54,7 @@
                         fx:id="pathButton"
                         onAction="#handleChoosePath">
                     <graphic>
-                        <FontIcon iconLiteral="fas-file-upload"/>
+                        <FontIcon iconLiteral="fas-upload"/>
                     </graphic>
                 </Button>
 

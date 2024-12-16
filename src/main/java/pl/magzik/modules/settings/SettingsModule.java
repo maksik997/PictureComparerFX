@@ -22,6 +22,7 @@ import java.util.Set;
  * dynamic updates of settings.
  * </p>
  */
+@Deprecated
 public class SettingsModule implements Module {
 
     private final static Set<String> LANGUAGES = Set.of("en-US", "pl-PL"),

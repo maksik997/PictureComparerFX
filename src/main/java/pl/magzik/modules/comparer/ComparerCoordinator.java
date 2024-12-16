@@ -48,6 +48,7 @@ import java.util.concurrent.ExecutionException;
  * @see ComparerFileModule
  * @see ComparerListModule
  */
+@Deprecated
 public class ComparerCoordinator implements AsyncTaskSupport {
 
     private final ListModelHandler<String> lmh;

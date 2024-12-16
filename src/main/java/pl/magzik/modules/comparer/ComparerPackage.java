@@ -13,6 +13,7 @@ import java.util.List;
  * and groups the modules responsible for list management, file handling, and comparison processing.
  */
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
+@Deprecated
 public class ComparerPackage extends Package {
 
     private final ComparerListModule comparerListModule;

@@ -1,8 +1,25 @@
 package pl.magzik._new.base;
 
 import java.io.File;
+import java.util.Objects;
 
 public class PathResolver {
+
+    private static class InstanceHolder {
+        private static PathResolver pathResolver;
+    }
+
+    public static synchronized void create(boolean portable) {
+        if (InstanceHolder.pathResolver != null)
+            throw new IllegalStateException("PathResolver instance already exists!");
+
+        InstanceHolder.pathResolver = new PathResolver(portable);
+    }
+
+    public static PathResolver getInstance() {
+        Objects.requireNonNull(InstanceHolder.pathResolver, "PathResolver has not been initialized.");
+        return InstanceHolder.pathResolver;
+    }
 
     private final File configDirectory;
     private final File logDirectory;
@@ -14,7 +31,7 @@ public class PathResolver {
                                 MAC_PATH = "Library/Application Support/PictureComparerFX/",
                                 LINUX_PATH = ".config/PictureComparerFX/";
 
-    public PathResolver(boolean portable) {
+    private PathResolver(boolean portable) {
         if (portable) {
             File appDirectory = new File(System.getProperty("user.dir"));
             this.configDirectory = new File(appDirectory, CONFIG_FOLDER);
@@ -43,5 +60,9 @@ public class PathResolver {
 
     public File getLogDirectory() {
         return logDirectory;
+    }
+
+    public File getConfigDirectory() {
+        return configDirectory;
     }
 }

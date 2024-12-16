@@ -55,9 +55,10 @@
 
 .button {
     -fx-padding: 5px 10px;
-    -fx-border-radius: 15px;
 
     -fx-background-color: -fx-aspect-color;
+    -fx-background-radius: 5px;
+
     -fx-text-fill: -fx-light-font-color;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 6, 0.5, 2, 2);
 
@@ -83,6 +84,175 @@
     -fx-font-weight: bold;
 }
 
+.tab-header-area {
+    -fx-border-width: 0 0 3px 0;
+    -fx-border-style: solid;
+    -fx-border-color: -fx-secondary-color;
+}
+
+.tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab {
+    -fx-padding: 5px;
+
+    -fx-background-color: transparent;
+
+    -fx-border-width: 0 0 3px 0;
+    -fx-border-style: solid;
+    -fx-border-color: transparent;
+}
+
+.tab:hover {
+    -fx-background-color: -fx-secondary-color;
+
+    -fx-border-color: -fx-secondary-color;
+
+    -fx-cursor: hand;
+}
+
+.tab:selected {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+
+    -fx-border-color: -fx-aspect-color;
+}
+
+.tab .tab-label {
+    -fx-text-fill: -fx-font-color;
+}
+
+.tab:selected .tab-label {
+    -fx-font-weight: bold;
+}
+
+.tab-content-area {
+    -fx-background-color: -fx-base-color;
+    -fx-padding: 5px 0;
+}
+
+.default-color0.chart-pie {
+    -fx-pie-color: #a5d6a7;
+}
+
+.default-color1.chart-pie {
+    -fx-pie-color: #ffcc80;
+}
+
+.text-field {
+    -fx-background-color: -fx-light-font-color;
+    -fx-background-radius: 10px;
+
+    -fx-text-fill: -fx-font-color;
+
+    -fx-font-size: 1.2em;
+
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: transparent;
+    -fx-border-radius: 10px;
+}
+
+.text-field:focused {
+    -fx-border-color: -fx-aspect-color;
+}
+
+.text-field:readonly {
+    -fx-background-color: -fx-secondary-color;
+
+    -fx-border-color: transparent;
+}
+
+.check-box {
+    -fx-text-fill: -fx-font-color;
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+}
+
+.check-box .box {
+    -fx-background-color: -fx-light-font-color;
+    -fx-border-color: -fx-additional-color;
+
+    -fx-background-radius: 4px;
+
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+
+    -fx-pref-width: 20;
+    -fx-pref-height: 20;
+}
+
+.check-box .box:hover {
+    -fx-background-color: -fx-additional-color;
+
+    -fx-cursor: hand;
+}
+
+.check-box:selected .box {
+    -fx-background-color: -fx-aspect-color;
+    -fx-border-color: -fx-aspect-color;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: -fx-light-font-color;
+    -fx-shape: "M1,5 L4,8 L9,1 L11,3 L4,10 L0,6 Z";
+    -fx-scale-shape: false;
+}
+
+.combo-box {
+    -fx-background-color: -fx-light-font-color;
+    -fx-text-fill: -fx-font-color;
+
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: transparent;
+
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+
+    -fx-font-size: 1.2em;
+}
+
+.combo-box:hover {
+    -fx-cursor: hand;
+}
+
+.combo-box:hover,
+.combo-box:showing {
+    -fx-background-color: -fx-secondary-color;
+}
+
+.combo-box .list-view {
+    -fx-padding: 5px;
+
+    -fx-background-color: -fx-light-font-color;
+
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 6, 0, 0, 2);
+}
+
+.combo-box .list-cell {
+    -fx-padding: 6px 10px;
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-font-color;
+}
+
+.combo-box .list-view .list-cell:hover {
+    -fx-background-color: -fx-secondary-color;
+}
+
+.combo-box:showing .list-view .list-cell:selected {
+    -fx-font-weight: bold;
+}
+
+.combo-box .arrow {
+    -fx-background-color: -fx-font-color;
+    -fx-padding: 4px;
+}
+
 /* PANELS */
 
 .panel-header {
@@ -98,13 +268,6 @@
 
 .comparer-path-panel {
     -fx-padding: 10px 5px;
-}
-
-.comparer-path-panel .comparer-path {
-    -fx-background-color: -fx-secondary-color;
-    -fx-text-fill: -fx-font-color;
-
-    -fx-font-size: 1.2em;
 }
 
 .comparer-state-panel {
@@ -161,72 +324,15 @@
     -fx-font-weight: bold;
 }
 
-.default-color0.chart-pie {
-    -fx-pie-color: #a5d6a7;
-}
-
-.default-color1.chart-pie {
-    -fx-pie-color: #ffcc80;
-}
-
 .comparer-output-panel {
     -fx-padding: 5px;
 }
 
-.comparer-output-panel .tab-header-area {
-    -fx-border-width: 0 0 3px 0;
-    -fx-border-style: solid;
-    -fx-border-color: -fx-secondary-color;
-}
-
-.comparer-output-panel .tab-header-area .tab-header-background {
+.comparer-output-panel .list-view {
     -fx-background-color: transparent;
 }
 
-.comparer-output-panel .tab {
-    -fx-padding: 5px;
-
-    -fx-background-color: transparent;
-
-    -fx-border-width: 0 0 3px 0;
-    -fx-border-style: solid;
-    -fx-border-color: transparent;
-}
-
-.comparer-output-panel .tab:hover {
-    -fx-background-color: -fx-secondary-color;
-
-    -fx-border-color: -fx-secondary-color;
-
-    -fx-cursor: hand;
-}
-
-.comparer-output-panel .tab:selected {
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
-}
-
-.comparer-output-panel .tab:selected {
-    -fx-border-color: -fx-aspect-color;
-}
-
-.comparer-output-panel .tab .tab-label {
-    -fx-text-fill: -fx-font-color;
-}
-
-.comparer-output-panel .tab:selected .tab-label {
-    -fx-font-weight: bold;
-}
-
-.comparer-output-panel .tab-content-area {
-    -fx-background-color: -fx-base-color;
-}
-
-.list-view {
-    -fx-background-color: transparent;
-}
-
-.list-view .list-cell {
+.comparer-output-panel .list-view .list-cell {
     -fx-padding: 10px;
 
     -fx-background-color: -fx-base-color;
@@ -238,22 +344,32 @@
     -fx-text-fill: -fx-font-color;
 }
 
-.list-view .scroll-bar {
+.comparer-output-panel .list-view .scroll-bar {
     -fx-background-color: transparent;
 }
 
-.list-view .thumb {
+.comparer-output-panel .list-view .thumb {
     -fx-background-color: -fx-additional-color;
 }
 
-.list-view .scroll-bar .increment-button,
-.list-view .scroll-bar .decrement-button {
+.comparer-output-panel .list-view .scroll-bar .increment-button,
+.comparer-output-panel .list-view .scroll-bar .decrement-button {
     -fx-padding: 0;
     -fx-background-color: transparent;
     -fx-text-fill: transparent;
 }
 
-.scroll-bar .increment-arrow,
-.scroll-bar .decrement-arrow {
+.comparer-output-panel .scroll-bar .increment-arrow,
+.comparer-output-panel .scroll-bar .decrement-arrow {
     -fx-background-color: transparent;
+}
+
+/* SETTINGS PANEL */
+
+.settings-footer {
+    -fx-padding: 0 0 10px;
+}
+
+.settings-tabs .label {
+    -fx-font-size: 1.2em;
 }

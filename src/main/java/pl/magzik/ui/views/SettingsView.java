@@ -21,6 +21,7 @@ import java.util.Objects;
  * The view is initialized thenLoad several types of settings entries, including combo boxes,
  * text fields, and checkboxes.</p>
  */
+@Deprecated
 public class SettingsView extends AbstractView {
 
     private final JButton saveButton;

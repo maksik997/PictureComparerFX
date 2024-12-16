@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.magzik._new.base.PathResolver;
 import pl.magzik._new.controller.base.Controller;
-import pl.magzik._new.model.Model;
+import pl.magzik._new.model.SettingsModel;
+import pl.magzik._new.model.base.Model;
+import pl.magzik._new.service.SettingsService;
 
 import java.net.URL;
 import java.util.Locale;
@@ -27,7 +29,8 @@ public class PictureComparerFX extends Application {
 
         boolean portableMode = args.length > 0 && args[0].equals("--portable"); // TODO: DUMMY, WILL BE CHANGED
 
-        PathResolver pathResolver = new PathResolver(portableMode);
+        PathResolver.create(portableMode);
+        PathResolver pathResolver = PathResolver.getInstance();
         System.setProperty("logPath", pathResolver.getLogDirectory().getAbsolutePath());
         log = LoggerFactory.getLogger(PictureComparerFX.class);
 
@@ -47,7 +50,11 @@ public class PictureComparerFX extends Application {
     public void start(Stage stage) throws Exception {
         log.info("Initializing GUI...");
 
-        Locale locale = Locale.forLanguageTag("en"); // TODO REFACTOR FOR SAVED IN SETTINGS
+        SettingsService settingsService = new SettingsService(model.getSettingsModel());
+        settingsService.loadSettings();
+        SettingsModel settingsModel = model.getSettingsModel();
+
+        Locale locale = Locale.forLanguageTag(settingsModel.getLanguage());
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
         log.debug("Locale set to: {}", locale);
 
