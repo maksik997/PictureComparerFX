@@ -100,7 +100,7 @@ public class ExecutorServiceManager {
                 if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
                     executorService.shutdownNow();
                     if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
-                        System.err.println("executorService did not terminate");
+                        System.err.println("executorService did not terminate"); // TODO ADD SOME LOGGING
                     }
                 }
             } catch (InterruptedException e) {

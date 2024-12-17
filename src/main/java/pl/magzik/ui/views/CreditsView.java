@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
  * This view includes descriptions, author information, and a hyperlink to the author's GitHub profile.
  * The layout is managed using a {@link GridBagLayout} to ensure flexible placement of labels and other components.
  */
+@Deprecated
 public class CreditsView extends AbstractView {
 
     /**

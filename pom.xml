@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pl.magzik</groupId>
-    <artifactId>ThousandPictureComapre</artifactId>
+    <artifactId>PictureComparerFX</artifactId>
     <version>0.7.0-SNAPSHOT</version>
 
     <properties>
@@ -28,7 +28,6 @@
 
     <dependencies>
         <!-- LOGIC -->
-
         <dependency>
             <groupId>com.github.maksik997</groupId>
             <artifactId>PictureComparer</artifactId>

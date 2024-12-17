@@ -9,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.magzik._new.base.PathResolver;
 import pl.magzik._new.controller.base.Controller;
+import pl.magzik._new.model.GalleryModel;
 import pl.magzik._new.model.SettingsModel;
 import pl.magzik._new.model.base.Model;
+import pl.magzik._new.service.GalleryService;
 import pl.magzik._new.service.SettingsService;
 
 import java.net.URL;
@@ -57,6 +59,9 @@ public class PictureComparerFX extends Application {
         Locale locale = Locale.forLanguageTag(settingsModel.getLanguage());
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
         log.debug("Locale set to: {}", locale);
+
+        GalleryService galleryService = new GalleryService(model.getGalleryModel());
+        galleryService.loadFiles();
 
         URL mainViewUrl = PictureComparerFX.class.getResource(MAIN_VIEW_FXML_PATH);
         FXMLLoader loader = new FXMLLoader(mainViewUrl, bundle);
