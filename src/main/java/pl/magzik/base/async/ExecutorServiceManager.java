@@ -1,5 +1,8 @@
 package pl.magzik.base.async;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +21,8 @@ import java.util.concurrent.TimeUnit;
  * </p>
  */
 public class ExecutorServiceManager {
+
+    private static final Logger log = LoggerFactory.getLogger(ExecutorServiceManager.class);
 
     private final ExecutorService executorService;
 
@@ -95,14 +100,16 @@ public class ExecutorServiceManager {
      */
     private void addExecutorShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Terminating ExecutorService...");
             executorService.shutdown();
             try {
-                if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
                     executorService.shutdownNow();
-                    if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
-                        System.err.println("executorService did not terminate"); // TODO ADD SOME LOGGING
+                    if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                        log.error("ExecutorService did not terminate.");
                     }
                 }
+                log.info("ExecutorService has been terminated.");
             } catch (InterruptedException e) {
                 executorService.shutdownNow();
                 Thread.currentThread().interrupt();

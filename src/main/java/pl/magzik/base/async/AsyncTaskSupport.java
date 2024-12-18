@@ -1,7 +1,5 @@
 package pl.magzik.base.async;
 
-import pl.magzik.base.interfaces.Command;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 

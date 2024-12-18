@@ -1,10 +1,13 @@
 package pl.magzik._new;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.magzik._new.base.PathResolver;
@@ -75,6 +78,10 @@ public class PictureComparerFX extends Application {
         stage.setTitle("Picture Comparer FX");
         stage.setScene(new Scene(root));
         stage.show();
+        stage.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
         log.info("Application started successfully.");
     }
 }

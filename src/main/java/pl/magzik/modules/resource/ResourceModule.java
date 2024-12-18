@@ -1,6 +1,6 @@
 package pl.magzik.modules.resource;
 
-import pl.magzik.modules.base.Module;
+//import pl.magzik.modules.base.Module;
 import pl.magzik.modules.resource.loader.Loader;
 import pl.magzik.modules.resource.loader.external.ExternalResourceLoader;
 import pl.magzik.modules.resource.loader.external.ObjectLoader;
@@ -22,7 +22,7 @@ import java.util.function.Function;
  * This module follows the Singleton design pattern to ensure only one instance exists throughout the application.
  */
 @Deprecated // TODO: THUS DON'T DELETE YET
-public class ResourceModule implements Module {
+public class ResourceModule/* implements Module*/ {
 
     /**
      * Holds the singleton instance of the {@code ResourceModule}.
@@ -114,7 +114,7 @@ public class ResourceModule implements Module {
         }));
     }
 
-    @Override
+//    @Override
     public void postConstruct() throws IOException {
         loadExternalResources();
     }

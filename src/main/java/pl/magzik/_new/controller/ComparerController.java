@@ -13,7 +13,7 @@ import pl.magzik._new.controller.base.Controller;
 import pl.magzik._new.controller.base.PanelController;
 import pl.magzik._new.model.ComparerModel;
 import pl.magzik._new.service.ComparerService;
-import pl.magzik.base.interfaces.Command;
+import pl.magzik.base.async.Command;
 
 import java.io.File;
 import java.util.ResourceBundle;
