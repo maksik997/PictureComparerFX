@@ -14,6 +14,8 @@ import java.util.Properties;
 
 public class SettingsService {
 
+    // TODO: IMPLEMENT CHANGING THE THEME AND LANGUAGE
+
     private static final Logger log = LoggerFactory.getLogger(SettingsService.class);
 
     private static final String CONFIG_FILE_NAME = "config.cfg";
@@ -87,19 +89,19 @@ public class SettingsService {
             log.warn("Invalid language. Using default 'en-US'.");
             language = "en-US";
         }
-        model.languageProperty().setValue(language);
+        model.setLanguage(language);
 
         if (!SettingsModel.getThemes().contains(theme)) {
             log.warn("Invalid theme. Using default 'light'.");
             theme = "light";
         }
-        model.themeProperty().setValue(theme);
+        model.setTheme(theme);
 
-        model.moveDestinationProperty().setValue(moveDestination);
-        model.recursiveModeProperty().setValue(recursiveMode);
-        model.perceptualHashProperty().setValue(perceptualHash);
-        model.pixelByPixelProperty().setValue(pixelByPixel);
-        model.namePrefixProperty().setValue(namePrefix);
-        model.lowercaseExtensionProperty().setValue(lowercaseExtension);
+        model.setMoveDestination(moveDestination);
+        model.setRecursiveMode(recursiveMode);
+        model.setPerceptualHash(perceptualHash);
+        model.setPixelByPixel(pixelByPixel);
+        model.setNamePrefix(namePrefix);
+        model.setLowercaseExtension(lowercaseExtension);
     }
 }

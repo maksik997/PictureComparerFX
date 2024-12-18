@@ -134,9 +134,9 @@ public class ComparerController extends PanelController {
 
         // Processing
         service.execute(
-            () -> service.loadFiles(new File(path)),
+            () -> service.validateFilesAsync(new File(path)),
             () -> updateUserInterface(STATE_MAP),
-            service::compareFiles,
+            service::compareFilesAsync,
             () -> updateUserInterface(STATE_UPDATE)
         ).exceptionally(e -> {
             handleTaskError("Error occurred while loading the files:", "dialog.context.error.comparer.loading", e);
@@ -151,7 +151,7 @@ public class ComparerController extends PanelController {
 
         log.info("Moving duplicated images...");
         handleTaskStart(STATE_MOVE);
-        handleFileTransfer(service::moveDuplicates);
+        handleFileTransfer(service::moveDuplicatesAsync);
     }
 
     @FXML
@@ -160,7 +160,7 @@ public class ComparerController extends PanelController {
 
         log.info("Removing duplicated images...");
         handleTaskStart(STATE_REMOVE);
-        handleFileTransfer(service::removeDuplicates);
+        handleFileTransfer(service::removeDuplicatesAsync);
     }
 
     @FXML
@@ -182,8 +182,8 @@ public class ComparerController extends PanelController {
         originalTrayTextField.setText("0");
         duplicateTrayTextField.setText("0");
 
-        originalSlice.setPieValue(0);
-        duplicateSlice.setPieValue(0);
+        originalSlice.setPieValue(50);
+        duplicateSlice.setPieValue(50);
 
         pathTextField.setText("");
     }

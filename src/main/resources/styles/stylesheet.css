@@ -253,6 +253,26 @@
     -fx-padding: 4px;
 }
 
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.thumb {
+    -fx-background-color: -fx-additional-color;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-text-fill: transparent;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: transparent;
+}
+
 /* PANELS */
 
 .panel-header {
@@ -342,26 +362,6 @@
     -fx-border-color: -fx-secondary-color;
 
     -fx-text-fill: -fx-font-color;
-}
-
-.comparer-output-panel .list-view .scroll-bar {
-    -fx-background-color: transparent;
-}
-
-.comparer-output-panel .list-view .thumb {
-    -fx-background-color: -fx-additional-color;
-}
-
-.comparer-output-panel .list-view .scroll-bar .increment-button,
-.comparer-output-panel .list-view .scroll-bar .decrement-button {
-    -fx-padding: 0;
-    -fx-background-color: transparent;
-    -fx-text-fill: transparent;
-}
-
-.comparer-output-panel .scroll-bar .increment-arrow,
-.comparer-output-panel .scroll-bar .decrement-arrow {
-    -fx-background-color: transparent;
 }
 
 /* SETTINGS PANEL */
@@ -467,4 +467,8 @@
 .gallery-table-footer {
     -fx-padding: 0 5px;
     -fx-background-color: -fx-secondary-color;
+}
+
+.gallery-table .filler {
+    -fx-background-color: transparent;
 }

@@ -1,12 +1,9 @@
 package pl.magzik._new.model;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
+import pl.magzik._new.model.access.IOComparerSettingsAccess;
 
 import java.io.File;
 import java.util.Collection;
@@ -17,27 +14,13 @@ public class ComparerModel {
 
     private final ObservableList<File> duplicateFiles;
 
-    private final StringProperty moveDestination;
+    private final IOComparerSettingsAccess comparerSettings;
 
-    private final BooleanProperty recursiveMode;
-
-    private final BooleanProperty perceptualHash;
-
-    private final BooleanProperty pixelByPixel;
-
-    public ComparerModel(BooleanProperty pixelByPixel, BooleanProperty perceptualHash, BooleanProperty recursiveMode, StringProperty moveDestination) {
+    public ComparerModel(IOComparerSettingsAccess comparerSettings) {
         this.loadedFiles = FXCollections.observableArrayList();
         this.duplicateFiles = FXCollections.observableArrayList();
 
-        this.pixelByPixel = new SimpleBooleanProperty();
-        this.perceptualHash = new SimpleBooleanProperty();
-        this.recursiveMode = new SimpleBooleanProperty();
-        this.moveDestination = new SimpleStringProperty();
-
-        this.pixelByPixel.bind(pixelByPixel);
-        this.perceptualHash.bind(perceptualHash);
-        this.recursiveMode.bind(recursiveMode);
-        this.moveDestination.bind(moveDestination);
+        this.comparerSettings = comparerSettings;
     }
 
     public ObservableList<File> getLoadedFiles() {
@@ -49,19 +32,19 @@ public class ComparerModel {
     }
 
     public String getMoveDestination() {
-        return moveDestination.get();
+        return comparerSettings.getMoveDestination();
     }
 
     public boolean isRecursiveMode() {
-        return recursiveMode.get();
+        return comparerSettings.isRecursiveMode();
     }
 
     public boolean isPerceptualHash() {
-        return perceptualHash.get();
+        return comparerSettings.isPerceptualHash();
     }
 
     public boolean isPixelByPixel() {
-        return pixelByPixel.get();
+        return comparerSettings.isPixelByPixel();
     }
 
     public void clearLists() {

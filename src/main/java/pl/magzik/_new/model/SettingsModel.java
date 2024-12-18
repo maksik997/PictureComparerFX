@@ -1,13 +1,11 @@
 package pl.magzik._new.model;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import pl.magzik._new.model.access.GallerySettingsAccess;
+import pl.magzik._new.model.access.IOComparerSettingsAccess;
 
 import java.util.Set;
 
-public class SettingsModel {
+public class SettingsModel implements IOComparerSettingsAccess, GallerySettingsAccess {
 
     private static final Set<String> languages = Set.of("en-US", "pl-PL");
     private static final Set<String> themes = Set.of("light", "dark");
@@ -22,98 +20,104 @@ public class SettingsModel {
 
     // General
 
-    private final StringProperty language;
+    private String language;
 
-    private final StringProperty theme;
+    private String theme;
 
     // Comparer
 
-    private final StringProperty moveDestination;
+    private String moveDestination;
 
-    private final BooleanProperty recursiveMode;
+    private boolean recursiveMode;
 
-    private final BooleanProperty perceptualHash;
+    private boolean perceptualHash;
 
-    private final BooleanProperty pixelByPixel;
+    private boolean pixelByPixel;
 
     // Gallery
 
-    private final StringProperty namePrefix;
+    private String namePrefix;
 
-    private final BooleanProperty lowercaseExtension;
+    private boolean lowercaseExtension;
 
     public SettingsModel() {
-        this.language = new SimpleStringProperty("en-US");
-        this.theme = new SimpleStringProperty("light");
-        this.moveDestination = new SimpleStringProperty(System.getProperty("user.dir"));
-        this.recursiveMode = new SimpleBooleanProperty(false);
-        this.perceptualHash = new SimpleBooleanProperty(true);
-        this.pixelByPixel = new SimpleBooleanProperty(true);
-        this.namePrefix = new SimpleStringProperty("img_");
-        this.lowercaseExtension = new SimpleBooleanProperty(false);
+        this.language = "en-US";
+        this.theme = "light";
+        this.moveDestination = System.getProperty("user.dir");
+        this.recursiveMode = false;
+        this.perceptualHash = true;
+        this.pixelByPixel = true;
+        this.namePrefix = "img_";
+        this.lowercaseExtension = false;
     }
 
     public String getLanguage() {
-        return language.get();
-    }
-
-    public StringProperty languageProperty() {
         return language;
     }
 
-    public String getTheme() {
-        return theme.get();
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
-    public StringProperty themeProperty() {
+    public String getTheme() {
         return theme;
     }
 
-    public String getMoveDestination() {
-        return moveDestination.get();
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 
-    public StringProperty moveDestinationProperty() {
+    @Override
+    public String getMoveDestination() {
         return moveDestination;
     }
 
-    public boolean isRecursiveMode() {
-        return recursiveMode.get();
+    public void setMoveDestination(String moveDestination) {
+        this.moveDestination = moveDestination;
     }
 
-    public BooleanProperty recursiveModeProperty() {
+    @Override
+    public boolean isRecursiveMode() {
         return recursiveMode;
     }
 
-    public boolean isPerceptualHash() {
-        return perceptualHash.get();
+    public void setRecursiveMode(boolean recursiveMode) {
+        this.recursiveMode = recursiveMode;
     }
 
-    public BooleanProperty perceptualHashProperty() {
+    @Override
+    public boolean isPerceptualHash() {
         return perceptualHash;
     }
 
-    public boolean isPixelByPixel() {
-        return pixelByPixel.get();
+    public void setPerceptualHash(boolean perceptualHash) {
+        this.perceptualHash = perceptualHash;
     }
 
-    public BooleanProperty pixelByPixelProperty() {
+    @Override
+    public boolean isPixelByPixel() {
         return pixelByPixel;
     }
 
-    public String getNamePrefix() {
-        return namePrefix.get();
+    public void setPixelByPixel(boolean pixelByPixel) {
+        this.pixelByPixel = pixelByPixel;
     }
 
-    public StringProperty namePrefixProperty() {
+    @Override
+    public String getNamePrefix() {
         return namePrefix;
     }
 
-    public boolean isLowercaseExtension() {
-        return lowercaseExtension.get();
+    public void setNamePrefix(String namePrefix) {
+        this.namePrefix = namePrefix;
     }
 
-    public BooleanProperty lowercaseExtensionProperty() {
+    @Override
+    public boolean isLowercaseExtension() {
         return lowercaseExtension;
+    }
+
+    public void setLowercaseExtension(boolean lowercaseExtension) {
+        this.lowercaseExtension = lowercaseExtension;
     }
 }

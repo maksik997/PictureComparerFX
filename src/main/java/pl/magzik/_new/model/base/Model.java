@@ -14,19 +14,8 @@ public class Model {
 
     public Model() {
         this.settingsModel = new SettingsModel();
-        this.comparerModel = new ComparerModel(
-            settingsModel.pixelByPixelProperty(),
-            settingsModel.perceptualHashProperty(),
-            settingsModel.recursiveModeProperty(),
-            settingsModel.moveDestinationProperty()
-        );
-        this.galleryModel = new GalleryModel(
-            settingsModel.pixelByPixelProperty(),
-            settingsModel.perceptualHashProperty(),
-            settingsModel.recursiveModeProperty(),
-            settingsModel.namePrefixProperty(),
-            settingsModel.lowercaseExtensionProperty()
-        );
+        this.comparerModel = new ComparerModel(settingsModel);
+        this.galleryModel = new GalleryModel(settingsModel, settingsModel);
     }
 
     public SettingsModel getSettingsModel() {

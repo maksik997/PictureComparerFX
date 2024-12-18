@@ -7,6 +7,7 @@ import pl.magzik.Processor;
 import pl.magzik._new.base.PathResolver;
 import pl.magzik._new.model.GalleryModel;
 import pl.magzik._new.model.GalleryTableModel;
+import pl.magzik._new.service.helpers.ImageComparisonHelper;
 import pl.magzik.algorithms.Algorithm;
 import pl.magzik.algorithms.PerceptualHash;
 import pl.magzik.algorithms.PixelByPixel;
@@ -39,27 +40,19 @@ public class GalleryService implements AsyncTaskSupport {
 
     private final File dataFile;
 
-    private final FileOperator fileOperator;
-
-    private final Processor processor;
-
     private final GalleryModel model;
+
+    private final ImageComparisonHelper comparisonHelper;
 
     public GalleryService(@NotNull GalleryModel model) {
         this.dataFile = new File(PathResolver.getInstance().getDataDirectory(), DATA_FILE_NAME);
 
-        Grouper grouper = new CRC32Grouper();
-
-        List<Algorithm<?>> algorithms = new ArrayList<>();
-
-        if (model.isPerceptualHash()) algorithms.add(new PerceptualHash());
-        if (model.isPixelByPixel()) algorithms.add(new PixelByPixel());
-
-        this.processor = new Processor(grouper, algorithms);
-
-        this.fileOperator = new FileOperator(new ImageFilePredicate(), model.isRecursiveMode() ? Integer.MAX_VALUE : 1);
-
         this.model = model;
+
+        this.comparisonHelper = new ImageComparisonHelper(
+            ImageComparisonHelper.buildFileOperator(model.isRecursiveMode()),
+            ImageComparisonHelper.buildProcessor(model.isPerceptualHash(), model.isPixelByPixel())
+        );
     }
 
     public void loadFiles() throws IOException {
@@ -77,7 +70,7 @@ public class GalleryService implements AsyncTaskSupport {
         }
 
         model.getGalleryData().addAll(images);
-        log.info("Gallery images loaded. Found: {}",model.getGalleryData().size());
+        log.info("Gallery images loaded. Found: {}", model.getGalleryData().size());
 
         saveFiles();
     }
@@ -98,7 +91,7 @@ public class GalleryService implements AsyncTaskSupport {
     public void addImages(@NotNull Collection<File> files) throws IOException {
         if (files.isEmpty()) return;
 
-        List<File> valid = fileOperator.load(files);
+        List<File> valid = comparisonHelper.validate(files);
         List<GalleryTableModel> images = new ArrayList<>();
 
         for (File file : valid) images.add(transformFile(file));
@@ -119,7 +112,11 @@ public class GalleryService implements AsyncTaskSupport {
     }
 
     public void deleteImagesFromDisk(@NotNull List<GalleryTableModel> entries) throws IOException {
-        fileOperator.delete(entries.stream().map(GalleryTableModel::getFile).toList());
+        comparisonHelper.delete(
+            entries.stream()
+                .map(GalleryTableModel::getFile)
+                .toList()
+        );
         removeImages(entries);
 
         saveFiles();
@@ -128,16 +125,16 @@ public class GalleryService implements AsyncTaskSupport {
 
     public void removeDuplicates(@NotNull List<GalleryTableModel> entries) {
         try {
-            List<File> loadedFiles = entries.stream().map(GalleryTableModel::getFile).toList();
-            Map<File, Set<File>> duplicateMap = processor.process(loadedFiles);
-            duplicateMap.forEach((k, v) -> v.remove(k));
-
-            List<File> duplicates = duplicateMap.values().stream()
-                .flatMap(Set::stream)
+            List<File> loadedFiles = entries.stream()
+                .map(GalleryTableModel::getFile)
                 .toList();
 
+            List<File> duplicates = comparisonHelper.organise(
+                comparisonHelper.compare(loadedFiles)
+            );
+
             deleteImagesFromDisk(model.getGalleryData()
-                    .filtered(el -> duplicates.contains(el.getFile())));
+                .filtered(el -> duplicates.contains(el.getFile())));
 
             saveFiles();
             log.info("Duplicates removed successfully.");
@@ -193,6 +190,11 @@ public class GalleryService implements AsyncTaskSupport {
     }
 
     private @NotNull GalleryTableModel transformFile(@NotNull File file) throws IOException {
+        if (!file.exists() || !file.isFile()) {
+            log.error("File: {} is doesn't exists or is not a file.", file);
+            throw new IOException("The file is invalid.");
+        }
+
         BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
 
         String name = file.getName();
