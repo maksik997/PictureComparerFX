@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
  * between various modules including file handling, management, and operations.
  * This class implements the {@code AsyncTaskFactory} interface.
  */
+@Deprecated
 public class GalleryCoordinator implements AsyncTaskSupport {
 
     private final GalleryManagement gm;

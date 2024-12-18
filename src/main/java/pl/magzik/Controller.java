@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
  * </p>
  */
 @SuppressWarnings({"unused", "FieldCanBeLocal"}) // Hurts my eyes :P
+@Deprecated
 public class Controller {
 
     private final View view;

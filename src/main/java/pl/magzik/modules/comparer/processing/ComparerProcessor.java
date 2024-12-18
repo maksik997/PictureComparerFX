@@ -32,6 +32,7 @@ import java.util.function.Function;
  * to prevent concurrent access issues.
  * </p>
  */
+@Deprecated
 public interface ComparerProcessor extends IProcessor, ComparerPropertyAccess {
 
     /**

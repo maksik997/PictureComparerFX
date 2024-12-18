@@ -13,6 +13,7 @@ import java.awt.event.ItemEvent;
 /**
  * Implementation of {@link SettingsEntry} for checkboxes ({@link JCheckBox})
  * */
+@Deprecated
 public class CheckBoxSettingsEntry extends SettingsEntry<JPanel, Boolean> {
     private static final Border panelBorder = new CompoundBorder(
         new MatteBorder(0, 0, 1, 0, Color.GRAY),

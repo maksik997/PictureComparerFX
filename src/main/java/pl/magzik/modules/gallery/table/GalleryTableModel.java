@@ -14,6 +14,7 @@ import java.util.List;
  * It provides methods for managing gallery entries, including adding, removing, and updating entries,
  * as well as managing tags associated with each entry.
  */
+@Deprecated
 public class GalleryTableModel extends AbstractTableModel implements GalleryTableModelHandler, TablePropertyAccess {
 
     private final List<GalleryEntry> entries;

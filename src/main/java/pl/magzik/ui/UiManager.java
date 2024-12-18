@@ -15,6 +15,7 @@ import java.awt.*;
  * </p>
  */
 
+@Deprecated
 public class UiManager implements CursorManagerInterface, MessageInterface {
     private final JFrame frame;
 

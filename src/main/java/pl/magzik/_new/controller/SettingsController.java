@@ -16,6 +16,7 @@ import pl.magzik._new.service.SettingsService;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class SettingsController extends PanelController {
@@ -139,6 +140,7 @@ public class SettingsController extends PanelController {
     }
 
     public void handleSave() {
+        String oldLanguage = model.getLanguage();
         service.updateModel(
             findKey(languageComboBox.getValue()),
             findKey(themeComboBox.getValue()),
@@ -149,6 +151,14 @@ public class SettingsController extends PanelController {
             namePrefixTextField.getText(),
             lowercaseExtensionCheckbox.isSelected()
         );
+        if (!model.getLanguage().equals(oldLanguage)) { // TODO: ADD WARNING FOR USER.
+            Locale locale = Locale.forLanguageTag(model.getLanguage());
+            ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
+            setBundle(bundle);
+            log.info("Resource Bundle switched successfully!");
+        }
+
+        // TODO: HANDLE THEME SWITCHING ( AFTER THEME SYSTEM IS READY ).
 
         try {
             service.saveSettings();
@@ -162,5 +172,6 @@ public class SettingsController extends PanelController {
         setButtonsState(true, resetButton, saveButton);
 
         log.info("Saving settings, UI handled successfully");
+        switchScene("/fxml/main-view.fxml");
     }
 }

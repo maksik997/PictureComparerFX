@@ -12,6 +12,7 @@ import java.util.function.Consumer;
  *
  * @param <T> The type of the result returned by the file selection strategy.
  */
+@Deprecated
 public class FileChooser <T> implements FileChooserInterface {
     private final JFileChooser fileChooser;
     private final JButton openButton;

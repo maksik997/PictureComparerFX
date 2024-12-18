@@ -4,6 +4,7 @@ package pl.magzik.modules.comparer.processing;
  * Interface for accessing and modifying comparer properties.
  * Provides methods to get and set input and output paths and the mode of operation.
  */
+@Deprecated
 public interface ComparerPropertyAccess {
 
     /**

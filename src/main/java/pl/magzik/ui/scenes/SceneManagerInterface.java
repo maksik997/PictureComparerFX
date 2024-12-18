@@ -9,6 +9,7 @@ package pl.magzik.ui.scenes;
  * @param <T> the type of panel or scene to be managed.
  */
 @FunctionalInterface
+@Deprecated
 public interface SceneManagerInterface <T> {
     /**
      * Switches the current scene to the specified panel.

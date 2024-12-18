@@ -12,6 +12,7 @@ import java.nio.file.Paths;
  *
  * @param <T> The type of external resource to be handled.
  */
+@Deprecated
 public interface ExternalResourceLoader <T> extends Loader<T> {
 
     /**

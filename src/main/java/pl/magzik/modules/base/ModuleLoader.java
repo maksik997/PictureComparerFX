@@ -18,6 +18,7 @@ import java.util.Queue;
  * @see Package
  * @see ModuleLoaderProgress
  */
+@Deprecated
 public class ModuleLoader {
     private final Queue<Package> packages;
     private boolean ready;

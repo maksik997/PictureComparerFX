@@ -14,6 +14,7 @@ import java.util.function.Consumer;
  * This class supports module initialization through the {@code loadModules} method, which executes a series
  * of operations on each module and allows for custom actions during and after module loading.
  */
+@Deprecated
 public class Package implements PackageInterface {
 
     private final List<Module> modules;

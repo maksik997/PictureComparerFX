@@ -29,6 +29,7 @@ import javax.swing.event.DocumentListener;
  * @see DocumentEvent
  */
 @FunctionalInterface
+@Deprecated
 public interface UnifiedDocumentListener extends DocumentListener {
 
     /**

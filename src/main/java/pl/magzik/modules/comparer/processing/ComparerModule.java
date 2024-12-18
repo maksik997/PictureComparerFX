@@ -19,6 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * integrate thenLoad other components and perform file comparison operations.
  * </p>
  */
+@Deprecated
 public class ComparerModule implements Module, ComparerProcessor {
 
     private List<File> input;

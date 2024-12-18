@@ -10,6 +10,7 @@ package pl.magzik.modules.gallery.operations;
  * that they are applied appropriately.
  * </p>
  */
+@Deprecated
 public interface GalleryPropertyAccess {
 
     /**

@@ -15,6 +15,7 @@ import java.nio.file.Path;
  * saved to a file using {@link ObjectOutputStream}. The file path is specified
  * as a {@link String} for loading and as a {@link Path} for saving.
  */
+@Deprecated
 public class ObjectLoader implements ExternalResourceLoader<Object> {
 
     /**

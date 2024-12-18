@@ -9,6 +9,7 @@ import javax.swing.*;
  * and processes the selection by returning the absolute path of the selected file.
  * </p>
  */
+@Deprecated
 public class SingleFileSelectionStrategy implements FileSelectionStrategy<String> {
 
     /**

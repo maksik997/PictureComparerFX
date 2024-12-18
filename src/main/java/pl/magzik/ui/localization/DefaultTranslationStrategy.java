@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
  * to the {@link TranslationStrategy} interface.
  * </p>
  */
+@Deprecated
 public class DefaultTranslationStrategy implements TranslationStrategy {
     private final ResourceBundle resourceBundle;
 

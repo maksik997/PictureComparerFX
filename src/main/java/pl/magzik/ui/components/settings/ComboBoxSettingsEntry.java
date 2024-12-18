@@ -14,6 +14,7 @@ import java.util.Arrays;
 /**
  * Implementation of {@link SettingsEntry} for {@link JComboBox<String>}
  * */
+@Deprecated
 public class ComboBoxSettingsEntry extends SettingsEntry<JComboBox<String>, String> {
     private static final Border comboBoxBorder = new CompoundBorder(
         new MatteBorder(0, 0, 1, 0, Color.GRAY),

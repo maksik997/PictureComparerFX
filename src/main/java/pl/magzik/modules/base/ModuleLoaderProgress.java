@@ -9,6 +9,7 @@ import java.beans.PropertyChangeSupport;
  * This class provides progress updates and the name of the currently loading module.
  * </p>
  */
+@Deprecated
 public class ModuleLoaderProgress {
     private String currentModuleName;
     private double progress;

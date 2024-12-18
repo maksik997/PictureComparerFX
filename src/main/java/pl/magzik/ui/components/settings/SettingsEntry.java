@@ -18,6 +18,7 @@ import java.beans.PropertyChangeSupport;
  * @param <T> Type of value component must extend {@link JComponent}
  * @param <V> Type of returned value by using {@link #getValue()} and {@link #setValueProperty(Object)} methods.
  * */
+@Deprecated
 public abstract class SettingsEntry<T extends JComponent, V> {
     private static final Border labelBorder = new CompoundBorder(
         new MatteBorder(0, 0, 1, 1, Color.GRAY),

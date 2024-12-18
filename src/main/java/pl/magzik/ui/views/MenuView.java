@@ -11,6 +11,7 @@ import java.awt.*;
  * Represents a menu view in the application's user interface.
  * This view contains buttons for various menu options and displays an icon and title.
  */
+@Deprecated
 public class MenuView extends JPanel {
 
     private final JButton comparerButton, galleryButton, settingsButton, creditsButton, exitButton;

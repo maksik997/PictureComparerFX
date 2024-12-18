@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
  * @param <T> The type of resource to be loaded.
  */
 @FunctionalInterface
+@Deprecated
 public interface Loader <T> {
 
     /**

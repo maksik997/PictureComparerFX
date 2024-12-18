@@ -3,6 +3,7 @@ package pl.magzik.ui.logging;
 /**
  * Provides methods for information and error showing.
  * */
+@Deprecated
 public interface MessageInterface {
     /**
      * Shows error message. With given title and message.

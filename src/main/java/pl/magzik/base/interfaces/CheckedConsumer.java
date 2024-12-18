@@ -11,6 +11,7 @@ import java.util.function.Consumer;
  * @param <T> the type of the input to the operation
  */
 @FunctionalInterface
+@Deprecated
 public interface CheckedConsumer <T> extends Consumer<T> {
 
     /**

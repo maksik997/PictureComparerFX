@@ -11,6 +11,7 @@ import java.util.function.Consumer;
  * Implementations of this interface are responsible for managing the lifecycle of modules,
  * including their initialization and post-loading processes.
  */
+@Deprecated
 public interface PackageInterface {
 
     /**

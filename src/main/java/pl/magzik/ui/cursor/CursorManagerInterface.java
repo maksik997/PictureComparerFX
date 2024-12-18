@@ -5,6 +5,7 @@ import java.awt.*;
 /**
  * Interface defining methods for managing user interface scenes and cursor changes.
  */
+@Deprecated
 public interface CursorManagerInterface {
     /**
      * Equivalent to {@code Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)}

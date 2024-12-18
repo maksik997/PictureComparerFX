@@ -13,6 +13,7 @@ import java.util.function.Function;
  * Loads URI references from resources and provides utility methods to copy these references.
  * Implements {@link ResourceLoader} to handle URI resources.
  */
+@Deprecated
 public class ReferenceLoader implements ResourceLoader<URI> {
 
     /**

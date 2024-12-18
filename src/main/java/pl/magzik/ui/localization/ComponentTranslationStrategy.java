@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
  * attributes of various UI components such as labels, buttons, checkboxes, file choosers, and table columns.
  * </p>
  */
+@Deprecated
 public class ComponentTranslationStrategy extends DefaultTranslationStrategy {
 
     /**

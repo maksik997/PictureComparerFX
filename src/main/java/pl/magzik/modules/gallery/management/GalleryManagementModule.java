@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@Deprecated
 public class GalleryManagementModule implements Module, GalleryManagement {
 
     private final GalleryTableModel galleryTableModel;

@@ -3,6 +3,7 @@ package pl.magzik.modules.comparer.persistence;
 /**
  * Provides methods for accessing and configuring file properties related to the comparison process.
  */
+@Deprecated
 public interface ComparerFilePropertyAccess {
 
     /**

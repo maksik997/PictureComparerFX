@@ -14,6 +14,7 @@ import java.util.Objects;
  * scene.
  * </p>
  */
+@Deprecated
 public class SceneManager implements SceneManagerInterface<SceneManager.Scene> {
     private final Map<Scene, JPanel> scenes;
     private final JFrame frame;

@@ -12,6 +12,7 @@ import java.io.File;
  * <p>The interface includes a default method {@link #perform()} which resets the file chooser
  * and then opens it, returning whether the operation was successful.</p>
  */
+@Deprecated
 public interface FileChooserInterface {
     /**
      * The default path used when resetting the file chooser.

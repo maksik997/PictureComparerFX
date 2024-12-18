@@ -9,6 +9,7 @@ import java.net.URL;
  * Loads image resources from URLs.
  * Implements {@link ResourceLoader} to handle image resources.
  */
+@Deprecated
 public class ImageLoader implements ResourceLoader<Image> {
 
     /**

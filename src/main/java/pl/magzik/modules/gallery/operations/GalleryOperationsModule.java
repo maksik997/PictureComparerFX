@@ -17,6 +17,7 @@ import java.util.stream.IntStream;
  * file extensions should be normalized.
  * </p>
  */
+@Deprecated
 public class GalleryOperationsModule implements Module, GalleryOperations, GalleryPropertyAccess {
 
     private boolean normalizedFileExtensions;

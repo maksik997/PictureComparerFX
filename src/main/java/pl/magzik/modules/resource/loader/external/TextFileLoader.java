@@ -10,6 +10,7 @@ import java.util.List;
  * Loads and saves text files.
  * Implements {@link ExternalResourceLoader} to handle text file resources.
  */
+@Deprecated
 public class TextFileLoader implements ExternalResourceLoader<List<String>> {
 
     /**

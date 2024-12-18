@@ -12,6 +12,7 @@ import java.awt.*;
 /**
  * Implementation of {@link SettingsEntry} for text fields ({@link JTextField})
  * */
+@Deprecated
 public class TextFieldSettingsEntry extends SettingsEntry<JPanel, String> {
     private static final Border panelBorder = new CompoundBorder(
         new MatteBorder(0, 0, 1, 0, Color.GRAY),

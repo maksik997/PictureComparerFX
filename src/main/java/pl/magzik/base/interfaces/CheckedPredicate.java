@@ -21,6 +21,7 @@ import java.util.function.Predicate;
  * @param <T> the type of the input to the predicate
  */
 @FunctionalInterface
+@Deprecated
 public interface CheckedPredicate <T> extends Predicate<T> {
 
     /**

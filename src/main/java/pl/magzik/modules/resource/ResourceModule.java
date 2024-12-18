@@ -21,6 +21,7 @@ import java.util.function.Function;
  * Manages the loading, caching, and saving of resources such as images, configuration files, and text files.
  * This module follows the Singleton design pattern to ensure only one instance exists throughout the application.
  */
+@Deprecated // TODO: THUS DON'T DELETE YET
 public class ResourceModule implements Module {
 
     /**

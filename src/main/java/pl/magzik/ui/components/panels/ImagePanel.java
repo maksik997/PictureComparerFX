@@ -9,6 +9,7 @@ import java.awt.*;
  * The image is loaded from a file and is drawn on the panel when it is rendered.
  * </p>
  */
+@Deprecated
 public class ImagePanel extends JPanel {
     private final Image image;
 

@@ -12,6 +12,7 @@ import java.util.Map;
  *
  * <p>This module initializes and manages list models for different purposes, such as displaying output and duplicates.</p>
  */
+@Deprecated
 public class ComparerListModule implements Module, ListModelHandler<String> {
     private final Map<String, DefaultListModel<String>> listModels;
 

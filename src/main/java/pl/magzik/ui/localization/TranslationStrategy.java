@@ -7,6 +7,7 @@ package pl.magzik.ui.localization;
  * reverse-translation of localized strings back to their original keys.
  * </p>
  */
+@Deprecated
 public interface TranslationStrategy {
 
     /**

@@ -8,6 +8,7 @@ import java.util.List;
  * Interface defining file handling operations including loading, deleting,
  * and moving files.
  */
+@Deprecated
 public interface FileHandler {
 
     /**

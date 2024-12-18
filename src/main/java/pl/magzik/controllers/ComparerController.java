@@ -36,6 +36,7 @@ import java.util.concurrent.ExecutorService;
  * @see CursorManagerInterface
  * @see ExecutorService
  */
+@Deprecated
 public class ComparerController {
 
     private final ComparerCoordinator cc;

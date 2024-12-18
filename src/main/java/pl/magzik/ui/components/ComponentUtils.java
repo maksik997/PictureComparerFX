@@ -6,6 +6,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+@Deprecated
 public class ComponentUtils {
 
     public final static Font fontHelveticaPlain = new Font("Helvetica", Font.PLAIN, 16),

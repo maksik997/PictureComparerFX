@@ -52,6 +52,7 @@ import java.util.function.Function;
  * that rely on these settings. It handles user actions and updates the system state as required.
  * </p>
  */
+@Deprecated
 public class SettingsController {
     private final SettingsView sView;
     private final SettingsModule sModule;

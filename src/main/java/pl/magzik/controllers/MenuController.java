@@ -12,6 +12,7 @@ import pl.magzik.ui.views.MenuView;
  * through the {@link CursorManagerInterface} and handling the exit action.
  * </p>
  */
+@Deprecated
 public class MenuController {
 
     private final MenuView mView;

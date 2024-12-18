@@ -15,6 +15,7 @@ import java.awt.*;
  * a non-editable {@link JTextField}. The {@link JButton} triggers a {@link FileChooser}
  * to allow users to select a directory from the file system.</p>
  * */
+@Deprecated
 public class PathSettingsEntry extends SettingsEntry<JPanel, String> {
     private static final Border panelBorder = new CompoundBorder(
         new MatteBorder(0, 0, 1, 0, Color.GRAY),

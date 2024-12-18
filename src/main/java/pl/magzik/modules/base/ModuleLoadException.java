@@ -15,6 +15,7 @@ package pl.magzik.modules.base;
  * @see Module
  * @see Package
  */
+@Deprecated
 public class ModuleLoadException extends Exception {
 
     /**

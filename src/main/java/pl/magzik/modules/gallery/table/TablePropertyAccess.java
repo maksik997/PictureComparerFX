@@ -9,6 +9,7 @@ package pl.magzik.modules.gallery.table;
  * reflects the current state of the table model.
  * </p>
  */
+@Deprecated
 public interface TablePropertyAccess {
 
     /**

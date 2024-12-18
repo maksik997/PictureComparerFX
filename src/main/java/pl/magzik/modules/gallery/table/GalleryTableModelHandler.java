@@ -7,6 +7,7 @@ import java.util.Collection;
  * Provides methods for adding, removing, and manipulating gallery entries
  * as well as managing tags and refreshing the table view.
  */
+@Deprecated
 public interface GalleryTableModelHandler {
 
     /**

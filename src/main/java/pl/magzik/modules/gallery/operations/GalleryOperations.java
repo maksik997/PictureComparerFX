@@ -11,6 +11,7 @@ import java.util.List;
  * on gallery images, such as opening images and normalizing file names.
  * </p>
  */
+@Deprecated
 public interface GalleryOperations {
 
     /**

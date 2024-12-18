@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
  * This sorter allows sorting based on natural ordering for text columns and a custom size comparator for size columns.
  * </p>
  */
+@Deprecated
 public class GalleryTableRowSorter extends TableRowSorter<GalleryTableModel> {
 
     /**

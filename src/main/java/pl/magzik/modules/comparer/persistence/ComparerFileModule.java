@@ -26,6 +26,7 @@ import java.util.Objects;
  * the configuration for file processing.
  * </p>
  */
+@Deprecated
 public class ComparerFileModule implements Module, FileHandler, ComparerFilePropertyAccess {
 
     private Mode mode;

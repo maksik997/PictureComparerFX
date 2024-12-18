@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
  * I/O and execution errors during the processing.
  * </p>
  */
+@Deprecated
 public interface IProcessor {
 
     /**

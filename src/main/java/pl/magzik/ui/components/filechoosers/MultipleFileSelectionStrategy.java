@@ -12,6 +12,7 @@ import java.util.List;
  * and processes the selection by returning a list of the absolute paths of the selected files.
  * </p>
  */
+@Deprecated
 public class MultipleFileSelectionStrategy implements FileSelectionStrategy<List<String>> {
 
     /**

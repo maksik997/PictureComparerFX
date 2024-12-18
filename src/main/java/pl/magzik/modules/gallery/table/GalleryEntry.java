@@ -14,6 +14,7 @@ import java.util.*;
  * <p>
  * This class implements {@link Externalizable} to allow custom serialization and deserialization.
  */
+@Deprecated
 public class GalleryEntry implements Externalizable {
     @Serial
     private static final long serialVersionUID = 1L;

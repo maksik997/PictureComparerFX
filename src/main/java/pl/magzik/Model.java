@@ -4,6 +4,7 @@ import pl.magzik.modules.comparer.ComparerCoordinator;
 import pl.magzik.modules.gallery.GalleryCoordinator;
 import pl.magzik.modules.settings.SettingsModule;
 
+@Deprecated
 public class Model {
     private final GalleryCoordinator gc;
     private final ComparerCoordinator cc;

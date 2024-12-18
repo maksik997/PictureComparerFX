@@ -11,6 +11,7 @@ import javax.swing.*;
  *
  * @param <T> The type of the result returned by the {@link #processSelection(JFileChooser)} method.
  */
+@Deprecated
 public interface FileSelectionStrategy<T> {
 
     /**

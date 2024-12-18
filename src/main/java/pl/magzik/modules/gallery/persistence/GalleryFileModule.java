@@ -26,6 +26,7 @@ import java.util.stream.Stream;
  * <p>This module uses a {@link FilePredicate} to filter files, specifically targeting image files
  * through the {@link ImageFilePredicate} implementation.</p>
  */
+@Deprecated
 public class GalleryFileModule implements Module, FileHandler, FileUtils {
 
     private final FilePredicate filePredicate;

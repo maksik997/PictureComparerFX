@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
  * loading and saving of gallery items, ensuring that all necessary files are present.
  */
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
+@Deprecated
 public class GalleryPackage extends Package {
 
     private final GalleryManagementModule galleryManagementModule;

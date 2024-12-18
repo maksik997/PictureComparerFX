@@ -10,6 +10,7 @@ import java.io.IOException;
  * {@link IOException} to handle any potential I/O errors during the loading process.
  * </p>
  */
+@Deprecated
 public interface Module {
 
     /**

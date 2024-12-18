@@ -12,6 +12,7 @@ import java.net.URL;
  *
  * @param <T> The type of resource to be loaded.
  */
+@Deprecated
 public interface ResourceLoader <T> extends Loader<T> {
 
     /**

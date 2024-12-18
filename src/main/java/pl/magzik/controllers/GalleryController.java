@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutorService;
  * various user actions.
  * </p>
  */
+@Deprecated
 public class GalleryController {
 
     private final GalleryCoordinator gc;

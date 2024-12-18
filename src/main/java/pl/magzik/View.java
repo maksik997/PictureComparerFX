@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
  * these scenes. It also integrates translation and UI management functionalities.
  * </p>
  */
+@Deprecated
 public class View extends JFrame {
 
     private final ComparerView comparerView;

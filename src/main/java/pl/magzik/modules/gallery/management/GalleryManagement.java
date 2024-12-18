@@ -12,6 +12,7 @@ import java.util.List;
  * Defines an interface for managing a gallery of files.
  * Provides methods to add, remove, and retrieve files, as well as to manage tags associated thenLoad files.
  */
+@Deprecated
 public interface GalleryManagement {
 
     /**

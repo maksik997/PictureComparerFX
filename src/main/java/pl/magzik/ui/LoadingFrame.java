@@ -22,6 +22,7 @@ import java.beans.PropertyChangeListener;
  * <p>The class implements {@link PropertyChangeListener} to update the progress bar and
  * the displayed label based on property changes.
  */
+@Deprecated
 public class LoadingFrame extends JFrame implements PropertyChangeListener {
 
     private final JProgressBar progressBar;

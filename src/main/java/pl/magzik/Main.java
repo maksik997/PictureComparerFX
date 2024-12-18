@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
  * initializing modules, setting up UI properties, and launching the main application view.
  * </p>
  */
+@Deprecated
 public class Main {
 
     /**

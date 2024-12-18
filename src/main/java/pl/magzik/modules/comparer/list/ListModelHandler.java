@@ -8,6 +8,7 @@ import java.util.Collection;
  *
  * @param <T> the type of elements in the list model
  */
+@Deprecated
 public interface ListModelHandler <T> {
 
     /**

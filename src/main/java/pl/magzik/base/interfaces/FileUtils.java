@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
  *
  * <p>This interface provides methods for renaming files and obtaining file extensions.</p>
  */
+@Deprecated
 public interface FileUtils {
 
     /**

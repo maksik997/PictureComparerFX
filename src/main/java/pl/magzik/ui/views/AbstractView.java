@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 
+@Deprecated
 public abstract class AbstractView extends JPanel {
     private final JButton backButton;
 

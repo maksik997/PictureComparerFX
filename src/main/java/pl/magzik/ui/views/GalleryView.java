@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
  * <p>
  * This class is designed to be instantiated via its nested {@link Factory} class.
  */
+@Deprecated
 public class GalleryView extends AbstractView implements PropertyChangeListener {
 
     private final JTable galleryTable;
