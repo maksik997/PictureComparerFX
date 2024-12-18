@@ -20,7 +20,13 @@ public class Model {
             settingsModel.recursiveModeProperty(),
             settingsModel.moveDestinationProperty()
         );
-        this.galleryModel = new GalleryModel();
+        this.galleryModel = new GalleryModel(
+            settingsModel.pixelByPixelProperty(),
+            settingsModel.perceptualHashProperty(),
+            settingsModel.recursiveModeProperty(),
+            settingsModel.namePrefixProperty(),
+            settingsModel.lowercaseExtensionProperty()
+        );
     }
 
     public SettingsModel getSettingsModel() {

@@ -23,9 +23,11 @@ public class PathResolver {
 
     private final File configDirectory;
     private final File logDirectory;
+    private final File dataDirectory;
 
     private static final String CONFIG_FOLDER = "config",
-                                LOG_FOLDER = "logs";
+                                LOG_FOLDER = "logs",
+                                DATA_FOLDER = "data";
 
     private static final String WIN_PATH = "AppData/Roaming/PictureComparerFX/",
                                 MAC_PATH = "Library/Application Support/PictureComparerFX/",
@@ -36,6 +38,7 @@ public class PathResolver {
             File appDirectory = new File(System.getProperty("user.dir"));
             this.configDirectory = new File(appDirectory, CONFIG_FOLDER);
             this.logDirectory = new File(appDirectory, LOG_FOLDER);
+            this.dataDirectory = new File(appDirectory, DATA_FOLDER);
         } else {
             String operatingSystem = System.getProperty("os.name").toLowerCase();
             String userHome = System.getProperty("user.home");
@@ -43,26 +46,35 @@ public class PathResolver {
             if (operatingSystem.contains("win")) {
                 this.configDirectory = new File(userHome, WIN_PATH + CONFIG_FOLDER);
                 this.logDirectory = new File(userHome, WIN_PATH + LOG_FOLDER);
+                this.dataDirectory = new File(userHome, WIN_PATH + DATA_FOLDER);
             } else if (operatingSystem.contains("mac")) {
                 this.configDirectory = new File(userHome, MAC_PATH + CONFIG_FOLDER);
                 this.logDirectory = new File(userHome, MAC_PATH + LOG_FOLDER);
+                this.dataDirectory = new File(userHome, MAC_PATH + DATA_FOLDER);
             } else { // LINUX
                 this.configDirectory = new File(userHome, LINUX_PATH + CONFIG_FOLDER);
                 this.logDirectory = new File(userHome, LINUX_PATH + LOG_FOLDER);
+                this.dataDirectory = new File(userHome, LINUX_PATH + DATA_FOLDER);
             }
 
             if (!this.configDirectory.exists())
                 this.configDirectory.mkdirs();
             if (!this.logDirectory.exists())
                 this.logDirectory.mkdirs();
+            if (!this.dataDirectory.exists())
+                this.dataDirectory.mkdirs();
         }
+    }
+
+    public File getConfigDirectory() {
+        return configDirectory;
     }
 
     public File getLogDirectory() {
         return logDirectory;
     }
 
-    public File getConfigDirectory() {
-        return configDirectory;
+    public File getDataDirectory() {
+        return dataDirectory;
     }
 }

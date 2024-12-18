@@ -25,6 +25,7 @@
 
                 <Button text="%main.button.back"
                         focusTraversable="false"
+                        fx:id="backButton"
                         onAction="#backToMenu"/>
             </HBox>
         </VBox>
@@ -34,49 +35,49 @@
         <VBox>
             <HBox alignment="CENTER" spacing="5" styleClass="gallery-toolbox">
                 <ToolBar>
-                    <Button focusTraversable="false">
+                    <Button focusTraversable="false"
+                            fx:id="addButton"
+                            onAction="#handleAddImages">
                         <graphic>
                             <FontIcon iconLiteral="fas-plus" />
                         </graphic>
                     </Button>
 
-                    <Button focusTraversable="false">
+                    <Button focusTraversable="false"
+                            fx:id="removeButton"
+                            onAction="#handleRemoveImages">
                         <graphic>
                             <FontIcon iconLiteral="fas-minus"/>
                         </graphic>
                     </Button>
 
-                    <Button focusTraversable="false">
+                    <Button focusTraversable="false"
+                            fx:id="deleteFromDiskButton"
+                            onAction="#handleDeleteImagesFromDisk">
                         <graphic>
                             <FontIcon iconLiteral="fas-trash-alt"/>
                         </graphic>
                     </Button>
 
-                    <Button focusTraversable="false">
+                    <Button focusTraversable="false"
+                            fx:id="duplicatesButton"
+                            onAction="#handleRemoveDuplicates">
                         <graphic>
                             <FontIcon iconLiteral="fas-equals"/>
                         </graphic>
                     </Button>
 
-                    <Button focusTraversable="false">
+                    <Button focusTraversable="false"
+                            fx:id="nameButton"
+                            onAction="#handleUnifyNaming">
                         <graphic>
                             <FontIcon iconLiteral="fas-italic"/>
                         </graphic>
                     </Button>
 
-                    <Button focusTraversable="false">
-                        <graphic>
-                            <FontIcon iconLiteral="far-calendar-plus"/>
-                        </graphic>
-                    </Button>
-
-                    <Button focusTraversable="false">
-                        <graphic>
-                            <FontIcon iconLiteral="far-calendar-minus"/>
-                        </graphic>
-                    </Button>
-
-                    <Button focusTraversable="false">
+                    <Button focusTraversable="false"
+                            fx:id="openButton"
+                            onAction="#handleOpenImage">
                         <graphic>
                             <FontIcon iconLiteral="far-image"/>
                         </graphic>
@@ -92,7 +93,9 @@
                 </Label>
 
                 <TextField promptText="%gallery.textfield.search"
-                           focusTraversable="false"/>
+                           fx:id="searchTextField"
+                           focusTraversable="false"
+                           onKeyTyped="#handleSearch"/>
 
             </HBox>
 
@@ -105,14 +108,6 @@
                                  minWidth="35"
                                  maxWidth="35"
                                  prefWidth="35"
-                                 resizable="false"
-                                 reorderable="false"/>
-
-                    <TableColumn fx:id="iconColumn"
-                                 text="%gallery.table.label.icon"
-                                 minWidth="70"
-                                 maxWidth="70"
-                                 prefWidth="70"
                                  resizable="false"
                                  reorderable="false"/>
 
@@ -141,7 +136,7 @@
 
             <HBox styleClass="gallery-table-footer" spacing="5">
                 <Text text="%gallery.label.element-count"/>
-                <Text text="VAL"/>
+                <Text fx:id="elementCountText" text="VALUE"/>
             </HBox>
         </VBox>
     </center>

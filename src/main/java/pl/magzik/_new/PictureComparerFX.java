@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.magzik._new.base.PathResolver;
 import pl.magzik._new.controller.base.Controller;
-import pl.magzik._new.model.GalleryModel;
 import pl.magzik._new.model.SettingsModel;
 import pl.magzik._new.model.base.Model;
 import pl.magzik._new.service.GalleryService;
