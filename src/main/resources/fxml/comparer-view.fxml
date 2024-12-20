@@ -133,7 +133,7 @@
                       alignment="CENTER"
                       styleClass="tray-item">
 
-                    <Text text="Total:"
+                    <Text text="%comparer.tray.label.total"
                           styleClass="text-element"/>
 
                     <TextField text="0"
@@ -150,7 +150,7 @@
                       alignment="CENTER"
                       styleClass="tray-item">
 
-                    <Text text="Duplicates:"
+                    <Text text="%comparer.tray.label.duplicates"
                           styleClass="text-element"/>
 
                     <TextField text="0"
