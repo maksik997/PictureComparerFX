@@ -9,7 +9,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="pl.magzik._new.controller.SettingsController"
+            fx:controller="pl.magzik.picture_comparer_fx.controller.SettingsController"
             prefWidth="800.0" prefHeight="600.0"
             stylesheets="@/styles/stylesheet.css">
 

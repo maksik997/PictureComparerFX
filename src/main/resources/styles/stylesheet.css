@@ -1,19 +1,4 @@
 .root {
-/*    -fx-base-color: #3a0ca3;*/
-/*    -fx-secondary-color: #7209b7;*/
-/*    -fx-aspect-color: #4361ee;*/
-/*    -fx-secondary-aspect-color: #4cc9f0;*/
-/*    -fx-additional-color: #f72585;*/
-/*    -fx-font-color: #ddd;*/
-
-    -fx-base-color: #e6e8e6;
-    -fx-secondary-color: #ced0ce;
-    -fx-aspect-color: #4189e8;
-    -fx-secondary-aspect-color: #4797ff;
-    -fx-additional-color: #bbbcbb;
-    -fx-font-color: #191919;
-    -fx-light-font-color: #ddd;
-
     -fx-background-color: -fx-base-color;
 }
 
@@ -140,8 +125,20 @@
     -fx-pie-color: #ffcc80;
 }
 
+.chart-pie-label {
+    -fx-fill: -fx-font-color;
+}
+
+.chart-legend {
+    -fx-background-color: -fx-secondary-color;
+}
+
+.chart-legend .label {
+    -fx-text-fill: -fx-font-color;
+}
+
 .text-field {
-    -fx-background-color: -fx-light-font-color;
+    -fx-background-color: -fx-secondary-color;
     -fx-background-radius: 10px;
 
     -fx-text-fill: -fx-font-color;
@@ -171,7 +168,7 @@
 }
 
 .check-box .box {
-    -fx-background-color: -fx-light-font-color;
+    -fx-background-color: -fx-secondary-color;
     -fx-border-color: -fx-additional-color;
 
     -fx-background-radius: 4px;
@@ -201,7 +198,7 @@
 }
 
 .combo-box {
-    -fx-background-color: -fx-light-font-color;
+    -fx-background-color: -fx-secondary-color;
     -fx-text-fill: -fx-font-color;
 
     -fx-border-width: 1px;
@@ -220,13 +217,13 @@
 
 .combo-box:hover,
 .combo-box:showing {
-    -fx-background-color: -fx-secondary-color;
+    -fx-background-color: -fx-additional-color;
 }
 
 .combo-box .list-view {
     -fx-padding: 5px;
 
-    -fx-background-color: -fx-light-font-color;
+    -fx-background-color: -fx-secondary-color;
 
     -fx-border-radius: 10px;
     -fx-background-radius: 10px;
@@ -241,7 +238,7 @@
 }
 
 .combo-box .list-view .list-cell:hover {
-    -fx-background-color: -fx-secondary-color;
+    -fx-background-color: -fx-additional-color;
 }
 
 .combo-box:showing .list-view .list-cell:selected {
@@ -364,6 +361,10 @@
     -fx-text-fill: -fx-font-color;
 }
 
+.comparer-output-panel .list-view .label {
+    -fx-text-fill: -fx-font-color;
+}
+
 /* SETTINGS PANEL */
 
 .settings-footer {
@@ -371,12 +372,15 @@
 }
 
 .settings-tabs .label {
+    -fx-text-fill: -fx-font-color;
+
     -fx-font-size: 1.2em;
 }
 
 /* CREDITS PANEL */
 
 .credits-center * {
+    -fx-text-fill: -fx-font-color;
     -fx-font-size: 1.2em;
 }
 
@@ -429,6 +433,10 @@
     -fx-border-color: -fx-secondary-color;
 }
 
+.gallery-table .label {
+    -fx-text-fill: -fx-font-color;
+}
+
 .gallery-table .column-header-background,
 .gallery-table .column-header {
     -fx-background-color: -fx-secondary-color;
@@ -439,6 +447,7 @@
 .gallery-table .column-header-background .label {
     -fx-padding: 5px;
 
+    -fx-text-fill: -fx-font-color;
     -fx-font-size: 0.8em;
     -fx-alignment: CENTER-LEFT;
 }
@@ -460,6 +469,10 @@
     -fx-background-color: transparent;
 }
 
+.gallery-table .table-cell {
+    -fx-text-fill: -fx-font-color;
+}
+
 .gallery-table .table-row-cell:empty .table-cell {
     -fx-border-width: 0;
 }
@@ -467,6 +480,10 @@
 .gallery-table-footer {
     -fx-padding: 0 5px;
     -fx-background-color: -fx-secondary-color;
+}
+
+.gallery-table-footer * {
+    -fx-fill: -fx-font-color;
 }
 
 .gallery-table .filler {

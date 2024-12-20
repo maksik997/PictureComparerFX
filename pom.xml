@@ -111,7 +111,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>pl.magzik._new.PictureComparerFX</mainClass>
+                    <mainClass>pl.magzik.picture_comparer_fx.PictureComparerFX</mainClass>
                 </configuration>
             </plugin>
         </plugins>

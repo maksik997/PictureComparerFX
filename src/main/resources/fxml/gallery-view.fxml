@@ -9,7 +9,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="pl.magzik._new.controller.GalleryController"
+            fx:controller="pl.magzik.picture_comparer_fx.controller.GalleryController"
             prefHeight="600.0" prefWidth="800.0"
             stylesheets="@/styles/stylesheet.css">
 
@@ -41,6 +41,10 @@
                         <graphic>
                             <FontIcon iconLiteral="fas-plus" />
                         </graphic>
+
+                        <tooltip>
+                            <Tooltip text="%gallery.tooltip.add"/>
+                        </tooltip>
                     </Button>
 
                     <Button focusTraversable="false"
@@ -49,6 +53,10 @@
                         <graphic>
                             <FontIcon iconLiteral="fas-minus"/>
                         </graphic>
+
+                        <tooltip>
+                            <Tooltip text="%gallery.tooltip.remove"/>
+                        </tooltip>
                     </Button>
 
                     <Button focusTraversable="false"
@@ -57,6 +65,10 @@
                         <graphic>
                             <FontIcon iconLiteral="fas-trash-alt"/>
                         </graphic>
+
+                        <tooltip>
+                            <Tooltip text="%gallery.tooltip.delete"/>
+                        </tooltip>
                     </Button>
 
                     <Button focusTraversable="false"
@@ -65,6 +77,10 @@
                         <graphic>
                             <FontIcon iconLiteral="fas-equals"/>
                         </graphic>
+
+                        <tooltip>
+                            <Tooltip text="%gallery.tooltip.equal"/>
+                        </tooltip>
                     </Button>
 
                     <Button focusTraversable="false"
@@ -73,6 +89,10 @@
                         <graphic>
                             <FontIcon iconLiteral="fas-italic"/>
                         </graphic>
+
+                        <tooltip>
+                            <Tooltip text="%gallery.tooltip.rename"/>
+                        </tooltip>
                     </Button>
 
                     <Button focusTraversable="false"
@@ -81,6 +101,10 @@
                         <graphic>
                             <FontIcon iconLiteral="far-image"/>
                         </graphic>
+
+                        <tooltip>
+                            <Tooltip text="%gallery.tooltip.open"/>
+                        </tooltip>
                     </Button>
                 </ToolBar>
 
@@ -90,6 +114,10 @@
                     <graphic>
                         <FontIcon iconLiteral="fas-search"/>
                     </graphic>
+
+                    <tooltip>
+                        <Tooltip text="%gallery.tooltip.add"/>
+                    </tooltip>
                 </Label>
 
                 <TextField promptText="%gallery.textfield.search"
