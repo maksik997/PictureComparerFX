@@ -69,10 +69,6 @@ public class Controller {
         this.stage = stage;
     }
 
-    public String getCurrentTheme() {
-        return currentTheme;
-    }
-
     public void setCurrentTheme(@NotNull String currentTheme) {
         this.currentTheme = currentTheme.equals("dark") ? "dark" : "light";
     }

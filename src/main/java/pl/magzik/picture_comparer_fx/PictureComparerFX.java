@@ -16,7 +16,9 @@ import pl.magzik.picture_comparer_fx.service.GalleryService;
 import pl.magzik.picture_comparer_fx.service.SettingsService;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class PictureComparerFX extends Application {
@@ -35,6 +37,8 @@ public class PictureComparerFX extends Application {
         PathResolver pathResolver = PathResolver.getInstance();
         System.setProperty("logPath", pathResolver.getLogDirectory().getAbsolutePath());
         log = LoggerFactory.getLogger(PictureComparerFX.class);
+
+        log.warn("Arguments: {}", Arrays.toString(args));
 
         log.info("Application is starting...");
         log.debug("Log path resolved to: {}", pathResolver.getLogDirectory());
@@ -75,10 +79,13 @@ public class PictureComparerFX extends Application {
         controller.setCurrentTheme(settingsModel.getTheme());
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(PictureComparerFX.class.getResource("/styles/"+ settingsModel.getTheme() +"_theme.css").toExternalForm());
-        scene.getStylesheets().add(PictureComparerFX.class.getResource("/styles/stylesheet.css").toExternalForm());
 
-        stage.setTitle("Picture Comparer FX");
+        String theme = Objects.requireNonNull(PictureComparerFX.class.getResource("/styles/" + settingsModel.getTheme() + "_theme.css")).toExternalForm();
+        String stylesheet = Objects.requireNonNull(PictureComparerFX.class.getResource("/styles/stylesheet.css")).toExternalForm();
+        scene.getStylesheets().add(theme);
+        scene.getStylesheets().add(stylesheet);
+
+         stage.setTitle("Picture Comparer FX");
         stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest(event -> {

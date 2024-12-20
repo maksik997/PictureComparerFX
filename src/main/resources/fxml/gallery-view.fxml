@@ -10,14 +10,13 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="pl.magzik.picture_comparer_fx.controller.GalleryController"
-            prefHeight="600.0" prefWidth="800.0"
-            stylesheets="@/styles/stylesheet.css">
+            prefHeight="600.0" prefWidth="800.0">
 
     <top>
         <VBox>
             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="panel-header">
                 <ImageView fitWidth="60" fitHeight="60">
-                    <Image url="@/images/thumbnail.png" />
+                    <Image url="@images/thumbnail.png" />
                 </ImageView>
                 <Text text="%general.title" styleClass="title"/>
 

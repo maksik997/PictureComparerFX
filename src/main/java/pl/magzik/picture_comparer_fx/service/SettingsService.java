@@ -14,8 +14,6 @@ import java.util.Properties;
 
 public class SettingsService {
 
-    // TODO: IMPLEMENT CHANGING THE THEME AND LANGUAGE
-
     private static final Logger log = LoggerFactory.getLogger(SettingsService.class);
 
     private static final String CONFIG_FILE_NAME = "config.cfg";

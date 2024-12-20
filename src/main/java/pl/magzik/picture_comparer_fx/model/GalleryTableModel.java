@@ -3,6 +3,7 @@ package pl.magzik.picture_comparer_fx.model;
 import javafx.beans.property.*;
 
 import java.io.File;
+import java.util.Objects;
 
 public class GalleryTableModel {
 
@@ -43,5 +44,17 @@ public class GalleryTableModel {
 
     public StringProperty modifiedDateProperty() {
         return modifiedDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        GalleryTableModel that = (GalleryTableModel) o;
+        return Objects.equals(file, that.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(file);
     }
 }

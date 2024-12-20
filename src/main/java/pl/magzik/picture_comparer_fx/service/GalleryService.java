@@ -88,6 +88,9 @@ public class GalleryService implements AsyncTaskSupport {
 
         for (File file : valid) images.add(transformFile(file));
 
+        images = images.stream()
+                .filter(i -> !model.getGalleryData().contains(i))
+                .toList();
         model.getGalleryData().addAll(images);
 
         saveFiles();
