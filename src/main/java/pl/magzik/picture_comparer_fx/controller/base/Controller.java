@@ -12,33 +12,31 @@ import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.magzik.picture_comparer_fx.PictureComparerFX;
 import pl.magzik.picture_comparer_fx.model.base.Model;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-/* TODO: START HERE NEXT */
+/* TODO: JAVADOC */
 
 public class Controller {
 
     private static final Logger log = LoggerFactory.getLogger(Controller.class);
 
-    private static Model model;
+    private static volatile Model model;
 
     public static Model getModel() {
         if (Controller.model == null)
-            throw new NullPointerException("Model is null.");
+            throw new IllegalStateException("Model has not been initialized.");
 
         return Controller.model;
     }
 
-    public static void setModel(Model model) {
+    public static synchronized void setModel(Model model) {
         if (Controller.model != null)
-            throw new IllegalStateException("Model reference already assigned.");
+            throw new UnsupportedOperationException("Model reference already assigned.");
 
         Controller.model = model;
     }
@@ -52,6 +50,9 @@ public class Controller {
     private String currentTheme;
 
     public HostServices getHostServices() {
+        if (hostServices == null) {
+            throw new IllegalStateException("HostServices not initialized.");
+        }
         return hostServices;
     }
 
@@ -77,7 +78,7 @@ public class Controller {
 
     protected void switchScene(String fxmlPath) {
         try {
-            URL newView = Controller.class.getResource(fxmlPath);
+            URL newView = Controller.loadResource(fxmlPath);
             FXMLLoader loader = new FXMLLoader(newView, bundle);
 
             Parent root = loader.load();
@@ -88,45 +89,57 @@ public class Controller {
             controller.setHostServices(hostServices);
             controller.setCurrentTheme(currentTheme);
 
-            Scene scene = new Scene(root);
+            Scene scene = stage.getScene();
+            if (scene == null) {
+                scene = new Scene(root);
+                stage.setScene(scene);
+            } else {
+                scene.setRoot(root);
+            }
 
-            String theme = Objects.requireNonNull(PictureComparerFX.class.getResource("/styles/" + currentTheme + "_theme.css")).toExternalForm();
-            String stylesheet = Objects.requireNonNull(PictureComparerFX.class.getResource("/styles/stylesheet.css")).toExternalForm();
-            scene.getStylesheets().add(theme);
-            scene.getStylesheets().add(stylesheet);
-
-            stage.setScene(scene);
+            scene.getStylesheets().setAll(
+                Controller.loadResource("/styles/" + currentTheme + "_theme.css").toExternalForm(),
+                Controller.loadResource("/styles/stylesheet.css").toExternalForm()
+            );
         } catch (IOException e) {
             log.error("Couldn't switch scene, due to error: {}", e.getMessage(), e);
             showErrorDialog("dialog.context.error.scene-switch");
         }
     }
 
-    public String translate(String s) {
-        if (bundle.containsKey(s))
+    public @NotNull String translate(@NotNull String s) {
+        if (bundle != null && bundle.containsKey(s))
             return bundle.getString(s);
 
-        return s;
+        log.warn("Missing translation key: {}", s);
+        return "[[" + s + "]]";
     }
 
-    public String findKey(String v) {
+    public @NotNull String findKey(@NotNull String v) {
+        if (bundle == null) return v;
+
         return bundle.keySet().stream()
             .filter(k -> bundle.getString(k).equals(v))
             .findAny()
             .orElse(v);
     }
 
-    private Alert createAlert(Alert.AlertType alertType, String title, String headerText, String contextText) {
+    private @NotNull Alert createAlert(
+        @NotNull Alert.AlertType alertType,
+        @NotNull String title,
+        @NotNull String headerText,
+        @NotNull String contextText
+    ) {
         Alert alert = new Alert(alertType);
         alert.setTitle(translate(title));
         alert.setHeaderText(translate(headerText));
         alert.setContentText(translate(contextText));
-        alert.initOwner(stage);
 
-        String cssForm = Objects.requireNonNull(Objects.requireNonNull(Controller.class.getResource("/styles/stylesheet.css"))).toExternalForm();
-
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(cssForm);
+        if (stage != null && stage.getScene() != null) {
+            alert.initOwner(stage);
+            DialogPane dialogPane = alert.getDialogPane();
+            dialogPane.getStylesheets().addAll(stage.getScene().getStylesheets());
+        }
 
         return alert;
     }
@@ -155,15 +168,16 @@ public class Controller {
         alert.showAndWait();
     }
 
-    public void setButtonsState(boolean disable, Button... buttons) {
-        for (Button button : buttons)
+    public void setButtonsState(boolean disable, Button @NotNull ...buttons) {
+        for (Button button : buttons) {
             button.setDisable(disable);
+        }
     }
 
     public static @NotNull URL loadResource(@NotNull String path) {
         URL res = Controller.class.getResource(path);
         if (res == null) {
-            log.error("Resource not found: {}", path);
+            log.error("Resource not found at path: {}", path);
             throw new IllegalStateException("Resource not found.");
         }
         return res;

@@ -8,6 +8,8 @@ import pl.magzik.picture_comparer_fx.model.access.IOComparerSettingsAccess;
 import java.io.File;
 import java.util.Collection;
 
+/* TODO: JAVADOC */
+
 public class ComparerModel {
 
     private final ObservableList<File> loadedFiles;

@@ -2,6 +2,8 @@ package pl.magzik.picture_comparer_fx.service.helpers;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.magzik.Processor;
 import pl.magzik.algorithms.Algorithm;
 import pl.magzik.algorithms.PerceptualHash;
@@ -15,13 +17,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+/* TODO: ADD JAVADOC */
+
 public class ImageComparisonHelper {
+
+    private static final Logger log = LoggerFactory.getLogger(ImageComparisonHelper.class);
 
     private final FileOperator fileOperator;
 
     private final Processor processor;
 
-    public ImageComparisonHelper(FileOperator fileOperator, Processor processor) {
+    public ImageComparisonHelper(@NotNull FileOperator fileOperator, @NotNull Processor processor) {
         this.fileOperator = fileOperator;
         this.processor = processor;
     }
@@ -47,23 +53,65 @@ public class ImageComparisonHelper {
     }
 
     public @NotNull List<File> validate(@NotNull Collection<@NotNull File> files) throws IOException {
-        return fileOperator.load(files);
+        if (files.isEmpty()) {
+            log.warn("No files to validate.");
+            return List.of();
+        }
+
+        try {
+            return fileOperator.load(files);
+        } catch (IOException e) {
+            log.error("Failed to validate {} files.", files.size());
+            throw e;
+        }
     }
 
     public @NotNull Map<File, Set<File>> compare(@NotNull List<File> files) throws IOException {
+        if (files.isEmpty()) {
+            log.warn("No files to compare.");
+            return Collections.emptyMap();
+        }
+
         return processor.process(files);
     }
 
-    public List<File> organise(@NotNull Map<File, Set<File>> map) {
+    public @NotNull List<File> flatten(@NotNull Map<File, Set<File>> map) {
         map.forEach((k, v) -> v.remove(k));
         return map.values().stream().flatMap(Set::stream).toList();
     }
 
-    public void move(File destination, List<File> data) throws IOException {
-        fileOperator.move(destination, data);
+    public void move(@NotNull File destination, @NotNull List<File> data) throws IOException {
+        if (data.isEmpty()) {
+            log.warn("No files to move to {}", destination.getPath());
+            return;
+        }
+
+        if (!destination.exists() || !destination.isDirectory()) {
+            log.error("Destination folder does not exist or is not a directory: {}", destination);
+            throw new IllegalArgumentException("Invalid destination folder.");
+        }
+
+        try {
+            fileOperator.move(destination, data);
+            log.info("Successfully moved {} files to {}", data.size(), destination.getPath());
+        } catch (IOException e) {
+            log.error("Failed to move files to {} : {}", destination.getPath(), e.getMessage());
+            throw e;
+        }
     }
 
-    public void delete(List<File> data) throws IOException {
-        fileOperator.delete(data);
+    public void delete(@NotNull List<File> data) throws IOException {
+        if (data.isEmpty()) {
+            log.warn("No files to delete.");
+            return;
+        }
+
+        try {
+            fileOperator.delete(data);
+            log.info("Successfully deleted {} files.", data.size());
+        } catch (IOException e) {
+            log.error("Failed to delete files: {}", e.getMessage());
+            throw e;
+        }
     }
 }

@@ -23,6 +23,7 @@ package pl.magzik.picture_comparer_fx.base.async;
  * </p>
  */
 @FunctionalInterface
+@Deprecated
 public interface Command {
 
     /**

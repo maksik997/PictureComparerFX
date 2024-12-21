@@ -2,7 +2,9 @@ package pl.magzik.picture_comparer_fx.base.async;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -28,6 +30,7 @@ public interface AsyncTaskSupport {
      * @param commands The sequence of {@link Command} objects to be executed asynchronously.
      * @return A {@link CompletableFuture} that completes when all commands have been executed.
      */
+    @Deprecated
     default CompletableFuture<Void> execute(Command @NotNull ...commands) {
         CompletableFuture<Void> ftr = CompletableFuture.completedFuture(null);
 
@@ -36,5 +39,27 @@ public interface AsyncTaskSupport {
         }
 
         return ftr;
+    }
+
+    /* TODO: JAVADOC */
+    default <T> @NotNull CompletableFuture<T> supplyAsyncTask(@NotNull Callable<@NotNull T> task) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return task.call();
+            } catch (Exception e) {
+                throw new CompletionException(e);
+            }
+        }, executor);
+    }
+
+    /* TODO: JAVADOC */
+    default @NotNull CompletableFuture<Void> runAsyncTask(@NotNull Callable<Void> task) {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                task.call();
+            } catch (Exception e) {
+                throw new CompletionException(e);
+            }
+        });
     }
 }

@@ -1,34 +1,33 @@
 package pl.magzik.picture_comparer_fx.controller;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.magzik.picture_comparer_fx.controller.base.Controller;
 import pl.magzik.picture_comparer_fx.controller.base.PanelController;
 import pl.magzik.picture_comparer_fx.model.ComparerModel;
 import pl.magzik.picture_comparer_fx.service.ComparerService;
-import pl.magzik.picture_comparer_fx.base.async.Command;
 
 import java.io.File;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+
+/* TODO: JAVADOC */
 
 public class ComparerController extends PanelController {
 
     private static final Logger log = LoggerFactory.getLogger(ComparerController.class);
-
-    private static final String STATE_READY = "comparer.state.ready",
-                                STATE_PREPARE = "comparer.state.prepare",
-                                STATE_MAP = "comparer.state.map",
-                                STATE_UPDATE = "comparer.state.update",
-                                STATE_MOVE = "comparer.state.move",
-                                STATE_REMOVE = "comparer.state.remove",
-                                STATE_DONE = "comparer.state.done";
 
     private final ComparerModel model;
 
@@ -130,37 +129,46 @@ public class ComparerController extends PanelController {
         log.info("Loading files from path: {}", path);
 
         edited = true;
-        handleTaskStart(STATE_PREPARE);
+        handleTaskStart(State.PREPARE);
 
-        // Processing
-        service.execute(
-            () -> service.validateFilesAsync(new File(path)),
-            () -> updateUserInterface(STATE_MAP),
-            service::compareFilesAsync,
-            () -> updateUserInterface(STATE_UPDATE)
-        ).exceptionally(e -> {
-            handleTaskError("Error occurred while loading the files:", "dialog.context.error.comparer.loading", e);
-            return null;
-        })
-        .whenComplete((v, e) -> handleLoadingTaskCompletion());
+
+        service.validateFiles(new File(path))
+                .thenApply(files -> updateUserInterface(State.MAP, model.getLoadedFiles(), files))
+                .thenCompose(service::compareFiles)
+                .thenApply(files -> updateUserInterface(State.UPDATE, model.getDuplicateFiles(), files))
+                .exceptionally(e -> handleTaskError("Error occurred while loading the files:", "dialog.context.error.comparer.loading", e))
+                .whenComplete((v, e) -> handleTaskCompleted(this::handleLoadTaskCompleted));
     }
 
     @FXML
     private void handleMovingFiles() {
-        if (!showConfirmationDialog("dialog.header.comparer-move")) return;
-
-        log.info("Moving duplicated images...");
-        handleTaskStart(STATE_MOVE);
-        handleFileTransfer(service::moveDuplicatesAsync);
+        handleFileTransferTask(
+            service::moveDuplicates,
+            "dialog.header.comparer-move",
+            "Moving duplicated images...",
+            State.MOVE
+        );
     }
 
     @FXML
     private void handleRemovingFiles() {
-        if (!showConfirmationDialog("dialog.header.comparer-remove")) return;
+        handleFileTransferTask(
+            service::removeDuplicates,
+            "dialog.header.comparer-remove",
+            "Removing duplicated images...",
+            State.REMOVE
+        );
+    }
 
-        log.info("Removing duplicated images...");
-        handleTaskStart(STATE_REMOVE);
-        handleFileTransfer(service::removeDuplicatesAsync);
+    private void handleFileTransferTask(Supplier<CompletableFuture<Void>> task, String confirmationText, String logMsg, State state) {
+        if (!showConfirmationDialog(confirmationText)) return;
+
+        log.info(logMsg);
+        handleTaskStart(state);
+
+        task.get()
+                .exceptionally(e -> handleTaskError("Error occurred while transferring the files:", "dialog.context.error.comparer.file-transfer", e))
+                .whenComplete((v, t) -> handleTaskCompleted());
     }
 
     @FXML
@@ -177,7 +185,7 @@ public class ComparerController extends PanelController {
         setButtonsState(false, backButton, pathButton, loadButton);
 
         taskProgressBar.setProgress(1);
-        stateText.setText(translate(STATE_READY));
+        stateText.setText(translate(State.READY.toString()));
 
         originalTrayTextField.setText("0");
         duplicateTrayTextField.setText("0");
@@ -202,66 +210,95 @@ public class ComparerController extends PanelController {
         duplicateSlice.setName(translate("comparer.chart.label.duplicates"));
     }
 
-    private void updateUserInterface(String state) {
-        int totalCount = model.getLoadedFiles().size();
-        int duplicateCount = model.getDuplicateFiles().size();
-
+    private List<File> updateUserInterface(State state, ObservableList<File> list, List<File> files) {
         Platform.runLater(() -> {
-            stateText.setText(translate(state));
+            ComparerModel.clearAndAddAll(list, files);
+            int totalCount = model.getLoadedFiles().size();
+            int duplicateCount = model.getDuplicateFiles().size();
+
+            changeStateLabel(state);
             originalTrayTextField.setText(String.valueOf(totalCount));
             duplicateTrayTextField.setText(String.valueOf(duplicateCount));
 
             log.info("UI updated: {} files processed, {} duplicates found", totalCount, duplicateCount);
         });
+        return files;
     }
 
-    private void handleLoadingTaskCompletion() {
-        Platform.runLater(() -> {
-            handleTaskDone();
-
-            if (!model.getDuplicateFiles().isEmpty()) {
-                moveButton.setDisable(false);
-                removeButton.setDisable(false);
-            }
-
-            int duplicateCount = model.getDuplicateFiles().size();
-            int originalCount = model.getLoadedFiles().size() - duplicateCount;
-
-            log.debug("Calculated: duplicates: {}, originals: {}", duplicateCount, originalCount);
-
-            originalSlice.setPieValue(originalCount);
-            duplicateSlice.setPieValue(duplicateCount);
-        });
-    }
-
-    private void handleFileTransfer(Command command) {
-        service.execute(command)
-            .exceptionally(e -> {
-                handleTaskError("Error occurred while transferring the files:", "dialog.context.error.comparer.file-transfer", e);
-                return null;
-            })
-            .whenComplete((v, t) -> Platform.runLater(this::handleTaskDone));
-    }
-
-    private void handleTaskStart(String state) {
-        setButtonsState(true, backButton, pathButton, loadButton, moveButton, removeButton, resetButton);
-        taskProgressBar.setProgress(-1);
-        stateText.setText(translate(state));
+    private void handleTaskStart(@NotNull State state) {
+        lockState(state);
         getStage().getScene().setCursor(Cursor.WAIT);
     }
 
-    private void handleTaskDone() {
-        backButton.setDisable(false);
-        resetButton.setDisable(false);
-        stateText.setText(translate(STATE_DONE));
-        taskProgressBar.setProgress(1);
-        getStage().getScene().setCursor(Cursor.DEFAULT);
+    private void handleTaskCompleted(@Nullable Runnable additionalOperations) {
+        Platform.runLater(() -> {
+            unlockState();
+            getStage().getScene().setCursor(Cursor.DEFAULT);
 
-        log.info("Task completed successfully, UI reset.");
+            if (additionalOperations != null)
+                additionalOperations.run();
+        });
     }
 
-    private void handleTaskError(String logMsg, String headerText, Throwable e) {
+    private void handleTaskCompleted() {
+        handleTaskCompleted(null);
+    }
+
+    private void handleLoadTaskCompleted() {
+        if (!model.getDuplicateFiles().isEmpty()) {
+            moveButton.setDisable(false);
+            removeButton.setDisable(false);
+        }
+
+        int duplicateCount = model.getDuplicateFiles().size();
+        int originalCount = model.getLoadedFiles().size() - duplicateCount;
+
+        log.debug("Calculated: duplicates: {}, originals: {}", duplicateCount, originalCount);
+
+        originalSlice.setPieValue(originalCount);
+        duplicateSlice.setPieValue(duplicateCount);
+    }
+
+    private <D> @Nullable D handleTaskError(String logMsg, String headerText, Throwable e) {
         log.error("{}{}", logMsg, e.getMessage(), e);
-        showErrorDialog(headerText);
+        Platform.runLater(() -> showErrorDialog(headerText));
+        return null;
+    }
+
+    private enum State {
+        READY("comparer.state.ready"),
+        PREPARE("comparer.state.prepare"),
+        MAP("comparer.state.map"),
+        UPDATE("comparer.state.update"),
+        MOVE("comparer.state.move"),
+        REMOVE("comparer.state.remove"),
+        DONE("comparer.state.done");
+
+        private final String value;
+
+        State(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    private void lockState(@NotNull State state) {
+        setButtonsState(true, backButton, pathButton, loadButton, moveButton, removeButton, resetButton);
+        stateText.setText(translate(state.toString()));
+        taskProgressBar.setProgress(-1);
+    }
+
+    private void unlockState() {
+        setButtonsState(false, backButton, resetButton);
+        stateText.setText(translate(State.DONE.toString()));
+        taskProgressBar.setProgress(1);
+    }
+
+    private void changeStateLabel(@NotNull State state) {
+        stateText.setText(translate(state.toString()));
     }
 }

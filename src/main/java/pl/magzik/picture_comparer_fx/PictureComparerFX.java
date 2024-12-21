@@ -21,6 +21,8 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/* TODO: ADD JAVADOC */
+
 public class PictureComparerFX extends Application {
 
     private static final Logger log = LoggerFactory.getLogger(PictureComparerFX.class);

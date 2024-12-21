@@ -1,16 +1,15 @@
 package pl.magzik.picture_comparer_fx.service;
 
-import javafx.application.Platform;
 import org.jetbrains.annotations.NotNull;
 import pl.magzik.picture_comparer_fx.model.ComparerModel;
 import pl.magzik.picture_comparer_fx.service.helpers.ImageComparisonHelper;
 import pl.magzik.picture_comparer_fx.base.async.AsyncTaskSupport;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CompletableFuture;
+
+/* TODO: ADD JAVADOC */
 
 public class ComparerService implements AsyncTaskSupport {
 
@@ -29,75 +28,25 @@ public class ComparerService implements AsyncTaskSupport {
         );
     }
 
-    public void validateFilesAsync(Collection<File> inputFiles) {
-        try {
-            CountDownLatch latch = new CountDownLatch(1);
-            List<File> files = comparisonHelper.validate(inputFiles);
-
-            Platform.runLater(() -> {
-                ComparerModel.clearAndAddAll(
-                    model.getLoadedFiles(),
-                    files
-                );
-
-                latch.countDown();
-            });
-
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        } catch (IOException e) {
-            throw new CompletionException(e);
-        }
+    public @NotNull CompletableFuture<List<File>> validateFiles(@NotNull File file) {
+        return supplyAsyncTask(() -> comparisonHelper.validate(List.of(file)));
     }
 
-    public void validateFilesAsync(File... inputFiles) {
-        validateFilesAsync(Arrays.asList(inputFiles));
+    public @NotNull CompletableFuture<List<File>> compareFiles(@NotNull List<@NotNull File> files) {
+        return supplyAsyncTask(() -> comparisonHelper.flatten(comparisonHelper.compare(files)));
     }
 
-
-    public void compareFilesAsync() {
-        try {
-            CountDownLatch latch = new CountDownLatch(1);
-
-            List<File> files = comparisonHelper.organise(
-                comparisonHelper.compare(model.getLoadedFiles())
-            );
-
-            Platform.runLater(() -> {
-                ComparerModel.clearAndAddAll(
-                    model.getDuplicateFiles(),
-                    files
-                );
-
-                latch.countDown();
-            });
-
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        } catch (IOException e) {
-            throw new CompletionException(e);
-        }
-    }
-
-    public void moveDuplicatesAsync() {
-        try {
+    public @NotNull CompletableFuture<Void> moveDuplicates() {
+        return runAsyncTask(() -> {
             comparisonHelper.move(moveDestination, model.getDuplicateFiles());
-        } catch (IOException e) {
-            throw new CompletionException(e);
-        }
+            return null;
+        });
     }
 
-    public void removeDuplicatesAsync() {
-        try {
+    public @NotNull CompletableFuture<Void> removeDuplicates() {
+        return runAsyncTask(() -> {
             comparisonHelper.delete(model.getDuplicateFiles());
-        } catch (IOException e) {
-            throw new CompletionException(e);
-        }
+            return null;
+        });
     }
 }

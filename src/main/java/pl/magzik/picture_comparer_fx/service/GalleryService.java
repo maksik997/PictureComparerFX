@@ -124,7 +124,7 @@ public class GalleryService implements AsyncTaskSupport {
                 .map(GalleryTableModel::getFile)
                 .toList();
 
-            List<File> duplicates = comparisonHelper.organise(
+            List<File> duplicates = comparisonHelper.flatten(
                 comparisonHelper.compare(loadedFiles)
             );
 
