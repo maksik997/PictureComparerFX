@@ -25,6 +25,7 @@ public class ExecutorServiceManager {
     private static final Logger log = LoggerFactory.getLogger(ExecutorServiceManager.class);
 
     private final ExecutorService executorService;
+    private static final long SHUTDOWN_TIMEOUT_SECONDS = 5;
 
     /**
      * Private constructor to prevent external instantiation.
@@ -34,7 +35,7 @@ public class ExecutorServiceManager {
      * </p>
      */
     private ExecutorServiceManager() {
-        this.executorService = Executors.newCachedThreadPool();
+        this.executorService = Executors.newSingleThreadExecutor();
         addExecutorShutdownHook();
     }
 
@@ -46,7 +47,7 @@ public class ExecutorServiceManager {
      * </p>
      */
     private static final class InstanceHolder {
-        private static final ExecutorServiceManager instance = new ExecutorServiceManager();
+        private static final ExecutorServiceManager INSTANCE = new ExecutorServiceManager();
     }
 
     /**
@@ -60,7 +61,7 @@ public class ExecutorServiceManager {
      * @return the singleton instance of {@code ExecutorServiceManager}.
      */
     public static ExecutorServiceManager getInstance() {
-        return InstanceHolder.instance;
+        return InstanceHolder.INSTANCE;
     }
 
     /**
@@ -83,7 +84,7 @@ public class ExecutorServiceManager {
      * This method adds a shutdown hook that gracefully shuts down the {@code executorService} by first attempting
      * to stop accepting new tasks and completing existing ones.
      * If the executorService does not terminate within
-     * 60 seconds,
+     * 10 seconds,
      * the shutdown process is forced by canceling active tasks and preventing waiting tasks from starting.
      * <p>
      * The method also handles {@link InterruptedException} by immediately forcing the shutdown and restoring
@@ -103,14 +104,16 @@ public class ExecutorServiceManager {
             log.info("Terminating ExecutorService...");
             executorService.shutdown();
             try {
-                if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                if (!executorService.awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+                    log.warn("ExecutorService did not terminate gracefully within the timeout.");
                     executorService.shutdownNow();
-                    if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
-                        log.error("ExecutorService did not terminate.");
+                    if (!executorService.awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+                        log.error("ExecutorService did not terminate even after shutdownNot.");
                     }
                 }
                 log.info("ExecutorService has been terminated.");
             } catch (InterruptedException e) {
+                log.error("Shutdown was interrupted, forcing shutdown.");
                 executorService.shutdownNow();
                 Thread.currentThread().interrupt();
             }

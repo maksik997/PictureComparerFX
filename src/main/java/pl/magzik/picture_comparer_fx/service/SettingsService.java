@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 
 public class SettingsService {
@@ -18,15 +20,15 @@ public class SettingsService {
 
     private static final String CONFIG_FILE_NAME = "config.cfg";
 
-    private final File configFile;
+    private final Path configFile;
 
     private final SettingsModel model;
 
     public SettingsService(SettingsModel model) throws IOException {
-        this.configFile = new File(PathResolver.getInstance().getConfigDirectory(), CONFIG_FILE_NAME);
+        this.configFile = PathResolver.getInstance().getConfigDirectory().resolve(CONFIG_FILE_NAME);
         this.model = model;
 
-        if (!configFile.exists())
+        if (Files.notExists(configFile))
             saveSettings();
     }
 
@@ -41,17 +43,17 @@ public class SettingsService {
         properties.setProperty("name.prefix", model.getNamePrefix());
         properties.setProperty("lowercase.extension", model.isLowercaseExtension() ? "true" : "false");
 
-        try (FileOutputStream fos = new FileOutputStream(configFile)) {
+        try (FileOutputStream fos = new FileOutputStream(configFile.toFile())) {
             properties.store(fos, "PictureComparerFX Configuration File");
         }
 
-        log.info("Settings saved to {} successfully.", configFile.getAbsolutePath());
+        log.info("Settings saved to {} successfully.", configFile);
     }
 
     public void loadSettings() throws IOException {
         Properties properties = new Properties();
 
-        try (FileInputStream fis = new FileInputStream(configFile)) {
+        try (FileInputStream fis = new FileInputStream(configFile.toFile())) {
             properties.load(fis);
         }
 
@@ -66,7 +68,7 @@ public class SettingsService {
             Boolean.parseBoolean(properties.getProperty("lowercase.extension", "false"))
         );
 
-        log.info("Settings loaded from {} successfully.", configFile.getAbsolutePath());
+        log.info("Settings loaded from {} successfully.", configFile);
     }
 
     public void updateModel(

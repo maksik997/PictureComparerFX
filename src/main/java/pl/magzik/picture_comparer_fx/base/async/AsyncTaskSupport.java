@@ -1,5 +1,7 @@
 package pl.magzik.picture_comparer_fx.base.async;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
@@ -26,7 +28,7 @@ public interface AsyncTaskSupport {
      * @param commands The sequence of {@link Command} objects to be executed asynchronously.
      * @return A {@link CompletableFuture} that completes when all commands have been executed.
      */
-    default CompletableFuture<Void> execute(Command...commands) {
+    default CompletableFuture<Void> execute(Command @NotNull ...commands) {
         CompletableFuture<Void> ftr = CompletableFuture.completedFuture(null);
 
         for (Command command : commands) {

@@ -104,7 +104,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>pl.magzik.picture_comparer_fx.PictureComparerFX</Main-Class>
+                            <Main-Class>pl.magzik.picture_comparer_fx.Main</Main-Class>
                         </manifestEntries>
                     </archive>
                 </configuration>

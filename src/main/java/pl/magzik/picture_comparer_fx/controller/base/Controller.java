@@ -21,6 +21,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/* TODO: START HERE NEXT */
+
 public class Controller {
 
     private static final Logger log = LoggerFactory.getLogger(Controller.class);
@@ -121,7 +123,7 @@ public class Controller {
         alert.setContentText(translate(contextText));
         alert.initOwner(stage);
 
-        String cssForm = Controller.class.getResource("/styles/stylesheet.css").toExternalForm();
+        String cssForm = Objects.requireNonNull(Objects.requireNonNull(Controller.class.getResource("/styles/stylesheet.css"))).toExternalForm();
 
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.getStylesheets().add(cssForm);
@@ -156,5 +158,14 @@ public class Controller {
     public void setButtonsState(boolean disable, Button... buttons) {
         for (Button button : buttons)
             button.setDisable(disable);
+    }
+
+    public static @NotNull URL loadResource(@NotNull String path) {
+        URL res = Controller.class.getResource(path);
+        if (res == null) {
+            log.error("Resource not found: {}", path);
+            throw new IllegalStateException("Resource not found.");
+        }
+        return res;
     }
 }

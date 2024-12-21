@@ -30,14 +30,14 @@ public class GalleryService implements AsyncTaskSupport {
 
     private static final String DATA_FILE_NAME = "gallery.pfx";
 
-    private final File dataFile;
+    private final Path dataFile;
 
     private final GalleryModel model;
 
     private final ImageComparisonHelper comparisonHelper;
 
     public GalleryService(@NotNull GalleryModel model) {
-        this.dataFile = new File(PathResolver.getInstance().getDataDirectory(), DATA_FILE_NAME);
+        this.dataFile = PathResolver.getInstance().getDataDirectory().resolve(DATA_FILE_NAME);
 
         this.model = model;
 
@@ -48,9 +48,9 @@ public class GalleryService implements AsyncTaskSupport {
     }
 
     public void loadFiles() throws IOException {
-        if (!dataFile.exists()) return;
+        if (Files.notExists(dataFile)) return;
 
-        List<File> files = Files.readAllLines(dataFile.toPath())
+        List<File> files = Files.readAllLines(dataFile)
                 .stream()
                 .map(File::new)
                 .toList();
@@ -70,7 +70,7 @@ public class GalleryService implements AsyncTaskSupport {
     private void saveFiles() throws IOException {
         List<File> data = model.getGalleryData().stream().map(GalleryTableModel::getFile).toList();
 
-        try (BufferedWriter writer = Files.newBufferedWriter(dataFile.toPath())) {
+        try (BufferedWriter writer = Files.newBufferedWriter(dataFile)) {
             for (File f : data) {
                 writer.write(f.getAbsolutePath());
                 writer.newLine();

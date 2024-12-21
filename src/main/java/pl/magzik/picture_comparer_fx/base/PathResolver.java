@@ -1,29 +1,27 @@
 package pl.magzik.picture_comparer_fx.base;
 
-import java.io.File;
-import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+/* TODO: ADD JAVADOC */
 
 public class PathResolver {
 
     private static class InstanceHolder {
-        private static PathResolver pathResolver;
-    }
-
-    public static synchronized void create(boolean portable) {
-        if (InstanceHolder.pathResolver != null)
-            throw new IllegalStateException("PathResolver instance already exists!");
-
-        InstanceHolder.pathResolver = new PathResolver(portable);
+        private static final PathResolver INSTANCE = new PathResolver();
     }
 
     public static PathResolver getInstance() {
-        Objects.requireNonNull(InstanceHolder.pathResolver, "PathResolver has not been initialized.");
-        return InstanceHolder.pathResolver;
+        return InstanceHolder.INSTANCE;
     }
 
-    private final File configDirectory;
-    private final File logDirectory;
-    private final File dataDirectory;
+    private final Path configDirectory;
+    private final Path logDirectory;
+    private final Path dataDirectory;
 
     private static final String CONFIG_FOLDER = "config",
                                 LOG_FOLDER = "logs",
@@ -33,48 +31,49 @@ public class PathResolver {
                                 MAC_PATH = "Library/Application Support/PictureComparerFX/",
                                 LINUX_PATH = ".config/PictureComparerFX/";
 
-    private PathResolver(boolean portable) {
-        if (portable) {
-            File appDirectory = new File(System.getProperty("user.dir"));
-            this.configDirectory = new File(appDirectory, CONFIG_FOLDER);
-            this.logDirectory = new File(appDirectory, LOG_FOLDER);
-            this.dataDirectory = new File(appDirectory, DATA_FOLDER);
-        } else {
-            String operatingSystem = System.getProperty("os.name").toLowerCase();
-            String userHome = System.getProperty("user.home");
+    private PathResolver() {
+        String userHome = System.getProperty("user.home");
+        if (userHome == null) throw new IllegalStateException("User home directory is not available.");
 
-            if (operatingSystem.contains("win")) {
-                this.configDirectory = new File(userHome, WIN_PATH + CONFIG_FOLDER);
-                this.logDirectory = new File(userHome, WIN_PATH + LOG_FOLDER);
-                this.dataDirectory = new File(userHome, WIN_PATH + DATA_FOLDER);
-            } else if (operatingSystem.contains("mac")) {
-                this.configDirectory = new File(userHome, MAC_PATH + CONFIG_FOLDER);
-                this.logDirectory = new File(userHome, MAC_PATH + LOG_FOLDER);
-                this.dataDirectory = new File(userHome, MAC_PATH + DATA_FOLDER);
-            } else { // LINUX
-                this.configDirectory = new File(userHome, LINUX_PATH + CONFIG_FOLDER);
-                this.logDirectory = new File(userHome, LINUX_PATH + LOG_FOLDER);
-                this.dataDirectory = new File(userHome, LINUX_PATH + DATA_FOLDER);
-            }
+        String operatingSystem = System.getProperty("os.name").toLowerCase();
+        Path applicationPath = getApplicationPath(userHome, operatingSystem);
 
-            if (!this.configDirectory.exists())
-                this.configDirectory.mkdirs();
-            if (!this.logDirectory.exists())
-                this.logDirectory.mkdirs();
-            if (!this.dataDirectory.exists())
-                this.dataDirectory.mkdirs();
-        }
+        this.configDirectory = createDirectories(applicationPath, CONFIG_FOLDER);
+        this.logDirectory = createDirectories(applicationPath, LOG_FOLDER);
+        this.dataDirectory = createDirectories(applicationPath, DATA_FOLDER);
     }
 
-    public File getConfigDirectory() {
+    private @NotNull Path getApplicationPath(@NotNull String userHome, @NotNull String operatingSystem) {
+        if (operatingSystem.contains("win")) return Paths.get(userHome, WIN_PATH);
+        else if (operatingSystem.contains("mac")) return Paths.get(userHome, MAC_PATH);
+        else return Paths.get(userHome, LINUX_PATH);
+    }
+
+    private @NotNull Path createDirectories(@NotNull Path base, @NotNull String folder) {
+        Path folderPath = base.resolve(folder);
+        try {
+            Files.createDirectories(folderPath);
+        } catch (IOException e) {
+            throw new DirectoryCreationException("Failed to create directory: " + folderPath, e);
+        }
+        return folderPath;
+    }
+
+    public Path getConfigDirectory() {
         return configDirectory;
     }
 
-    public File getLogDirectory() {
+    public Path getLogDirectory() {
         return logDirectory;
     }
 
-    public File getDataDirectory() {
+    public Path getDataDirectory() {
         return dataDirectory;
+    }
+
+    public static class DirectoryCreationException extends RuntimeException {
+        public DirectoryCreationException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }

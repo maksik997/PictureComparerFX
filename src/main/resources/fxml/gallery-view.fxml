@@ -13,21 +13,19 @@
             prefHeight="600.0" prefWidth="800.0">
 
     <top>
-        <VBox>
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="panel-header">
-                <ImageView fitWidth="60" fitHeight="60">
-                    <Image url="@images/thumbnail.png" />
-                </ImageView>
-                <Text text="%general.title" styleClass="title"/>
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="panel-header">
+            <ImageView fitWidth="60" fitHeight="60">
+                <Image url="@images/thumbnail_64x64.png" />
+            </ImageView>
+            <Text text="%general.title" styleClass="title"/>
 
-                <Region HBox.hgrow="ALWAYS"/>
+            <Region HBox.hgrow="ALWAYS"/>
 
-                <Button text="%main.button.back"
-                        focusTraversable="false"
-                        fx:id="backButton"
-                        onAction="#backToMenu"/>
-            </HBox>
-        </VBox>
+            <Button text="%main.button.back"
+                    focusTraversable="false"
+                    fx:id="backButton"
+                    onAction="#backToMenu"/>
+        </HBox>
     </top>
 
     <center>
