@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/* TODO: JAVADOC */
+
 public class SettingsController extends PanelController {
 
     private static final Logger log = LoggerFactory.getLogger(SettingsController.class);
@@ -75,6 +77,7 @@ public class SettingsController extends PanelController {
     @Override
     public void setBundle(ResourceBundle bundle) {
         super.setBundle(bundle);
+
         languageComboBox.setItems(FXCollections.observableArrayList(
             SettingsModel.getLanguages().stream().map(this::translate).toList()
         ));
@@ -111,6 +114,7 @@ public class SettingsController extends PanelController {
         setButtonsState(true, resetButton, saveButton);
     }
 
+    @FXML
     public void handleChoosePath() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File selectedDirectory = directoryChooser.showDialog(getStage());
@@ -124,6 +128,7 @@ public class SettingsController extends PanelController {
         }
     }
 
+    @FXML
     public void handleChange() {
         if (!edited) edited = true;
         setButtonsState(false, resetButton, saveButton);
@@ -131,6 +136,7 @@ public class SettingsController extends PanelController {
         log.info("UI state has changed.");
     }
 
+    @FXML
     public void handleReset() {
         setValues();
         edited = false;
@@ -139,6 +145,7 @@ public class SettingsController extends PanelController {
         log.info("Reset handled successfully.");
     }
 
+    @FXML
     public void handleSave() {
         String oldLanguage = model.getLanguage();
         String oldTheme = model.getTheme();
@@ -152,14 +159,14 @@ public class SettingsController extends PanelController {
             namePrefixTextField.getText(),
             lowercaseExtensionCheckbox.isSelected()
         );
-        if (!model.getLanguage().equals(oldLanguage)) { // TODO: ADD WARNING FOR USER.
+        if (!model.getLanguage().equals(oldLanguage)) {
             Locale locale = Locale.forLanguageTag(model.getLanguage());
             ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages", locale);
             setBundle(bundle);
             log.info("Resource Bundle switched successfully!");
         }
 
-        // TODO: HANDLE THEME SWITCHING ( AFTER THEME SYSTEM IS READY ).
+        // TODO: HANDLE THEME SWITCHING ( AFTER THEME: SYSTEM IS READY ).
         if (!model.getTheme().equals(oldTheme)) {
             setCurrentTheme(model.getTheme());
         }

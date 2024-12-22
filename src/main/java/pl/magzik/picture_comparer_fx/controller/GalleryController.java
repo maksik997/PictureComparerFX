@@ -183,12 +183,15 @@ public class GalleryController extends PanelController {
         searchTextField.setEditable(false);
         getStage().getScene().setCursor(Cursor.WAIT);
 
-        service.execute(() -> service.removeDuplicates(model.getSelectedData()))
+        service.removeDuplicates(model.getSelectedData())
             .exceptionally(t -> {
                 handleTaskError("Couldn't remove all duplicates from gallery, because:", "dialog.context.error.gallery.duplicates", t);
                 return null;
             })
-            .whenComplete((v, t) -> handleTaskCompleted());
+            .whenComplete((v, t) -> {
+                galleryTable.refresh();
+                handleTaskCompleted();
+            });
     }
 
     @FXML
@@ -199,17 +202,20 @@ public class GalleryController extends PanelController {
         searchTextField.setEditable(false);
         getStage().getScene().setCursor(Cursor.WAIT);
 
-        service.execute(() -> service.renameAll(model.getSelectedData()))
-        .exceptionally(t -> {
-            handleTaskError("Couldn't rename all images from gallery, because:", "dialog.context.error.gallery.names", t);
-            return null;
-        })
-        .whenComplete((v, t) -> handleTaskCompleted());
+        service.renameAll(model.getSelectedData())
+            .exceptionally(t -> {
+                handleTaskError("Couldn't rename all images from gallery, because:", "dialog.context.error.gallery.names", t);
+                return null;
+            })
+            .whenComplete((v, t) -> {
+                galleryTable.refresh();
+                handleTaskCompleted();
+            });
     }
 
     @FXML
     public void handleOpenImage() {
-        service.execute(() -> service.openImages(model.getSelectedData()))
+        service.openImages(model.getSelectedData())
             .exceptionally(t -> {
                 handleTaskError("Couldn't remove all duplicates from gallery, because:", "dialog.context.error.gallery.open", t);
                 return null;
@@ -259,6 +265,6 @@ public class GalleryController extends PanelController {
 
     private void handleTaskError(String logMsg, String headerText, Throwable e) {
         log.error("{}{}", logMsg, e.getMessage(), e);
-        showErrorDialog(headerText);
+        Platform.runLater(() -> showErrorDialog(headerText));
     }
 }

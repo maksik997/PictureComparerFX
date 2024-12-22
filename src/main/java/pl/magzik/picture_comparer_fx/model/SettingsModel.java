@@ -5,6 +5,8 @@ import pl.magzik.picture_comparer_fx.model.access.IOComparerSettingsAccess;
 
 import java.util.Set;
 
+/* TODO: JAVADOC */
+
 public class SettingsModel implements IOComparerSettingsAccess, GallerySettingsAccess {
 
     private static final Set<String> languages = Set.of("en-US", "pl-PL");

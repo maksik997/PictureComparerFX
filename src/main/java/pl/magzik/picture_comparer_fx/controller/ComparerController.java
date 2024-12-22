@@ -134,12 +134,7 @@ public class ComparerController extends PanelController {
     @FXML
     private void handleLoadingFiles() {
         String path = pathTextField.getText();
-
-        if (path == null || path.isBlank()) {
-            log.warn("Path is blank or null.");
-            showErrorDialog("dialog.context.error.path-empty");
-            return;
-        }
+        if (!validatePath(path)) return;
 
         log.info("Loading files from path: {}", path);
         stateMachine.changeState(new ComparerProcessingState(StatePhase.PREPARE));
@@ -150,6 +145,38 @@ public class ComparerController extends PanelController {
                 .thenApply(files -> updateUserInterface(StatePhase.UPDATE, model.getDuplicateFiles(), files))
                 .exceptionally(e -> handleTaskError("Error occurred while loading the files:", "dialog.context.error.comparer.loading", e))
                 .whenComplete((v, e) -> handleLoadTaskCompleted());
+    }
+
+    private boolean validatePath(String path) {
+        if (path == null || path.isBlank()) {
+            log.warn("Path is blank or null.");
+            showErrorDialog("dialog.context.error.path-empty");
+            return false;
+        }
+        return true;
+    }
+
+    private List<File> updateUserInterface(StatePhase state, ObservableList<File> list, List<File> files) {
+        Platform.runLater(() -> {
+            ComparerModel.clearAndAddAll(list, files);
+            int totalCount = model.getLoadedFiles().size();
+            int duplicateCount = model.getDuplicateFiles().size();
+
+            stateMachine.changeState(new ComparerUpdateState(state, totalCount, duplicateCount));
+
+            log.info("UI updated: {} files processed, {} duplicates found", totalCount, duplicateCount);
+        });
+        return files;
+    }
+
+    private void handleLoadTaskCompleted() {
+        Platform.runLater(() -> {
+            int duplicateCount = model.getDuplicateFiles().size();
+            int originalCount = model.getLoadedFiles().size() - duplicateCount;
+            log.debug("Calculated: duplicates: {}, originals: {}", duplicateCount, originalCount);
+
+            stateMachine.changeState(new ComparerLoadCompletedState(originalCount, duplicateCount));
+        });
     }
 
     @FXML
@@ -183,6 +210,12 @@ public class ComparerController extends PanelController {
             .whenComplete((v, t) -> Platform.runLater(() -> stateMachine.changeState(new ComparerPostProcessState())));
     }
 
+    private <D> @Nullable D handleTaskError(String logMsg, String headerText, Throwable e) {
+        log.error("{}{}", logMsg, e.getMessage(), e);
+        Platform.runLater(() -> showErrorDialog(headerText));
+        return null;
+    }
+
     @FXML
     private void handleReset() {
         if (!showConfirmationDialog("dialog.header.comparer-reset")) return;
@@ -190,35 +223,6 @@ public class ComparerController extends PanelController {
         model.clearLists();
         stateMachine.changeState(new ComparerResetState());
         log.info("Comparer's state has been reset.");
-    }
-
-    private List<File> updateUserInterface(StatePhase state, ObservableList<File> list, List<File> files) {
-        Platform.runLater(() -> {
-            ComparerModel.clearAndAddAll(list, files);
-            int totalCount = model.getLoadedFiles().size();
-            int duplicateCount = model.getDuplicateFiles().size();
-
-            stateMachine.changeState(new ComparerUpdateState(state, totalCount, duplicateCount));
-
-            log.info("UI updated: {} files processed, {} duplicates found", totalCount, duplicateCount);
-        });
-        return files;
-    }
-
-    private void handleLoadTaskCompleted() {
-        Platform.runLater(() -> {
-            int duplicateCount = model.getDuplicateFiles().size();
-            int originalCount = model.getLoadedFiles().size() - duplicateCount;
-            log.debug("Calculated: duplicates: {}, originals: {}", duplicateCount, originalCount);
-
-            stateMachine.changeState(new ComparerLoadCompletedState(originalCount, duplicateCount));
-        });
-    }
-
-    private <D> @Nullable D handleTaskError(String logMsg, String headerText, Throwable e) {
-        log.error("{}{}", logMsg, e.getMessage(), e);
-        Platform.runLater(() -> showErrorDialog(headerText));
-        return null;
     }
 
     public enum StatePhase {

@@ -1,6 +1,8 @@
 package pl.magzik.picture_comparer_fx.service;
 
+import javafx.application.Platform;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.magzik.picture_comparer_fx.base.PathResolver;
@@ -9,7 +11,7 @@ import pl.magzik.picture_comparer_fx.model.GalleryTableModel;
 import pl.magzik.picture_comparer_fx.service.helpers.ImageComparisonHelper;
 import pl.magzik.picture_comparer_fx.base.async.AsyncTaskSupport;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +23,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicInteger;
+
+/* TODO: JAVADOC */
 
 public class GalleryService implements AsyncTaskSupport {
 
@@ -50,19 +55,20 @@ public class GalleryService implements AsyncTaskSupport {
     public void loadFiles() throws IOException {
         if (Files.notExists(dataFile)) return;
 
-        List<File> files = Files.readAllLines(dataFile)
+        try {
+            List<GalleryTableModel> images = Files.readAllLines(dataFile)
                 .stream()
                 .map(File::new)
+                .map(this::transformFile)
+                .filter(Objects::nonNull)
                 .toList();
 
-        List<GalleryTableModel> images = new ArrayList<>();
-
-        for (File file : files) {
-            images.add(transformFile(file));
+            model.getGalleryData().addAll(images);
+            log.info("Gallery images loaded. Found: {}", model.getGalleryData().size());
+        } catch (UncheckedIOException e) {
+            log.error("Couldn't load images from: {}", dataFile, e);
+            throw e.getCause();
         }
-
-        model.getGalleryData().addAll(images);
-        log.info("Gallery images loaded. Found: {}", model.getGalleryData().size());
 
         saveFiles();
     }
@@ -83,120 +89,100 @@ public class GalleryService implements AsyncTaskSupport {
     public void addImages(@NotNull Collection<File> files) throws IOException {
         if (files.isEmpty()) return;
 
-        List<File> valid = comparisonHelper.validate(files);
-        List<GalleryTableModel> images = new ArrayList<>();
-
-        for (File file : valid) images.add(transformFile(file));
-
-        images = images.stream()
-                .filter(i -> !model.getGalleryData().contains(i))
+        try {
+            List<GalleryTableModel> images = comparisonHelper.validate(files)
+                .stream()
+                .map(this::transformFile)
+                .filter(Objects::nonNull)
+                .filter(gtm -> !model.getGalleryData().contains(gtm))
                 .toList();
-        model.getGalleryData().addAll(images);
+
+            model.getGalleryData().addAll(images);
+            log.info("Added images successfully.");
+        } catch (UncheckedIOException e) {
+            log.error("Couldn't add images, due to: {}", e.getMessage(), e);
+            throw e.getCause();
+        }
 
         saveFiles();
-        log.info("Added image successfully.");
     }
 
     public void removeImages(@NotNull List<GalleryTableModel> entries) throws IOException {
         if (entries.isEmpty()) return;
 
         model.getGalleryData().removeAll(entries);
+        log.info("Images removed from gallery successfully.");
 
         saveFiles();
-        log.info("Images removed from gallery successfully.");
     }
 
     public void deleteImagesFromDisk(@NotNull List<GalleryTableModel> entries) throws IOException {
-        comparisonHelper.delete(
-            entries.stream()
-                .map(GalleryTableModel::getFile)
-                .toList()
-        );
+        List<File> files = entries.stream()
+            .map(GalleryTableModel::getFile)
+            .toList();
+        comparisonHelper.delete(files);
+
         removeImages(entries);
+        log.info("Images deleted from disk successfully.");
 
         saveFiles();
-        log.info("Images deleted from disk successfully.");
     }
 
-    public void removeDuplicates(@NotNull List<GalleryTableModel> entries) {
-        try {
-            List<File> loadedFiles = entries.stream()
+    public CompletableFuture<Void> removeDuplicates(@NotNull List<GalleryTableModel> entries) {
+        List<File> files = entries.stream()
+            .map(GalleryTableModel::getFile)
+            .toList();
+
+        return supplyAsyncTask(() -> comparisonHelper.validate(files))
+            .thenApply(this::compareAndFlatten)
+            .thenAccept(this::deleteFlattenedFiles);
+    }
+
+    public CompletableFuture<Void> renameAll(@NotNull List<GalleryTableModel> entries) {
+        return supplyAsyncTask(() -> entries)
+        .thenApply(this::removeImagesAndReturnFiles)
+        .thenApply(this::renameFiles)
+        .thenAccept(f -> Platform.runLater(() -> {
+            try {
+                addImages(f);
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+        }));
+    }
+
+    public CompletableFuture<Void> openImages(List<GalleryTableModel> entries) {
+        return runAsyncTask(() -> {
+            entries.parallelStream()
                 .map(GalleryTableModel::getFile)
-                .toList();
-
-            List<File> duplicates = comparisonHelper.flatten(
-                comparisonHelper.compare(loadedFiles)
-            );
-
-            deleteImagesFromDisk(model.getGalleryData()
-                .filtered(el -> duplicates.contains(el.getFile())));
-
-            saveFiles();
-            log.info("Duplicates removed successfully.");
-        } catch (IOException e) {
-            throw new CompletionException(e);
-        }
+                .forEach(f -> {
+                    try {
+                        Desktop.getDesktop().open(f);
+                    } catch (IOException e) {
+                        throw new CompletionException(e);
+                    }
+                });
+            return null;
+        });
     }
 
-    public void renameAll(@NotNull List<GalleryTableModel> entries) {
+    private @Nullable GalleryTableModel transformFile(@NotNull File file) {
         try {
-            List<File> files = entries.stream().map(GalleryTableModel::getFile).toList();
-            removeImages(entries);
-
-            String namePrefix = model.getNamePrefix();
-            AtomicInteger i = new AtomicInteger(1);
-            boolean lowercaseExtension = model.isLowercaseExtension();
-
-            files = files.stream().map(f -> {
-                try {
-                    Path newFile = renameFile(f, namePrefix, i.getAndIncrement(), lowercaseExtension);
-                    Files.move(f.toPath(), newFile, StandardCopyOption.ATOMIC_MOVE);
-
-                    return newFile.toFile();
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            }).toList();
-
-            addImages(files);
-
-            saveFiles();
-            log.info("Images renamed successfully.");
-        } catch (UncheckedIOException e) {
-            throw new CompletionException(e.getCause());
-        } catch (IOException e) {
-            throw new CompletionException(e);
-        }
-    }
-
-    public void openImages(List<GalleryTableModel> files) {
-        try {
-            if (!Desktop.isDesktopSupported()) {
-                log.error("Can't open image, because Desktop is not supported");
-                return;
+            if (!file.exists() || !file.isFile()) {
+                log.error("File: {} doesn't exists or is not a file.", file);
+                return null;
             }
 
-            for (File f : files.stream().map(GalleryTableModel::getFile).toList()) {
-                Desktop.getDesktop().open(f);
-            }
+            BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+
+            String name = file.getName();
+            String size = formatFileSize(Files.size(file.toPath()));
+            String date = new SimpleDateFormat().format(attrs.lastModifiedTime().toMillis());
+
+            return new GalleryTableModel(file, name, size, date);
         } catch (IOException e) {
-            throw new CompletionException(e);
+            throw new UncheckedIOException(e);
         }
-    }
-
-    private @NotNull GalleryTableModel transformFile(@NotNull File file) throws IOException {
-        if (!file.exists() || !file.isFile()) {
-            log.error("File: {} is doesn't exists or is not a file.", file);
-            throw new IOException("The file is invalid.");
-        }
-
-        BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-
-        String name = file.getName();
-        String size = formatFileSize(Files.size(file.toPath()));
-        String date = new SimpleDateFormat().format(attrs.lastModifiedTime().toMillis());
-
-        return new GalleryTableModel(file, name, size, date);
     }
 
     private @NotNull String formatFileSize(long size) {
@@ -208,12 +194,36 @@ public class GalleryService implements AsyncTaskSupport {
 
     private @NotNull String getExtension(@NotNull File file) {
         return Optional.of(file.getName())
-                .filter(name -> name.contains("."))
-                .map(name -> name.substring(name.lastIndexOf('.') + 1))
-                .orElse("");
+            .filter(name -> name.contains("."))
+            .map(name -> name.substring(name.lastIndexOf('.') + 1))
+            .orElse("");
     }
 
-    private @NotNull Path renameFile(@NotNull File file, String prefix, int idx, boolean lowercaseExtension) {
+    private @NotNull List<File> removeImagesAndReturnFiles(@NotNull List<GalleryTableModel> entries) {
+        List<File> files = entries.stream()
+            .map(GalleryTableModel::getFile)
+            .toList();
+
+        try {
+            removeImages(entries);
+        } catch (IOException e) {
+            throw new CompletionException(e);
+        }
+
+        return files;
+    }
+
+    private @NotNull List<File> renameFiles(@NotNull List<File> files) {
+        String namePrefix = model.getNamePrefix();
+        AtomicInteger i = new AtomicInteger(1);
+        boolean lowercaseExtension = model.isLowercaseExtension();
+
+        return files.stream()
+            .map(file -> renameFile(file, namePrefix, i.getAndIncrement(), lowercaseExtension))
+            .toList();
+    }
+
+    private @NotNull File renameFile(@NotNull File file, String prefix, int idx, boolean lowercaseExtension) {
         String newName = String.format("%s%d_%d.%s",
             prefix,
             idx,
@@ -221,6 +231,34 @@ public class GalleryService implements AsyncTaskSupport {
             lowercaseExtension ? getExtension(file).toLowerCase() : getExtension(file)
         );
 
-        return file.toPath().resolveSibling(newName);
+        try {
+            Path newFile = file.toPath().resolveSibling(newName);
+            Files.move(file.toPath(), newFile, StandardCopyOption.ATOMIC_MOVE);
+
+            return newFile.toFile();
+        } catch (IOException e) {
+            throw new CompletionException(e);
+        }
+    }
+
+    private @NotNull List<File> compareAndFlatten(@NotNull List<File> files) {
+        try {
+            return comparisonHelper.flatten(comparisonHelper.compare(files));
+        } catch (IOException e) {
+            throw new CompletionException(e);
+        }
+    }
+
+    private void deleteFlattenedFiles(@NotNull List<File> files) {
+        Platform.runLater(() -> {
+            try {
+                deleteImagesFromDisk(
+                    model.getGalleryData()
+                        .filtered(el -> files.contains(el.getFile()))
+                );
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+        });
     }
 }

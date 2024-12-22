@@ -6,13 +6,14 @@ import org.slf4j.LoggerFactory;
 import pl.magzik.picture_comparer_fx.base.PathResolver;
 import pl.magzik.picture_comparer_fx.model.SettingsModel;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
+
+/* TODO: JAVADOC */
 
 public class SettingsService {
 
