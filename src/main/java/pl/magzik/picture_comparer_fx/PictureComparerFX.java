@@ -25,11 +25,16 @@ import java.util.ResourceBundle;
 /* TODO: ADD JAVADOC */
 
 public class PictureComparerFX extends Application {
+
     private static final Logger log = LoggerFactory.getLogger(PictureComparerFX.class);
 
     private static final String MAIN_VIEW_FXML_PATH = "/fxml/main-view.fxml";
 
     private final Model model;
+
+    public static void main(String[] args) {
+        PictureComparerFX.launch(args);
+    }
 
     public PictureComparerFX() {
         log.info("Initializing application...");
@@ -40,6 +45,7 @@ public class PictureComparerFX extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         log.info("Initializing GUI...");
+
         SettingsModel settingsModel = loadSettings();
         ResourceBundle bundle = loadResourceBundle(settingsModel);
         loadGallery();
