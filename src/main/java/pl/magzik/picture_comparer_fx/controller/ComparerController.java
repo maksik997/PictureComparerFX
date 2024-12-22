@@ -16,6 +16,11 @@ import pl.magzik.picture_comparer_fx.controller.base.Controller;
 import pl.magzik.picture_comparer_fx.controller.base.PanelController;
 import pl.magzik.picture_comparer_fx.model.ComparerModel;
 import pl.magzik.picture_comparer_fx.service.ComparerService;
+import pl.magzik.picture_comparer_fx.state.ComparerLoadingState;
+import pl.magzik.picture_comparer_fx.state.ComparerReadyState;
+import pl.magzik.picture_comparer_fx.state.ComparerResetState;
+import pl.magzik.picture_comparer_fx.state.StateMachine;
+import pl.magzik.picture_comparer_fx.state.base.State;
 
 import java.io.File;
 import java.util.List;
@@ -39,11 +44,15 @@ public class ComparerController extends PanelController {
 
     private boolean edited; ///< If true, then user will be prompted before closing the panel.
 
+    private final StateMachine<State<ComparerController>, ComparerController> stateMachine;
+
     public ComparerController() {
         this.model = Controller.getModel().getComparerModel();
         this.service = new ComparerService(model);
 
         this.edited = false;
+
+        this.stateMachine = new StateMachine<>(this);
 
         this.originalSlice = new PieChart.Data("O", 50);
         this.duplicateSlice = new PieChart.Data("D", 50);
@@ -92,13 +101,14 @@ public class ComparerController extends PanelController {
     private ProgressBar taskProgressBar;
 
     public void initialize() {
-        setButtonsState(true, moveButton, removeButton, resetButton);
-        setButtonsState(false, backButton, pathButton, loadButton);
+        stateMachine.changeState(new ComparerResetState());
+//        setButtonsState(true, moveButton, removeButton, resetButton);
+//        setButtonsState(false, backButton, pathButton, loadButton);
 
         originalListView.setItems(model.getLoadedFiles());
         duplicateListView.setItems(model.getDuplicateFiles());
 
-        taskProgressBar.setProgress(1);
+//        taskProgressBar.setProgress(1);
 
         duplicateRatioPieChart.getData().addAll(originalSlice, duplicateSlice);
     }
@@ -110,6 +120,8 @@ public class ComparerController extends PanelController {
 
         if (selectedDirectory != null) {
             pathTextField.setText(selectedDirectory.getAbsolutePath());
+
+            stateMachine.changeState(new ComparerReadyState());
             log.info("Selected directory: {}", selectedDirectory.getAbsolutePath());
         } else {
             log.info("No directory selected.");
@@ -127,15 +139,15 @@ public class ComparerController extends PanelController {
         }
 
         log.info("Loading files from path: {}", path);
-
+        stateMachine.changeState(new ComparerLoadingState());
         edited = true;
-        handleTaskStart(State.PREPARE);
+//        handleTaskStart(States.PREPARE);
 
 
         service.validateFiles(new File(path))
-                .thenApply(files -> updateUserInterface(State.MAP, model.getLoadedFiles(), files))
+                .thenApply(files -> updateUserInterface(States.MAP, model.getLoadedFiles(), files))
                 .thenCompose(service::compareFiles)
-                .thenApply(files -> updateUserInterface(State.UPDATE, model.getDuplicateFiles(), files))
+                .thenApply(files -> updateUserInterface(States.UPDATE, model.getDuplicateFiles(), files))
                 .exceptionally(e -> handleTaskError("Error occurred while loading the files:", "dialog.context.error.comparer.loading", e))
                 .whenComplete((v, e) -> handleTaskCompleted(this::handleLoadTaskCompleted));
     }
@@ -146,7 +158,7 @@ public class ComparerController extends PanelController {
             service::moveDuplicates,
             "dialog.header.comparer-move",
             "Moving duplicated images...",
-            State.MOVE
+            States.MOVE
         );
     }
 
@@ -156,11 +168,11 @@ public class ComparerController extends PanelController {
             service::removeDuplicates,
             "dialog.header.comparer-remove",
             "Removing duplicated images...",
-            State.REMOVE
+            States.REMOVE
         );
     }
 
-    private void handleFileTransferTask(Supplier<CompletableFuture<Void>> task, String confirmationText, String logMsg, State state) {
+    private void handleFileTransferTask(Supplier<CompletableFuture<Void>> task, String confirmationText, String logMsg, States state) {
         if (!showConfirmationDialog(confirmationText)) return;
 
         log.info(logMsg);
@@ -176,16 +188,17 @@ public class ComparerController extends PanelController {
         if (!showConfirmationDialog("dialog.header.comparer-reset")) return;
 
         log.info("Resetting the comparer's state...");
-
+        stateMachine.changeState(new ComparerResetState());
         model.clearLists();
 
         edited = false;
+/*
 
         setButtonsState(true, moveButton, removeButton, resetButton);
         setButtonsState(false, backButton, pathButton, loadButton);
 
         taskProgressBar.setProgress(1);
-        stateText.setText(translate(State.READY.toString()));
+        stateText.setText(translate(States.READY.toString()));
 
         originalTrayTextField.setText("0");
         duplicateTrayTextField.setText("0");
@@ -193,7 +206,7 @@ public class ComparerController extends PanelController {
         originalSlice.setPieValue(50);
         duplicateSlice.setPieValue(50);
 
-        pathTextField.setText("");
+        pathTextField.setText("");*/
     }
 
     @Override
@@ -210,7 +223,7 @@ public class ComparerController extends PanelController {
         duplicateSlice.setName(translate("comparer.chart.label.duplicates"));
     }
 
-    private List<File> updateUserInterface(State state, ObservableList<File> list, List<File> files) {
+    private List<File> updateUserInterface(States state, ObservableList<File> list, List<File> files) {
         Platform.runLater(() -> {
             ComparerModel.clearAndAddAll(list, files);
             int totalCount = model.getLoadedFiles().size();
@@ -225,7 +238,7 @@ public class ComparerController extends PanelController {
         return files;
     }
 
-    private void handleTaskStart(@NotNull State state) {
+    private void handleTaskStart(@NotNull ComparerController.States state) {
         lockState(state);
         getStage().getScene().setCursor(Cursor.WAIT);
     }
@@ -265,7 +278,7 @@ public class ComparerController extends PanelController {
         return null;
     }
 
-    private enum State {
+    public enum States {
         READY("comparer.state.ready"),
         PREPARE("comparer.state.prepare"),
         MAP("comparer.state.map"),
@@ -276,7 +289,7 @@ public class ComparerController extends PanelController {
 
         private final String value;
 
-        State(String value) {
+        States(String value) {
             this.value = value;
         }
 
@@ -286,7 +299,7 @@ public class ComparerController extends PanelController {
         }
     }
 
-    private void lockState(@NotNull State state) {
+    private void lockState(@NotNull ComparerController.States state) {
         setButtonsState(true, backButton, pathButton, loadButton, moveButton, removeButton, resetButton);
         stateText.setText(translate(state.toString()));
         taskProgressBar.setProgress(-1);
@@ -294,11 +307,63 @@ public class ComparerController extends PanelController {
 
     private void unlockState() {
         setButtonsState(false, backButton, resetButton);
-        stateText.setText(translate(State.DONE.toString()));
+        stateText.setText(translate(States.DONE.toString()));
         taskProgressBar.setProgress(1);
     }
 
-    private void changeStateLabel(@NotNull State state) {
+    private void changeStateLabel(@NotNull ComparerController.States state) {
         stateText.setText(translate(state.toString()));
+    }
+
+    public Button getResetButton() {
+        return resetButton;
+    }
+
+    public Button getRemoveButton() {
+        return removeButton;
+    }
+
+    public Button getMoveButton() {
+        return moveButton;
+    }
+
+    public Button getLoadButton() {
+        return loadButton;
+    }
+
+    public Button getPathButton() {
+        return pathButton;
+    }
+
+    public Button getBackButton() {
+        return backButton;
+    }
+
+    public ProgressBar getTaskProgressBar() {
+        return taskProgressBar;
+    }
+
+    public Text getStateText() {
+        return stateText;
+    }
+
+    public PieChart.Data getDuplicateSlice() {
+        return duplicateSlice;
+    }
+
+    public PieChart.Data getOriginalSlice() {
+        return originalSlice;
+    }
+
+    public TextField getOriginalTrayTextField() {
+        return originalTrayTextField;
+    }
+
+    public TextField getDuplicateTrayTextField() {
+        return duplicateTrayTextField;
+    }
+
+    public TextField getPathTextField() {
+        return pathTextField;
     }
 }

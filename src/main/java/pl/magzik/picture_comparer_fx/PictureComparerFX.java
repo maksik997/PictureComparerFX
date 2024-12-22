@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.magzik.picture_comparer_fx.base.PathResolver;
 import pl.magzik.picture_comparer_fx.controller.base.Controller;
 import pl.magzik.picture_comparer_fx.model.SettingsModel;
 import pl.magzik.picture_comparer_fx.model.base.Model;
@@ -24,7 +25,6 @@ import java.util.ResourceBundle;
 /* TODO: ADD JAVADOC */
 
 public class PictureComparerFX extends Application {
-
     private static final Logger log = LoggerFactory.getLogger(PictureComparerFX.class);
 
     private static final String MAIN_VIEW_FXML_PATH = "/fxml/main-view.fxml";
