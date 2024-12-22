@@ -2,6 +2,7 @@ package pl.magzik.picture_comparer_fx.model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.jetbrains.annotations.NotNull;
 import pl.magzik.picture_comparer_fx.model.access.ComparerSettingsAccess;
 import pl.magzik.picture_comparer_fx.model.access.GallerySettingsAccess;
 
@@ -15,7 +16,7 @@ public class GalleryModel {
 
     private final GallerySettingsAccess gallerySettings;
 
-    public GalleryModel(ComparerSettingsAccess comparerSettings, GallerySettingsAccess gallerySettings) {
+    public GalleryModel(@NotNull ComparerSettingsAccess comparerSettings, @NotNull GallerySettingsAccess gallerySettings) {
         this.galleryData = FXCollections.observableArrayList();
 
         this.comparerSettings = comparerSettings;

@@ -8,8 +8,11 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.magzik.picture_comparer_fx.base.comparator.FileSizeComparator;
+import pl.magzik.picture_comparer_fx.base.comparator.NaturalComparator;
 import pl.magzik.picture_comparer_fx.controller.base.PanelController;
 import pl.magzik.picture_comparer_fx.model.GalleryModel;
 import pl.magzik.picture_comparer_fx.model.GalleryTableModel;
@@ -18,10 +21,8 @@ import pl.magzik.picture_comparer_fx.service.GalleryService;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-/* TODO: START HERE NEXT */
+/* TODO: ADD JAVADOC */
 
 public class GalleryController extends PanelController {
 
@@ -90,41 +91,25 @@ public class GalleryController extends PanelController {
         addSelectAllCheckbox();
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("filename"));
-        nameColumn.setComparator((o1, o2) -> {
-            Pattern pattern = Pattern.compile("(\\d+)|(\\D+)");
-            Matcher m1 = pattern.matcher(o1);
-            Matcher m2 = pattern.matcher(o2);
-
-            while (m1.find() && m2.find()) {
-                String s1 = m1.group(), s2 = m2.group();
-
-                int cmp;
-                if (s1.matches("\\d+") && s2.matches("\\d+"))
-                    cmp = Long.compare(Long.parseLong(s1), Long.parseLong(s2));
-                else
-                    cmp = s1.compareTo(s2);
-
-                if (cmp != 0) return cmp;
-            }
-
-            return Integer.compare(o1.length(), o2.length());
-        });
+        nameColumn.setComparator(new NaturalComparator());
 
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("fileSize"));
-        sizeColumn.setComparator((o1, o2) -> {
-            String[] so1 = o1.split(" "),
-                    so2 = o2.split(" ");
-            double do1 = Double.parseDouble(so1[0].replace(',', '.')) * (so1[1].equals("MB") ? 1024 : so1[1].equals("GB") ? 1024 * 1024 : 1),
-                    do2 = Double.parseDouble(so2[0].replace(',', '.')) * (so2[1].equals("MB") ? 1024 : so2[1].equals("GB") ? 1024 * 1024 : 1);
-
-            return Double.compare(do1, do2);
-        });
+        sizeColumn.setComparator(new FileSizeComparator());
 
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("modifiedDate"));
 
         galleryTable.setItems(model.getGalleryData());
 
-        updateElementCount();
+        setProcessingState(false);
+    }
+
+    private void addSelectAllCheckbox() {
+        CheckBox checkBox = new CheckBox();
+        selectColumn.setGraphic(checkBox);
+        selectColumn.setSortable(false);
+
+        checkBox.selectedProperty().addListener(((observable, wasSelected, isSelected) -> model.getGalleryData()
+            .forEach(item -> item.selectedProperty().setValue(isSelected))));
     }
 
     @FXML
@@ -136,8 +121,7 @@ public class GalleryController extends PanelController {
             try {
                 service.addImages(selectedFiles);
             } catch (IOException e) {
-                showErrorDialog("dialog.context.error.gallery.add");
-                log.error("Couldn't add images to gallery, because: {}", e.getMessage(), e);
+                handleTaskError("Couldn't add images to gallery, because: {}", "dialog.context.error.gallery.add", e);
             }
 
             log.info("Selected files: {}", selectedFiles.size());
@@ -145,8 +129,7 @@ public class GalleryController extends PanelController {
             log.info("No files selected.");
         }
 
-        galleryTable.refresh();
-        updateElementCount();
+        setProcessingState(false);
     }
 
     @FXML
@@ -154,11 +137,10 @@ public class GalleryController extends PanelController {
         try {
             service.removeImages(model.getSelectedData());
         } catch (IOException e) {
-            showErrorDialog("dialog.context.error.gallery.remove");
-            log.error("Couldn't remove images, because: {}", e.getMessage(), e);
+            handleTaskError("Couldn't remove images, because:", "dialog.context.error.gallery.remove", e);
         }
 
-        updateElementCount();
+        setProcessingState(false);
     }
 
     @FXML
@@ -168,103 +150,71 @@ public class GalleryController extends PanelController {
         try {
             service.deleteImagesFromDisk(model.getSelectedData());
         } catch (IOException e) {
-            showErrorDialog("dialog.context.error.gallery.delete");
-            log.error("Couldn't delete images from disk, because: {}", e.getMessage(), e);
+            handleTaskError("Couldn't delete images from disk, because:", "dialog.context.error.gallery.delete", e);
         }
 
-        updateElementCount();
+        setProcessingState(false);
     }
 
     @FXML
     public void handleRemoveDuplicates() {
         if (model.getSelectedData().isEmpty() || !showConfirmationDialog("dialog.header.gallery.duplicates")) return;
-
-        setButtonsState(true);
-        searchTextField.setEditable(false);
-        getStage().getScene().setCursor(Cursor.WAIT);
+        setProcessingState(true);
 
         service.removeDuplicates(model.getSelectedData())
-            .exceptionally(t -> {
-                handleTaskError("Couldn't remove all duplicates from gallery, because:", "dialog.context.error.gallery.duplicates", t);
-                return null;
-            })
-            .whenComplete((v, t) -> {
-                galleryTable.refresh();
-                handleTaskCompleted();
-            });
+            .exceptionally(t -> handleTaskError("Couldn't remove all duplicates from gallery, because:", "dialog.context.error.gallery.duplicates", t))
+            .whenComplete((v, t) -> setProcessingState(false));
     }
 
     @FXML
     public void handleUnifyNaming() {
         if (model.getSelectedData().isEmpty() || !showConfirmationDialog("dialog.header.gallery.names")) return;
-
-        setButtonsState(true);
-        searchTextField.setEditable(false);
-        getStage().getScene().setCursor(Cursor.WAIT);
+        setProcessingState(true);
 
         service.renameAll(model.getSelectedData())
-            .exceptionally(t -> {
-                handleTaskError("Couldn't rename all images from gallery, because:", "dialog.context.error.gallery.names", t);
-                return null;
-            })
-            .whenComplete((v, t) -> {
-                galleryTable.refresh();
-                handleTaskCompleted();
-            });
+            .exceptionally(t -> handleTaskError("Couldn't rename all images from gallery, because:", "dialog.context.error.gallery.names", t))
+            .whenComplete((v, t) -> setProcessingState(false));
     }
 
     @FXML
     public void handleOpenImage() {
         service.openImages(model.getSelectedData())
-            .exceptionally(t -> {
-                handleTaskError("Couldn't remove all duplicates from gallery, because:", "dialog.context.error.gallery.open", t);
-                return null;
-            });
+            .exceptionally(t -> handleTaskError("Couldn't remove all duplicates from gallery, because:", "dialog.context.error.gallery.open", t));
     }
 
     @FXML
     public void handleSearch() {
         String key = searchTextField.getText().toLowerCase();
+        if (key.isBlank()) {
+            galleryTable.setItems(model.getGalleryData());
+            return;
+        }
 
         galleryTable.setItems(model.getGalleryData()
-        .filtered(
-            el -> el.filenameProperty().get().contains(key)
-        ));
+            .filtered(el -> el.filenameProperty().get().contains(key))
+        );
     }
 
-    private void updateElementCount() {
-        int count = model.getGalleryData().size();
-        elementCountText.setText(String.valueOf(count));
+    private <D> @Nullable D handleTaskError(String logMsg, String headerText, Throwable e) {
+        log.error("{}{}", logMsg, e.getMessage(), e);
+        Platform.runLater(() -> showErrorDialog(headerText));
+        return null;
     }
 
-    private void addSelectAllCheckbox() {
-        CheckBox checkBox = new CheckBox();
-        selectColumn.setGraphic(checkBox);
-        selectColumn.setSortable(false);
-
-        checkBox.setOnAction(e -> {
-            boolean isSelected = checkBox.isSelected();
-            for (GalleryTableModel item : model.getGalleryData()) {
-                item.selectedProperty().setValue(isSelected);
+    private void setProcessingState(boolean isProcessing) {
+        Platform.runLater(() -> {
+            setButtonsState(isProcessing);
+            searchTextField.setEditable(!isProcessing);
+            getStage().getScene().setCursor(isProcessing ? Cursor.WAIT : Cursor.DEFAULT);
+            if (!isProcessing) {
+                galleryTable.refresh();
+                int count = model.getGalleryData().size();
+                elementCountText.setText(String.valueOf(count));
             }
         });
     }
 
     private void setButtonsState(boolean disable) {
         setButtonsState(disable, backButton, addButton, removeButton, deleteFromDiskButton, duplicatesButton, nameButton, openButton);
-    }
-
-    private void handleTaskCompleted() {
-        Platform.runLater(() -> {
-            setButtonsState(false);
-            searchTextField.setEditable(true);
-            updateElementCount();
-            getStage().getScene().setCursor(Cursor.DEFAULT);
-        });
-    }
-
-    private void handleTaskError(String logMsg, String headerText, Throwable e) {
-        log.error("{}{}", logMsg, e.getMessage(), e);
-        Platform.runLater(() -> showErrorDialog(headerText));
     }
 }
