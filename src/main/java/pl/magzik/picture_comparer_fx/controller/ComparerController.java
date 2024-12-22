@@ -3,12 +3,10 @@ package pl.magzik.picture_comparer_fx.controller;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +14,7 @@ import pl.magzik.picture_comparer_fx.controller.base.Controller;
 import pl.magzik.picture_comparer_fx.controller.base.PanelController;
 import pl.magzik.picture_comparer_fx.model.ComparerModel;
 import pl.magzik.picture_comparer_fx.service.ComparerService;
-import pl.magzik.picture_comparer_fx.state.ComparerLoadingState;
-import pl.magzik.picture_comparer_fx.state.ComparerReadyState;
-import pl.magzik.picture_comparer_fx.state.ComparerResetState;
-import pl.magzik.picture_comparer_fx.state.StateMachine;
+import pl.magzik.picture_comparer_fx.state.*;
 import pl.magzik.picture_comparer_fx.state.base.State;
 
 import java.io.File;
@@ -42,15 +37,11 @@ public class ComparerController extends PanelController {
 
     private final PieChart.Data duplicateSlice;
 
-    private boolean edited; ///< If true, then user will be prompted before closing the panel.
-
     private final StateMachine<State<ComparerController>, ComparerController> stateMachine;
 
     public ComparerController() {
         this.model = Controller.getModel().getComparerModel();
         this.service = new ComparerService(model);
-
-        this.edited = false;
 
         this.stateMachine = new StateMachine<>(this);
 
@@ -101,16 +92,28 @@ public class ComparerController extends PanelController {
     private ProgressBar taskProgressBar;
 
     public void initialize() {
-        stateMachine.changeState(new ComparerResetState());
-//        setButtonsState(true, moveButton, removeButton, resetButton);
-//        setButtonsState(false, backButton, pathButton, loadButton);
-
         originalListView.setItems(model.getLoadedFiles());
         duplicateListView.setItems(model.getDuplicateFiles());
 
-//        taskProgressBar.setProgress(1);
-
         duplicateRatioPieChart.getData().addAll(originalSlice, duplicateSlice);
+    }
+
+    @Override
+    protected void backToMenu() {
+        if (
+            !(stateMachine.getCurrentState() instanceof ComparerResetState)
+            && !showConfirmationDialog("dialog.header.back-menu")
+        ) return;
+
+        super.backToMenu();
+    }
+
+    @Override
+    public void setBundle(ResourceBundle bundle) {
+        super.setBundle(bundle);
+        originalSlice.setName(translate("comparer.chart.label.originals"));
+        duplicateSlice.setName(translate("comparer.chart.label.duplicates"));
+        stateMachine.changeState(new ComparerResetState());
     }
 
     @FXML
@@ -139,17 +142,14 @@ public class ComparerController extends PanelController {
         }
 
         log.info("Loading files from path: {}", path);
-        stateMachine.changeState(new ComparerLoadingState());
-        edited = true;
-//        handleTaskStart(States.PREPARE);
-
+        stateMachine.changeState(new ComparerProcessingState(StatePhase.PREPARE));
 
         service.validateFiles(new File(path))
-                .thenApply(files -> updateUserInterface(States.MAP, model.getLoadedFiles(), files))
+                .thenApply(files -> updateUserInterface(StatePhase.MAP, model.getLoadedFiles(), files))
                 .thenCompose(service::compareFiles)
-                .thenApply(files -> updateUserInterface(States.UPDATE, model.getDuplicateFiles(), files))
+                .thenApply(files -> updateUserInterface(StatePhase.UPDATE, model.getDuplicateFiles(), files))
                 .exceptionally(e -> handleTaskError("Error occurred while loading the files:", "dialog.context.error.comparer.loading", e))
-                .whenComplete((v, e) -> handleTaskCompleted(this::handleLoadTaskCompleted));
+                .whenComplete((v, e) -> handleLoadTaskCompleted());
     }
 
     @FXML
@@ -158,7 +158,7 @@ public class ComparerController extends PanelController {
             service::moveDuplicates,
             "dialog.header.comparer-move",
             "Moving duplicated images...",
-            States.MOVE
+            StatePhase.MOVE
         );
     }
 
@@ -168,108 +168,51 @@ public class ComparerController extends PanelController {
             service::removeDuplicates,
             "dialog.header.comparer-remove",
             "Removing duplicated images...",
-            States.REMOVE
+            StatePhase.REMOVE
         );
     }
 
-    private void handleFileTransferTask(Supplier<CompletableFuture<Void>> task, String confirmationText, String logMsg, States state) {
+    private void handleFileTransferTask(Supplier<CompletableFuture<Void>> task, String confirmationText, String logMsg, StatePhase state) {
         if (!showConfirmationDialog(confirmationText)) return;
 
         log.info(logMsg);
-        handleTaskStart(state);
+        stateMachine.changeState(new ComparerProcessingState(state));
 
         task.get()
-                .exceptionally(e -> handleTaskError("Error occurred while transferring the files:", "dialog.context.error.comparer.file-transfer", e))
-                .whenComplete((v, t) -> handleTaskCompleted());
+            .exceptionally(e -> handleTaskError("Error occurred while transferring the files:", "dialog.context.error.comparer.file-transfer", e))
+            .whenComplete((v, t) -> Platform.runLater(() -> stateMachine.changeState(new ComparerPostProcessState())));
     }
 
     @FXML
     private void handleReset() {
         if (!showConfirmationDialog("dialog.header.comparer-reset")) return;
 
-        log.info("Resetting the comparer's state...");
-        stateMachine.changeState(new ComparerResetState());
         model.clearLists();
-
-        edited = false;
-/*
-
-        setButtonsState(true, moveButton, removeButton, resetButton);
-        setButtonsState(false, backButton, pathButton, loadButton);
-
-        taskProgressBar.setProgress(1);
-        stateText.setText(translate(States.READY.toString()));
-
-        originalTrayTextField.setText("0");
-        duplicateTrayTextField.setText("0");
-
-        originalSlice.setPieValue(50);
-        duplicateSlice.setPieValue(50);
-
-        pathTextField.setText("");*/
+        stateMachine.changeState(new ComparerResetState());
+        log.info("Comparer's state has been reset.");
     }
 
-    @Override
-    protected void backToMenu() {
-        if (edited && !showConfirmationDialog("dialog.header.back-menu")) return;
-
-        super.backToMenu();
-    }
-
-    @Override
-    public void setBundle(ResourceBundle bundle) {
-        super.setBundle(bundle);
-        originalSlice.setName(translate("comparer.chart.label.originals"));
-        duplicateSlice.setName(translate("comparer.chart.label.duplicates"));
-    }
-
-    private List<File> updateUserInterface(States state, ObservableList<File> list, List<File> files) {
+    private List<File> updateUserInterface(StatePhase state, ObservableList<File> list, List<File> files) {
         Platform.runLater(() -> {
             ComparerModel.clearAndAddAll(list, files);
             int totalCount = model.getLoadedFiles().size();
             int duplicateCount = model.getDuplicateFiles().size();
 
-            changeStateLabel(state);
-            originalTrayTextField.setText(String.valueOf(totalCount));
-            duplicateTrayTextField.setText(String.valueOf(duplicateCount));
+            stateMachine.changeState(new ComparerUpdateState(state, totalCount, duplicateCount));
 
             log.info("UI updated: {} files processed, {} duplicates found", totalCount, duplicateCount);
         });
         return files;
     }
 
-    private void handleTaskStart(@NotNull ComparerController.States state) {
-        lockState(state);
-        getStage().getScene().setCursor(Cursor.WAIT);
-    }
-
-    private void handleTaskCompleted(@Nullable Runnable additionalOperations) {
-        Platform.runLater(() -> {
-            unlockState();
-            getStage().getScene().setCursor(Cursor.DEFAULT);
-
-            if (additionalOperations != null)
-                additionalOperations.run();
-        });
-    }
-
-    private void handleTaskCompleted() {
-        handleTaskCompleted(null);
-    }
-
     private void handleLoadTaskCompleted() {
-        if (!model.getDuplicateFiles().isEmpty()) {
-            moveButton.setDisable(false);
-            removeButton.setDisable(false);
-        }
+        Platform.runLater(() -> {
+            int duplicateCount = model.getDuplicateFiles().size();
+            int originalCount = model.getLoadedFiles().size() - duplicateCount;
+            log.debug("Calculated: duplicates: {}, originals: {}", duplicateCount, originalCount);
 
-        int duplicateCount = model.getDuplicateFiles().size();
-        int originalCount = model.getLoadedFiles().size() - duplicateCount;
-
-        log.debug("Calculated: duplicates: {}, originals: {}", duplicateCount, originalCount);
-
-        originalSlice.setPieValue(originalCount);
-        duplicateSlice.setPieValue(duplicateCount);
+            stateMachine.changeState(new ComparerLoadCompletedState(originalCount, duplicateCount));
+        });
     }
 
     private <D> @Nullable D handleTaskError(String logMsg, String headerText, Throwable e) {
@@ -278,7 +221,7 @@ public class ComparerController extends PanelController {
         return null;
     }
 
-    public enum States {
+    public enum StatePhase {
         READY("comparer.state.ready"),
         PREPARE("comparer.state.prepare"),
         MAP("comparer.state.map"),
@@ -289,7 +232,7 @@ public class ComparerController extends PanelController {
 
         private final String value;
 
-        States(String value) {
+        StatePhase(String value) {
             this.value = value;
         }
 
@@ -297,22 +240,6 @@ public class ComparerController extends PanelController {
         public String toString() {
             return value;
         }
-    }
-
-    private void lockState(@NotNull ComparerController.States state) {
-        setButtonsState(true, backButton, pathButton, loadButton, moveButton, removeButton, resetButton);
-        stateText.setText(translate(state.toString()));
-        taskProgressBar.setProgress(-1);
-    }
-
-    private void unlockState() {
-        setButtonsState(false, backButton, resetButton);
-        stateText.setText(translate(States.DONE.toString()));
-        taskProgressBar.setProgress(1);
-    }
-
-    private void changeStateLabel(@NotNull ComparerController.States state) {
-        stateText.setText(translate(state.toString()));
     }
 
     public Button getResetButton() {
