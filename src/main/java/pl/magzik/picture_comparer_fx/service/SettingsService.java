@@ -13,8 +13,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-/* TODO: JAVADOC */
-
+/**
+ * A service responsible for loading, saving, and updating the application settings.
+ * <p>
+ * This service manages the configuration file where application settings are stored.
+ * It reads settings from the configuration file, applies them to the {@link SettingsModel},
+ * and writes the updated settings back to the file when needed.
+ * </p>
+ */
 public class SettingsService {
 
     private static final Logger log = LoggerFactory.getLogger(SettingsService.class);
@@ -25,6 +31,16 @@ public class SettingsService {
 
     private final SettingsModel model;
 
+    /**
+     * Constructs a {@link SettingsService} instance with the given {@link SettingsModel}.
+     * <p>
+     * Initializes the service with the path for the configuration file and checks if the file exists.
+     * If the file doesn't exist, it calls {@link #saveSettings()} to create the default settings.
+     * </p>
+     *
+     * @param model the {@link SettingsModel} that holds the application settings
+     * @throws IOException if an error occurs while initializing the configuration file or loading settings
+     */
     public SettingsService(SettingsModel model) throws IOException {
         this.configFile = PathResolver.getInstance().getConfigDirectory().resolve(CONFIG_FILE_NAME);
         this.model = model;
@@ -33,6 +49,15 @@ public class SettingsService {
             saveSettings();
     }
 
+    /**
+     * Saves the current settings from the {@link SettingsModel} to the configuration file.
+     * <p>
+     * This method writes the current settings, such as language, theme, move destination, and others,
+     * into the configuration file. If the file doesn't exist, it is created.
+     * </p>
+     *
+     * @throws IOException if an error occurs while writing the settings to the configuration file
+     */
     public void saveSettings() throws IOException {
         Properties properties = new Properties();
         properties.setProperty("language", model.getLanguage());
@@ -51,6 +76,15 @@ public class SettingsService {
         log.info("Settings saved to {} successfully.", configFile);
     }
 
+    /**
+     * Loads the settings from the configuration file into the {@link SettingsModel}.
+     * <p>
+     * This method reads the settings from the configuration file and applies them to the model.
+     * If any setting is invalid or missing, default values are used.
+     * </p>
+     *
+     * @throws IOException if an error occurs while reading from the configuration file
+     */
     public void loadSettings() throws IOException {
         Properties properties = new Properties();
 
@@ -72,6 +106,22 @@ public class SettingsService {
         log.info("Settings loaded from {} successfully.", configFile);
     }
 
+    /**
+     * Updates the {@link SettingsModel} with the provided settings.
+     * <p>
+     * This method sets the provided values in the {@link SettingsModel} instance,
+     * ensuring that invalid values are replaced with default values and logging warnings for them.
+     * </p>
+     *
+     * @param language the language setting
+     * @param theme the theme setting
+     * @param moveDestination the move destination setting
+     * @param recursiveMode the recursive mode setting
+     * @param perceptualHash the perceptual hash setting
+     * @param pixelByPixel the pixel by pixel setting
+     * @param namePrefix the name prefix setting
+     * @param lowercaseExtension the lowercase extension setting
+     */
     public void updateModel(
             @NotNull String language,
             @NotNull String theme,

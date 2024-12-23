@@ -22,8 +22,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/* TODO: ADD JAVADOC */
-
+/**
+ * The {@code GalleryController} class is responsible for managing the gallery view in the application.
+ * It provides functionality to add, remove, delete, and manage image files within the gallery.
+ * Additionally, it handles image selection, searching, and various file operations such as renaming and removing duplicates.
+ * This class extends {@link PanelController} and is tightly integrated with the {@link GalleryModel} and {@link GalleryService} to
+ * perform file operations asynchronously.
+ * <p>
+ * It also manages the gallery's visual representation, including a table view to display the gallery's images and their properties.
+ */
 public class GalleryController extends PanelController {
 
     private static final Logger log = LoggerFactory.getLogger(GalleryController.class);
@@ -32,6 +39,9 @@ public class GalleryController extends PanelController {
 
     private final GalleryService service;
 
+    /**
+     * Constructs a new {@code GalleryController} instance, initializing the model and service.
+     */
     public GalleryController() {
         this.model = getModel().getGalleryModel();
         this.service = new GalleryService(model);
@@ -79,6 +89,10 @@ public class GalleryController extends PanelController {
     @FXML
     private Button openButton;
 
+    /**
+     * Initializes the gallery table and sets up the table columns, including setting up cell value factories,
+     * comparators, and editing options. Additionally, sets the initial state of the gallery UI.
+     */
     public void initialize() {
         galleryTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         galleryTable.setSelectionModel(null);
@@ -103,6 +117,9 @@ public class GalleryController extends PanelController {
         setProcessingState(false);
     }
 
+    /**
+     * Adds a "Select All" checkbox to the gallery table header, allowing users to select or deselect all images at once.
+     */
     private void addSelectAllCheckbox() {
         CheckBox checkBox = new CheckBox();
         selectColumn.setGraphic(checkBox);
@@ -112,6 +129,10 @@ public class GalleryController extends PanelController {
             .forEach(item -> item.selectedProperty().setValue(isSelected))));
     }
 
+    /**
+     * Handles the action of adding new images to the gallery. A file chooser dialog is shown to select multiple image files.
+     * The selected files are then processed and added to the gallery.
+     */
     @FXML
     public void handleAddImages() {
         FileChooser fileChooser = new FileChooser();
@@ -132,6 +153,9 @@ public class GalleryController extends PanelController {
         setProcessingState(false);
     }
 
+    /**
+     * Handles the action of removing selected images from the gallery. The images are processed and removed from the gallery.
+     */
     @FXML
     public void handleRemoveImages() {
         try {
@@ -143,6 +167,10 @@ public class GalleryController extends PanelController {
         setProcessingState(false);
     }
 
+    /**
+     * Handles the action of deleting selected images from the gallery and also removing them from disk.
+     * The user is prompted to confirm the deletion before the files are permanently removed.
+     */
     @FXML
     public void handleDeleteImagesFromDisk() {
         if (model.getSelectedData().isEmpty() || !showConfirmationDialog("dialog.header.gallery.delete")) return;
@@ -156,6 +184,10 @@ public class GalleryController extends PanelController {
         setProcessingState(false);
     }
 
+    /**
+     * Handles the action of removing duplicate images from the gallery. The user is prompted to confirm the removal.
+     * Duplicate images are then processed and removed from the gallery.
+     */
     @FXML
     public void handleRemoveDuplicates() {
         if (model.getSelectedData().isEmpty() || !showConfirmationDialog("dialog.header.gallery.duplicates")) return;
@@ -166,6 +198,10 @@ public class GalleryController extends PanelController {
             .whenComplete((v, t) -> setProcessingState(false));
     }
 
+    /**
+     * Handles the action of renaming selected images in the gallery. The user is prompted to confirm the renaming.
+     * The selected images are then renamed based on the specified naming convention.
+     */
     @FXML
     public void handleUnifyNaming() {
         if (model.getSelectedData().isEmpty() || !showConfirmationDialog("dialog.header.gallery.names")) return;
@@ -176,12 +212,18 @@ public class GalleryController extends PanelController {
             .whenComplete((v, t) -> setProcessingState(false));
     }
 
+    /**
+     * Opens the selected images from the gallery in the default image viewer or editor.
+     */
     @FXML
     public void handleOpenImage() {
         service.openImages(model.getSelectedData())
             .exceptionally(t -> handleTaskError("Couldn't remove all duplicates from gallery, because:", "dialog.context.error.gallery.open", t));
     }
 
+    /**
+     * Handles the search functionality for images in the gallery. Filters the displayed images based on the search query.
+     */
     @FXML
     public void handleSearch() {
         String key = searchTextField.getText().toLowerCase();
@@ -195,12 +237,26 @@ public class GalleryController extends PanelController {
         );
     }
 
+    /**
+     * Handles an error during a task and displays an error dialog to the user.
+     *
+     * @param logMsg the log message to display
+     * @param headerText the header text to display in the error dialog
+     * @param e the exception that occurred
+     * @return {@code null} to continue the execution flow
+     */
     private <D> @Nullable D handleTaskError(String logMsg, String headerText, Throwable e) {
         log.error("{}{}", logMsg, e.getMessage(), e);
         Platform.runLater(() -> showErrorDialog(headerText));
         return null;
     }
 
+    /**
+     * Updates the UI to reflect the processing state. When processing is active, it disables buttons, sets the cursor to a wait state,
+     * and disables the search functionality. Once processing is complete, it refreshes the table and updates the element count.
+     *
+     * @param isProcessing true if processing is in progress, false otherwise
+     */
     private void setProcessingState(boolean isProcessing) {
         Platform.runLater(() -> {
             setButtonsState(isProcessing);
@@ -214,6 +270,11 @@ public class GalleryController extends PanelController {
         });
     }
 
+    /**
+     * Toggles the state of the buttons in the UI (enabled or disabled) based on the processing state.
+     *
+     * @param disable true to disable buttons, false to enable them
+     */
     private void setButtonsState(boolean disable) {
         setButtonsState(disable, backButton, addButton, removeButton, deleteFromDiskButton, duplicatesButton, nameButton, openButton);
     }

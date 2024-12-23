@@ -11,6 +11,7 @@ mkdir -p ./build/MacOS
 mkdir -p ./build/temp
 
 cp target/PictureComparerFX-0.7.0-SNAPSHOT-SHADED.jar ./build/temp
+cp -r target/generated-resources/* ./build/temp
 
 jpackage --name "PictureComparerFX" \
 --input build/temp \

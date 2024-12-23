@@ -23,8 +23,15 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-/* TODO: JAVADOC */
-
+/**
+ * The {@code ComparerController} class is responsible for handling the user interface and interactions related to
+ * comparing images. It manages the loading, moving, removing, and resetting of duplicate files, and displays the
+ * progress and results of the comparison process in the UI.
+ * <p>
+ * This class extends {@link PanelController} and provides methods to switch between different states during
+ * the image comparison process, including selecting directories, loading files, comparing files, and managing
+ * duplicate files.
+ */
 public class ComparerController extends PanelController {
 
     private static final Logger log = LoggerFactory.getLogger(ComparerController.class);
@@ -39,6 +46,9 @@ public class ComparerController extends PanelController {
 
     private final StateMachine<State<ComparerController>, ComparerController> stateMachine;
 
+    /**
+     * Constructs a new {@code ComparerController}.
+     */
     public ComparerController() {
         this.model = Controller.getModel().getComparerModel();
         this.service = new ComparerService(model);
@@ -91,6 +101,9 @@ public class ComparerController extends PanelController {
     @FXML
     private ProgressBar taskProgressBar;
 
+    /**
+     * Initializes the UI components and binds the data model to the corresponding UI elements.
+     */
     public void initialize() {
         originalListView.setItems(model.getLoadedFiles());
         duplicateListView.setItems(model.getDuplicateFiles());
@@ -98,6 +111,10 @@ public class ComparerController extends PanelController {
         duplicateRatioPieChart.getData().addAll(originalSlice, duplicateSlice);
     }
 
+    /**
+     * Navigates back to the main menu. If the current state is not {@link ComparerResetState}, it will
+     * show a confirmation dialog before returning to the menu.
+     */
     @Override
     protected void backToMenu() {
         if (
@@ -108,6 +125,11 @@ public class ComparerController extends PanelController {
         super.backToMenu();
     }
 
+    /**
+     * Sets the resource bundle for the UI.
+     *
+     * @param bundle the resource bundle containing the translations
+     */
     @Override
     public void setBundle(ResourceBundle bundle) {
         super.setBundle(bundle);
@@ -116,6 +138,12 @@ public class ComparerController extends PanelController {
         stateMachine.changeState(new ComparerResetState());
     }
 
+
+    /**
+     * Opens a directory chooser to select a directory for file comparison.
+     *
+     * @see DirectoryChooser
+     */
     @FXML
     private void handleChoosePath() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -131,6 +159,10 @@ public class ComparerController extends PanelController {
         }
     }
 
+    /**
+     * Initiates the file loading process. It validates the path and begins loading the files from the specified
+     * directory, updating the UI as the process progresses.
+     */
     @FXML
     private void handleLoadingFiles() {
         String path = pathTextField.getText();
@@ -147,6 +179,12 @@ public class ComparerController extends PanelController {
                 .whenComplete((v, e) -> handleLoadTaskCompleted());
     }
 
+    /**
+     * Validates if the given path is not null or blank.
+     *
+     * @param path the path to validate
+     * @return {@code true} if the path is valid, {@code false} otherwise
+     */
     private boolean validatePath(String path) {
         if (path == null || path.isBlank()) {
             log.warn("Path is blank or null.");
@@ -156,6 +194,14 @@ public class ComparerController extends PanelController {
         return true;
     }
 
+    /**
+     * Updates the user interface with the list of files, updating the loaded and duplicate file lists, and the pie chart.
+     *
+     * @param state the current state of the comparison process
+     * @param list the list to update
+     * @param files the list of files to add to the list
+     * @return the updated list of files
+     */
     private List<File> updateUserInterface(StatePhase state, ObservableList<File> list, List<File> files) {
         Platform.runLater(() -> {
             ComparerModel.clearAndAddAll(list, files);
@@ -169,6 +215,9 @@ public class ComparerController extends PanelController {
         return files;
     }
 
+    /**
+     * Finalizes the loading process and updates the UI with the final number of duplicates and originals.
+     */
     private void handleLoadTaskCompleted() {
         Platform.runLater(() -> {
             int duplicateCount = model.getDuplicateFiles().size();
@@ -179,6 +228,9 @@ public class ComparerController extends PanelController {
         });
     }
 
+    /**
+     * Handles the process of moving duplicate files. Displays a confirmation dialog and initiates the move operation.
+     */
     @FXML
     private void handleMovingFiles() {
         handleFileTransferTask(
@@ -189,6 +241,9 @@ public class ComparerController extends PanelController {
         );
     }
 
+    /**
+     * Handles the process of removing duplicate files. Displays a confirmation dialog and initiates the remove operation.
+     */
     @FXML
     private void handleRemovingFiles() {
         handleFileTransferTask(
@@ -199,6 +254,14 @@ public class ComparerController extends PanelController {
         );
     }
 
+    /**
+     * Handles the file transfer task (moving or removing duplicates). Initiates the task and shows a progress dialog.
+     *
+     * @param task the task to execute (move or remove)
+     * @param confirmationText the text to display in the confirmation dialog
+     * @param logMsg the log message to display during the operation
+     * @param state the state to change to while the operation is in progress
+     */
     private void handleFileTransferTask(Supplier<CompletableFuture<Void>> task, String confirmationText, String logMsg, StatePhase state) {
         if (!showConfirmationDialog(confirmationText)) return;
 
@@ -210,12 +273,23 @@ public class ComparerController extends PanelController {
             .whenComplete((v, t) -> Platform.runLater(() -> stateMachine.changeState(new ComparerPostProcessState())));
     }
 
+    /**
+     * Handles an error during a task and displays an error dialog to the user.
+     *
+     * @param logMsg the log message to display
+     * @param headerText the header text to display in the error dialog
+     * @param e the exception that occurred
+     * @return {@code null} to continue the execution flow
+     */
     private <D> @Nullable D handleTaskError(String logMsg, String headerText, Throwable e) {
         log.error("{}{}", logMsg, e.getMessage(), e);
         Platform.runLater(() -> showErrorDialog(headerText));
         return null;
     }
 
+    /**
+     * Resets the state of the comparer and clears all loaded and duplicate files.
+     */
     @FXML
     private void handleReset() {
         if (!showConfirmationDialog("dialog.header.comparer-reset")) return;
@@ -225,6 +299,9 @@ public class ComparerController extends PanelController {
         log.info("Comparer's state has been reset.");
     }
 
+    /**
+     * Enum representing the various phases of the comparison process.
+     */
     public enum StatePhase {
         READY("comparer.state.ready"),
         PREPARE("comparer.state.prepare"),
@@ -245,6 +322,8 @@ public class ComparerController extends PanelController {
             return value;
         }
     }
+
+    // Getters for various UI components
 
     public Button getResetButton() {
         return resetButton;

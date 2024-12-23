@@ -19,14 +19,24 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-/* TODO: JAVADOC */
-
+/**
+ * The {@code Controller} class serves as the base controller for managing the user interface (UI) of the application.
+ * It provides methods for switching scenes, managing application settings, handling internationalization (i18n),
+ * and interacting with the model. The controller is responsible for managing the UI elements and their interactions
+ * with the model, including handling theme changes, language translations, and confirmation/error dialogs.
+ */
 public class Controller {
 
     private static final Logger log = LoggerFactory.getLogger(Controller.class);
 
     private static volatile Model model;
 
+    /**
+     * Returns the {@link Model} instance associated with this controller.
+     *
+     * @return the {@code Model} instance
+     * @throws IllegalStateException if the model has not been initialized
+     */
     public static Model getModel() {
         if (Controller.model == null)
             throw new IllegalStateException("Model has not been initialized.");
@@ -34,6 +44,13 @@ public class Controller {
         return Controller.model;
     }
 
+    /**
+     * Sets the {@link Model} instance for this controller.
+     * This method should only be called once, as the model reference cannot be changed after initialization.
+     *
+     * @param model the {@code Model} instance to set
+     * @throws UnsupportedOperationException if the model has already been initialized
+     */
     public static synchronized void setModel(Model model) {
         if (Controller.model != null)
             throw new UnsupportedOperationException("Model reference already assigned.");
@@ -49,6 +66,12 @@ public class Controller {
 
     private String currentTheme;
 
+    /**
+     * Returns the {@link HostServices} instance associated with this controller.
+     *
+     * @return the {@code HostServices} instance
+     * @throws IllegalStateException if the {@code HostServices} has not been initialized
+     */
     public HostServices getHostServices() {
         if (hostServices == null) {
             throw new IllegalStateException("HostServices not initialized.");
@@ -56,26 +79,57 @@ public class Controller {
         return hostServices;
     }
 
+    /**
+     * Sets the {@link HostServices} instance for this controller.
+     *
+     * @param hostServices the {@code HostServices} instance to set
+     */
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
     }
 
+    /**
+     * Sets the {@link ResourceBundle} for this controller, which is used for internationalization (i18n).
+     *
+     * @param bundle the {@code ResourceBundle} to set
+     */
     public void setBundle(ResourceBundle bundle) {
         this.bundle = bundle;
     }
 
+    /**
+     * Returns the {@link Stage} associated with this controller.
+     *
+     * @return the {@code Stage} instance
+     */
     public Stage getStage() {
         return stage;
     }
 
+    /**
+     * Sets the {@link Stage} associated with this controller.
+     *
+     * @param stage the {@code Stage} to set
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
+    /**
+     * Sets the current theme for this controller.
+     * The theme can either be "light" or "dark".
+     *
+     * @param currentTheme the theme to set ("light" or "dark")
+     */
     public void setCurrentTheme(@NotNull String currentTheme) {
         this.currentTheme = currentTheme.equals("dark") ? "dark" : "light";
     }
 
+    /**
+     * Switches the current scene to the one specified by the provided FXML file path.
+     *
+     * @param fxmlPath the path to the FXML file to load
+     */
     protected void switchScene(String fxmlPath) {
         try {
             URL newView = Controller.loadResource(fxmlPath);
@@ -107,6 +161,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Translates the provided string key into the corresponding value from the {@link ResourceBundle}.
+     * If the key is not found in the bundle, it returns the key itself surrounded by double square brackets.
+     *
+     * @param s the key to translate
+     * @return the translated string, or the key if not found
+     */
     public @NotNull String translate(@NotNull String s) {
         if (bundle != null && bundle.containsKey(s))
             return bundle.getString(s);
@@ -115,6 +176,13 @@ public class Controller {
         return "[[" + s + "]]";
     }
 
+    /**
+     * Finds the key corresponding to the provided value in the {@link ResourceBundle}.
+     * If no key is found for the value, it returns the value itself.
+     *
+     * @param v the value to find the corresponding key for
+     * @return the key for the value, or the value itself if not found
+     */
     public @NotNull String findKey(@NotNull String v) {
         if (bundle == null) return v;
 
@@ -124,6 +192,15 @@ public class Controller {
             .orElse(v);
     }
 
+    /**
+     * Creates and returns a new {@link Alert} of the specified type with the provided details.
+     *
+     * @param alertType the type of the alert
+     * @param title the title of the alert
+     * @param headerText the header text of the alert
+     * @param contextText the content text of the alert
+     * @return the created {@code Alert}
+     */
     private @NotNull Alert createAlert(
         @NotNull Alert.AlertType alertType,
         @NotNull String title,
@@ -144,6 +221,12 @@ public class Controller {
         return alert;
     }
 
+    /**
+     * Displays a confirmation dialog with the provided header text and returns the result.
+     *
+     * @param headerText the header text of the confirmation dialog
+     * @return {@code true} if the user clicked "OK", {@code false} otherwise
+     */
     public boolean showConfirmationDialog(String headerText) {
         Alert alert = createAlert(
             Alert.AlertType.CONFIRMATION,
@@ -157,6 +240,11 @@ public class Controller {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
+    /**
+     * Displays an error dialog with the provided context text.
+     *
+     * @param contextText the context text for the error dialog
+     */
     public void showErrorDialog(String contextText) {
         Alert alert = createAlert(
             Alert.AlertType.ERROR,
@@ -168,12 +256,25 @@ public class Controller {
         alert.showAndWait();
     }
 
+    /**
+     * Enables or disables the provided buttons based on the given state.
+     *
+     * @param disable whether to disable or enable the buttons
+     * @param buttons the buttons to enable/disable
+     */
     public void setButtonsState(boolean disable, Button @NotNull ...buttons) {
         for (Button button : buttons) {
             button.setDisable(disable);
         }
     }
 
+    /**
+     * Loads the resource at the specified path and returns the {@link URL} for it.
+     *
+     * @param path the path to the resource
+     * @return the {@code URL} of the resource
+     * @throws IllegalStateException if the resource could not be found
+     */
     public static @NotNull URL loadResource(@NotNull String path) {
         URL res = Controller.class.getResource(path);
         if (res == null) {
