@@ -18,6 +18,6 @@ jpackage --name "PictureComparerFX" \
 --type rpm \
 --icon images/thumbnail.png \
 --main-class pl.magzik.picture_comparer_fx.Main \
---dest ./build/LinuxAppImage
+--dest ./build/Linux
 
 rm -Rf build/temp
