@@ -396,6 +396,10 @@
     -fx-border-width: 0;
 }
 
+.credits-footer * {
+    -tf-text-fill: -fx-font-color;
+}
+
 /* GALLERY PANEL */
 
 .gallery-toolbox {
