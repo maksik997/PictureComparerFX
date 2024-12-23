@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.magzik.picture_comparer_fx.base.PathResolver;
 import pl.magzik.picture_comparer_fx.controller.base.Controller;
 import pl.magzik.picture_comparer_fx.model.SettingsModel;
 import pl.magzik.picture_comparer_fx.model.base.Model;
@@ -103,7 +102,7 @@ public class PictureComparerFX extends Application {
     }
 
     private void setupStage(@NotNull Stage stage) {
-        Image icon = new Image(Controller.loadResource("/fxml/images/thumbnail.png").toExternalForm());
+        Image icon = new Image(Controller.loadResource("/images/thumbnail.png").toExternalForm());
 
         stage.getIcons().add(icon);
         stage.setTitle("Picture Comparer FX");

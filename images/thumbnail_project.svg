@@ -7,10 +7,10 @@
    viewBox="0 0 135.46666 135.46667"
    version="1.1"
    id="svg1"
-   inkscape:export-filename="thumbnail.png"
-   inkscape:export-xdpi="48"
-   inkscape:export-ydpi="48"
-   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:export-filename="thumbnail_1024x1024@2x.png"
+   inkscape:export-xdpi="384"
+   inkscape:export-ydpi="384"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
    sodipodi:docname="thumbnail_project.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -28,13 +28,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.0595392"
-     inkscape:cx="115.1444"
-     inkscape:cy="371.38786"
-     inkscape:window-width="1920"
-     inkscape:window-height="1023"
-     inkscape:window-x="1920"
-     inkscape:window-y="29"
-     inkscape:window-maximized="1"
+     inkscape:cx="204.80601"
+     inkscape:cy="305.32141"
+     inkscape:window-width="1440"
+     inkscape:window-height="900"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
      inkscape:current-layer="layer1" />
   <defs
      id="defs1">
@@ -100,18 +100,6 @@
        style="stroke-width:0.264583;fill:url(#linearGradient3)" />
     <text
        xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,-0.70630202,9.4701798)"
-       id="text1"
-       style="font-size:400px;text-align:start;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;white-space:pre;shape-inside:url(#rect1);fill:#ffffff;fill-opacity:1"
-       x="29.573305"
-       y="0"><tspan
-         x="14.783203"
-         y="364.61804"
-         id="tspan3"><tspan
-           style="font-weight:bold;font-family:Hack;-inkscape-font-specification:'Hack Bold';text-align:center;baseline-shift:baseline;text-anchor:middle"
-           id="tspan2">PC</tspan></tspan></text>
-    <text
-       xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:25.4px;font-family:Hack;-inkscape-font-specification:'Hack Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
        x="113.37082"
        y="77.661507"
@@ -121,5 +109,18 @@
          style="font-size:25.4px;stroke-width:0.264583"
          x="113.37082"
          y="77.661507">fx</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,0.29255992,13.465626)"
+       id="text1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:386.667px;font-family:Hack;-inkscape-font-specification:'Hack, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;white-space:pre;shape-inside:url(#rect1);display:inline;fill:#ffffff;fill-opacity:1"
+       x="29.573305"
+       y="0"
+       inkscape:label="text1"><tspan
+         x="4.0245278"
+         y="353.43599"
+         id="tspan4"><tspan
+           style="text-align:center;baseline-shift:baseline;text-anchor:middle"
+           id="tspan1">PC</tspan></tspan></text>
   </g>
 </svg>

@@ -35,3 +35,4 @@ bin/
 
 ### Maven ###
 /target/
+/build/MacOS/

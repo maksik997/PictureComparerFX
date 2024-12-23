@@ -16,7 +16,7 @@
 
     <ImageView fitWidth="200"
                fitHeight="200">
-        <Image url="@images/thumbnail.png"/>
+        <Image url="@../images/thumbnail.png"/>
     </ImageView>
 
     <VBox alignment="CENTER">
