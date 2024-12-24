@@ -1,9 +1,33 @@
-![logo](src/main/resources/thumbnail.png) 
+![logo](images/thumbnail.png)
+# Picture Comparer FX
+### Version tag: 1.0
 
-TODO UPDATE PENDING...
+## Introduction:
+...
 
-# Thousand Picture Compare`
-### Version tag: 0.5
+## Requirements:
+...
+
+## Dependencies:
+...
+
+## Installation:
+...
+
+## Usage:
+...
+
+## Information:
+...
+
+## Contribution:
+...
+
+## License:
+
+This project is licensed under the MIT License. See the `LICENSE.txt` file for details.
+
+### v DEPRECATED v ###
 
 ## Description: 
 **Warning!
