@@ -23,8 +23,11 @@ mkdir build\temp
 
 for /f "delims=" %%i in ('dir /b /s target\*SHADED.jar') do (
     set "JAR_FILE=%%i"
+    echo Found JAR file: !JAR_FILE!
+    goto :found_jar
 )
 
+:found_jar
 if not defined JAR_FILE (
     echo Error: No SHADED JAR file found. Maven build might have failed.
     exit /b 1
