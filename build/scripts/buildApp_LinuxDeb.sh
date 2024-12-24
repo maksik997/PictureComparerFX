@@ -12,6 +12,7 @@ check_command() {
 check_command mvn
 check_command java
 check_command jpackage
+check_command dpkg
 
 if [ ! -f "pom.xml" ] ; then
   echo "Error: Run this script from the project root directory (where pom.xml is located)."
@@ -23,7 +24,7 @@ mvn clean package || {
   exit 1
 }
 
-mkdir -p ./build/MacOS
+mkdir -p ./build/Linux
 mkdir -p ./build/temp
 
 JAR_FILE=$(find target -name "*SHADED.jar" | head -n 1)
@@ -42,17 +43,16 @@ else
 fi
 
 jpackage --name "PictureComparerFX" \
-         --input build/temp \
-         --main-jar "$(basename "$JAR_FILE")" \
-         --type app-image \
-         --icon images/MacOS/thumbnail.icns \
-         --app-version 1.0 \
+         --input ./build/temp \
+         --main-jar PictureComparerFX-0.7.0-SNAPSHOT-SHADED.jar \
+         --type deb \
+         --icon images/thumbnail.png \
          --main-class pl.magzik.picture_comparer_fx.Main \
-         --dest build/MacOS || {
+         --dest ./build/Linux || {
            echo "jpackage failed. Aborting."
            exit 1
          }
 
-rm -Rf ./build/temp
+rm -Rf build/temp
 
 echo "Build completed successfully."

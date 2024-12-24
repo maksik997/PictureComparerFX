@@ -37,3 +37,5 @@ bin/
 /target/
 /build/MacOS/
 /build/Linux/
+/build/arch/
+/dependency-reduced-pom.xml
