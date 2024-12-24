@@ -397,7 +397,7 @@
 }
 
 .credits-footer * {
-    -tf-text-fill: -fx-font-color;
+    -fx-text-fill: -fx-font-color;
 }
 
 /* GALLERY PANEL */

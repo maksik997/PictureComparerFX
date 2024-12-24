@@ -1,25 +1,58 @@
 #!/bin/bash
-# You should run this script from this Directory
-# Additionally, you should have installed maven, jdk with jpackage.
-# TODO: MAKE IT IDIOT-PROOF
+set -e
+set -o pipefail
 
-cd ../..
+check_command() {
+  command -v "$1" > /dev/null 2>&1 || {
+    echo >&2 "&1 is required but not installed. Aborting"
+    exit 1
+  }
+}
 
-mvn clean package
+check_command mvn
+check_command java
+check_command jpackage
+
+if [ ! -f "pom.xml" ] ; then
+  echo "Error: Run this script from the project root directory (where pom.xml is located)."
+  exit 1
+fi
+
+mvn clean package || {
+  echo "Maven build failed. Aborting."
+  exit 1
+}
 
 mkdir -p ./build/MacOS
 mkdir -p ./build/temp
 
-cp target/PictureComparerFX-0.7.0-SNAPSHOT-SHADED.jar ./build/temp
-cp -r target/generated-resources/* ./build/temp
+JAR_FILE=$(find target -name "*SHADED.jar" | head -n 1)
+
+if [ -z "$JAR_FILE" ]; then
+    echo "Error: No SHADED JAR file found. Maven build might have failed."
+    exit 1
+fi
+
+cp "$JAR_FILE" ./build/temp
+
+if [ -d "target/generated-resources" ]; then
+    cp -r target/generated-resources/* ./build/temp
+else
+    echo "Warning: No generated resources found. Proceeding without them."
+fi
 
 jpackage --name "PictureComparerFX" \
---input build/temp \
---main-jar PictureComparerFX-0.7.0-SNAPSHOT-SHADED.jar \
---type app-image \
---icon images/MacOS/thumbnail.icns \
---app-version 1.0 \
---main-class pl.magzik.picture_comparer_fx.Main \
---dest build/MacOS
+         --input build/temp \
+         --main-jar "$(basename "$JAR_FILE")" \
+         --type app-image \
+         --icon images/MacOS/thumbnail.icns \
+         --app-version 1.0 \
+         --main-class pl.magzik.picture_comparer_fx.Main \
+         --dest build/MacOS || {
+           echo "jpackage failed. Aborting."
+           exit 1
+         }
 
-rm -Rf build/temp
+rm -Rf ./build/temp
+
+echo "Build completed successfully."
