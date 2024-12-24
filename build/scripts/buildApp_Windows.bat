@@ -22,7 +22,7 @@ mkdir build\Windows
 mkdir build\temp
 
 for /f "delims=" %%i in ('dir /b /s target\*SHADED.jar') do (
-    set JAR_FILE=%%i
+    set "JAR_FILE=%%i"
 )
 
 if not defined JAR_FILE (
