@@ -47,22 +47,10 @@ if (Test-Path "target\generated-resources") {
     Write-Host "Warning: No generated resources found. Proceeding without them."
 }
 
-$jpackageParams = @{
-    name        = "PictureComparerFX"
-    input       = "build\temp"
-    mainjar     = "PictureComparerFX-0.7.0-SNAPSHOT-SHADED.jar"
-    type        = "msi"
-    icon        = "images\thumbnail.ico"
-    mainclass   = "pl.magzik.picture_comparer_fx.Main"
-    dest        = "build\Windows"
-}
+$command = "jpackage --name PictureComparerFX --input build\temp --main-jar PictureComparerFX-0.7.0-SNAPSHOT-SHADED.jar --type msi --icon images\thumbnail.ico --main-class pl.magzik.picture_comparer_fx.Main --dest build\Windows"
 
-try {
-    jpackage @jpackageParams
-} catch {
-    Write-Host "jpackage failed. Aborting."
-    exit 1
-}
+Write-Host "Running: $command"
+Invoke-Expression $command
 
 Remove-Item "build\temp" -Recurse -Force
 
