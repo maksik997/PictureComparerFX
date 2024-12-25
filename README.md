@@ -50,14 +50,146 @@ Although the app may still have occasional bugs, I am dedicated to improving its
 
 ## Installation:
 
+### Multi-platform:
+
+To run the application on any system with Java 21+ installed, use the `.jar` file.
+
+#### Requirements: 
+- **Java 21** or higher (JDK or JRE).
+
+#### Installation and Launch:
+1. Download the latest `PictureComparerFX.jar` from the [Releases](https://github.com/maksik997/PictureComparerFX/releases) section on GitHub.
+2. Open a terminal or a file explorer and navigate to the folder containing the `.jar` file.
+3. Launch the application: Either using the command below, or double-clicking the file.
+```bash
+java -jar PictureComparerFX.jar
+```
+
+#### Uninstallation:
+1. Remove the `.jar` file.
+2. Remove the configuration containing directory:
+
+_Windows:_
+```bash
+C:\Users\[user]\AppData\Roaming\PictureComparerFX
+```
+_MacOS:_
+```bash
+~/Library/Application\ Support/PictureComparerFX/
+```
+_Linux:_
+```bash
+~/.config/PictureComparerFX/
+```
+
 ### Windows:
+[//]: # (TODO: FULFiLL)
 TBD
 
 ### MacOS:
-...
+
+The application is provided as `.app` file for easy installation and launch.
+
+#### Installation:
+1. Download `PictureComparerFX.app` from the [Releases](https://github.com/maksik997/PictureComparerFX/releases) section.
+2. Move the file to the **Applications** folder.
+3. Double-click to launch the application.
+4. If needed, right-click and select **Open** during the first launch to bypass Gatekeeper warnings.
+
+#### Uninstallation:
+1. Open the **Application** folder.
+2. Locate the `PictureComparerFX.app` file.
+3. Right-click and select **Move to Trash**, or drag the application to the Trash.
+4. To remove configuration files, open **Finder** and navigate to the following path:
+```bash
+~/Library/Application\ Support/PictureComparerFX/
+```
+5. Delete the `PictureComparerFX` folder.
 
 ### Linux:
-...
+
+#### Arch Linux / Manjaro (Arch-based)
+
+##### Installation:
+1. Download the `PictureComparerFX-Arch.tar.gz` file from the [Releases](https://github.com/maksik997/PictureComparerFX/releases) section.
+2. Open a terminal and navigate to the directory with the file.
+3. Extract the file:
+```bash
+tar -xzvf PictureComparerFX-Arch.tar.gz
+```
+4. Move to the extracted directory:
+```bash
+cd PictureComparerFX-Arch 
+```
+5. Run the following command:
+```bash
+makepkg -si
+```
+6. After installation, launch the application from the menu or terminal
+```bash
+picturecomparerfx 
+```
+
+##### Uninstallation:
+1. Open a terminal.
+2. Uninstall the application:
+```bash
+sudo pacman -Rns picturecomparerfx 
+```
+3. To remove the configuration files, delete the `PictureComparerFX` folder:
+```bash
+rm -Rf ~/.config/PictureComparerFX/ 
+```
+
+#### Debian / Ubuntu (DEB)
+
+##### Installation:
+1. Download the `.deb` package from the [Releases](https://github.com/maksik997/PictureComparerFX/releases) section.
+2. Open a terminal and navigate to the directory containing the file.
+3. Install the application:
+```bash
+sudo dpkg -i PictureComparerFX.deb
+sudo apt --fix-broken install # In case of dependency issues 
+```
+4. Launch the application:
+```bash
+picturecomparerfx 
+```
+
+##### Uninstallation:
+1. Open a terminal.
+2. Uninstall the application:
+```bash
+sudo apt remove picturecomparerfx 
+```
+3. To remove configuration files, delete the `PictureComparerFX` folder:
+```bash
+rm -Rf ~/.config/PictureComparerFX/
+```
+
+#### Fedora / RHEL (RPM)
+
+##### Installation:
+1. Download the `.rpm` package from the [Releases](https://github.com/maksik997/PictureComparerFX/releases) section.
+2. Install the application:
+```bash
+sudo dnf install PictureComparerFX.rpm
+```
+3. Launch the application:
+```bash
+picturecomparerfx 
+```
+
+##### Uninstallation:
+1. Open a terminal.
+2. Uninstall the application:
+```bash
+sudo dnf remove picturecomparerfx
+```
+3. To remove the configuration files, delete the `PictureComparerFX` folder:
+```bash
+rm -Rf ~/.config/PictureComparerFX/ 
+```
 
 ### Building from source:
 ...
