@@ -1,17 +1,65 @@
 ![logo](images/thumbnail.png)
 # Picture Comparer FX
-### Version tag: 1.0
+#### Version: 1.0
 
 ## Introduction:
-...
+This application is designed to help you automatically find and manage redundant images in your collection.
+Whether you're dealing with duplicate photos or just want a more organized image library,
+this tool simplifies the process.
+
+### Key features:
+- **Duplicates Removal** - Automatically detects duplicate and deletes duplicate images from your collection.
+- **Comparer** - Scans folders to identify duplicate images and allows you to either delete or move them based on your preferences.
+- **Image Viewer** - Open and view selected images directly in your system's default viewer.
+- **Batch Renaming** - Rename selected images according to a customizable naming pattern.
+- **Bulk Deletion** - Permanently deleted selected images from you disk with ease.
+- **Customizable Duplicate Search** - This application offers flexible options for duplicate detection. Users can:
+  - Enable or disable specific search algorithms to tailor the detection process.
+  - Activate recursive scanning to search for duplicates across multiple directories and subfolders.
+
+This is my first project developed using a JavaFX Framework and a custom-built image processing library.
+Although the app may still have occasional bugs, I am dedicated to improving its performance and enhancing user experience over time.
 
 ## Requirements:
-...
+
+### System requirements:
+
+- **Java:** 21
+- **Operating System:**
+  - Windows 10 (or newer)
+  - macOS 11 (Big Sur) (or newer)
+  - Linux:
+    - Debian/Ubuntu: 20.04 (or newer) (DEB)
+    - Fedora/RHEL: version 35 (or newer) (RPM)
+    - Arch Linux/Manjaro (Arch)
+
+### Additional requirements (when building from source):
+
+- **Apache Maven** - to compile and build project.
+- **Internet access** - to download all dependencies from Maven Central or Jitpack.io.
 
 ## Dependencies:
-...
+
+- **Runtime dependencies:**
+  - **PictureComparer:** 0.7.0
+  - **JavaFX:** 21.0.5
+  - **Ikonli:** 12.3.1
+  - **SLF4J:** 2.0.13
+  - **Logback:** 1.5.15
+  - **Jetbrains Annotations:** 26.0.1
 
 ## Installation:
+
+### Windows:
+TBD
+
+### MacOS:
+...
+
+### Linux:
+...
+
+### Building from source:
 ...
 
 ## Usage:
@@ -21,7 +69,10 @@
 ...
 
 ## Contribution:
-...
+
+We welcome contributions! If you'd like to contribute, 
+please fork the repository, create a new branch, 
+and submit a pull request with your changes.
 
 ## License:
 
