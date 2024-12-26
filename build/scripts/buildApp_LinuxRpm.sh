@@ -41,19 +41,13 @@ else
     echo "Warning: No generated resources found. Proceeding without them."
 fi
 
-if [ -z "$JAVA_HOME" ]; then
-  echo "Error: JAVA_HOME is not set. Please set it to the JDK location. Aborting."
-  exit 1
-fi
-
 jpackage --name "PictureComparerFX" \
          --input ./build/temp \
          --main-jar "$(basename "$JAR_FILE")" \
          --type rpm \
          --icon images/thumbnail.png \
          --main-class pl.magzik.picture_comparer_fx.Main \
-         --dest ./build/Linux \
-         --runtime-image "$JAVA_HOME" || {
+         --dest ./build/Linux || {
            echo "jpackage failed. Aborting."
            exit 1
          }
