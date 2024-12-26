@@ -12,7 +12,7 @@ this tool simplifies the process.
 - **Comparer** - Scans folders to identify duplicate images and allows you to either delete or move them based on your preferences.
 - **Image Viewer** - Open and view selected images directly in your system's default viewer.
 - **Batch Renaming** - Rename selected images according to a customizable naming pattern.
-- **Bulk Deletion** - Permanently deleted selected images from you disk with ease.
+- **Bulk Deletion** - Permanently delete selected images from you disk with ease.
 - **Customizable Duplicate Search** - This application offers flexible options for duplicate detection. Users can:
   - Enable or disable specific search algorithms to tailor the detection process.
   - Activate recursive scanning to search for duplicates across multiple directories and subfolders.
@@ -197,17 +197,16 @@ cd PictureComparerFX
 ```
 2. Build project using Maven:
 ```bash
-maven clean package
+mvn clean package
 ```
 3. Launch the app using: `PictureComparerFX-[VERSION]-SHADED.jar` file.
 
 ## Usage:
 
-[//]: # (TODO: COSMETICS AND GRAMMAR IN THIS SECTION)
-
 ### Main menu:
 
-The main menu provide you with several choices:
+The main menu provides you with several choices
+
 1. Enter the `Comparer` module.
 2. Enter the `Gallery` module.
 3. Enter the `Settings` module.
@@ -218,55 +217,53 @@ The main menu provide you with several choices:
 
 ### Comparer:
 
-The `Comparer` module allows you to find all the duplicates from provided directory.
-There is quick overview on how to do it:
+Use the `Comparer` module to find and manage duplicate images within a selected directory.
 
-1. Pick a directory by using the `Browse` button.
+1. Pick a directory by clicking the `Browse` button.
 
 ![c_1](images/docs/c_1.png)
 
-2. Start the processing by using the `Load & Compare` button.
+2. Start the processing by clicking `Load & Compare` button.
 
 ![c_2](images/docs/c_2.png)
 
-3. Wait unit the processing is finished.
+3. Wait until the process finishes.
 
 ![c_3](images/docs/c_3.png)
 
-4. To remove the duplicates use `Remove duplicates` button, to move the to specified (in Settings) path use `Move duplicates` button.
+4. Use `Remove duplicates` button to delete duplicates, or `Move duplicates` button to relocate them.
 
 ![c_4](images/docs/c_4.png)
 
-5. Afterward, reset the `Comparer` by using the `Reset` button.
+5. Reset by clicking `Reset` button.
 
 ![c_5](images/docs/c_5.png)
 
 ### Gallery:
 
-The `Gallery` module provide you with tools to easily manage your photos' collection.
-There is a quick overview on what you can do there:
+The `Gallery` module lets you manage your image collection.
 
-1. You can add images, pick single or multiple files to add, and if they're supported image formats they'll appear in the gallery.
+1. Add images to the gallery.
 
 ![g_1](images/docs/g_1.png)
 
-2. You can remove images, select the images you want to remove from gallery and click the button.
+2. Remove images from the gallery.
 
 ![g_2](images/docs/g_2.png)
 
-3. You can delete images from your disk easily, just select images you want to delete, and click the button.
+3. Delete images from disk.
 
 ![g_3](images/docs/g_3.png)
 
-4. You can find and remove duplicates in your collection, just select images and click the button.
+4. Remove duplicate images from disk.
 
 ![g_4](images/docs/g_4.png)
 
-5. You can rename image files using a name pattern (specified in Settings), just select the images, and click the button.
+5. Rename images using patterns.
 
 ![g_5](images/docs/g_5.png)
 
-6. You can open images using yours system image viewer, just select images, and click the button.
+6. Open images in your system's default viewer.
 
 ![g_6](images/docs/g_6.png)
 
@@ -274,19 +271,19 @@ There is a quick overview on what you can do there:
 
 The `Settings` module provide you with several customization options:
 
-1. You can adjust your language and theme:
+1. Adjust language and theme.
 
 ![s_1](images/docs/s_1.png)
 
-2. You can adjust the destination for moved image duplicates, enable comparer's recursive mode, enable comparison algorithms.
+2. Set destination paths for duplicate images, and enable recursive scanning and algorithms.
 
 ![s_2](images/docs/s_2.png)
 
-3. You can adjust the name prefix, and enable lowercase extensions' conversion.
+3. Configure renaming options.
 
 ![s_3](images/docs/s_3.png)
 
-4. Remember to save the settings after you've finished.
+4. Remember to save your settings.
 
 ## Contribution:
 
