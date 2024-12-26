@@ -4,7 +4,7 @@ set -o pipefail
 
 check_command() {
   command -v "$1" > /dev/null 2>&1 || {
-    echo >&2 "&1 is required but not installed. Aborting"
+    echo >&2 "$1 is required but not installed. Aborting"
     exit 1
   }
 }

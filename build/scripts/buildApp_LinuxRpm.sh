@@ -4,7 +4,7 @@ set -o pipefail
 
 check_command() {
   command -v "$1" > /dev/null 2>&1 || {
-    echo >&2 "&1 is required but not installed. Aborting"
+    echo >&2 "$1 is required but not installed. Aborting"
     exit 1
   }
 }
@@ -41,13 +41,19 @@ else
     echo "Warning: No generated resources found. Proceeding without them."
 fi
 
+if [ -z "$JAVA_HOME" ]; then
+  echo "Error: JAVA_HOME is not set. Please set it to the JDK location. Aborting."
+  exit 1
+fi
+
 jpackage --name "PictureComparerFX" \
          --input ./build/temp \
          --main-jar "$(basename "$JAR_FILE")" \
          --type rpm \
          --icon images/thumbnail.png \
          --main-class pl.magzik.picture_comparer_fx.Main \
-         --dest ./build/Linux || {
+         --dest ./build/Linux \
+         --runtime-image "$JAVA_HOME" || {
            echo "jpackage failed. Aborting."
            exit 1
          }
