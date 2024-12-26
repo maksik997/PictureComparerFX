@@ -44,7 +44,7 @@ fi
 
 jpackage --name "PictureComparerFX" \
          --input ./build/temp \
-         --main-jar PictureComparerFX-0.7.0-SNAPSHOT-SHADED.jar \
+         --main-jar "$(basename "$JAR_FILE")" \
          --type deb \
          --icon images/thumbnail.png \
          --main-class pl.magzik.picture_comparer_fx.Main \

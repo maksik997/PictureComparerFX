@@ -82,10 +82,6 @@ _Linux:_
 ~/.config/PictureComparerFX/
 ```
 
-### Windows:
-[//]: # (TODO: FULFiLL)
-TBD
-
 ### MacOS:
 
 The application is provided as `.app` file for easy installation and launch.
