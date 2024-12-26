@@ -12,7 +12,6 @@ check_command() {
 check_command mvn
 check_command java
 check_command jpackage
-check_command dpkg
 
 if [ ! -f "pom.xml" ] ; then
   echo "Error: Run this script from the project root directory (where pom.xml is located)."
