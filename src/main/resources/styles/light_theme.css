@@ -1,0 +1,9 @@
+.root {
+    -fx-base-color: #e6e8e6;
+    -fx-secondary-color: #ced0ce;
+    -fx-aspect-color: #4189e8;
+    -fx-secondary-aspect-color: #4797ff;
+    -fx-additional-color: #bbbcbb;
+    -fx-font-color: #191919;
+    -fx-light-font-color: #ddd;
+}

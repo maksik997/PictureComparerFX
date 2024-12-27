@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="pl.magzik.picture_comparer_fx.controller.MainController"
+      prefWidth="800.0" prefHeight="600.0"
+      spacing="10"
+      styleClass="menu">
+
+    <ImageView fitWidth="200"
+               fitHeight="200">
+        <Image url="@../images/thumbnail.png"/>
+    </ImageView>
+
+    <VBox alignment="CENTER">
+        <Text text="%general.title" styleClass="title" />
+        <Text text="%general.version" styleClass="subtitle" />
+    </VBox>
+
+    <VBox spacing="10" alignment="CENTER">
+        <Button text="%main.button.comparer"
+                focusTraversable="false"
+                onAction="#openComparer"
+                styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-image"/>
+            </graphic>
+        </Button>
+
+        <Button text="%main.button.gallery"
+                focusTraversable="false"
+                onAction="#openGallery"
+                styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-folder-open"/>
+            </graphic>
+        </Button>
+
+        <Button text="%main.button.settings"
+                focusTraversable="false"
+                onAction="#openSettings"
+                styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-tools"/>
+            </graphic>
+        </Button>
+
+        <Button text="%main.button.credits"
+                focusTraversable="false"
+                onAction="#openCredits"
+                styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-info-circle"/>
+            </graphic>
+        </Button>
+
+        <Button text="%main.button.exit"
+                focusTraversable="false"
+                onAction="#exitApp"
+                styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-door-open"/>
+            </graphic>
+        </Button>
+
+    </VBox>
+
+
+</VBox>
